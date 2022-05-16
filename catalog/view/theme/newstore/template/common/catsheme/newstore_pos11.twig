@@ -1,0 +1,11 @@
+{% if modules %} 
+<div class="container-fluid">
+	<div class="row">	
+		{% for module in modules %} 
+			<div class="col-sm-12">
+				{{ module }} 
+			</div>
+		{% endfor %}	
+	</div>
+</div>
+{% endif %} 

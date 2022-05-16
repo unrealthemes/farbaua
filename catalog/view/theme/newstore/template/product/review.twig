@@ -1,0 +1,54 @@
+{% if (reviews) %} 
+{% for review in reviews %} 
+<table class="review_list table table-striped table-bordered">
+  <tr>
+    <td style="width:30%;"><i class="fa fa-user" aria-hidden="true"></i> 
+	<span>{{ review['author'] }}</span>
+	{% if (review['purchased']) %}<span class="purchased"><i class="fa fa-cart-plus" aria-hidden="true"></i> {{ text_purchased}}</span>{% endif %}</td>
+	<td style="width:30%;">
+	<div class="rating">
+	{% set i = 1 %}{% for i in i..5 %} 
+      {% if (review['rating'] < i) %} 
+      <span class="fa fa-stack"><i class="fa fa-star-o fa-stack-2x"></i></span>
+      {% else %} 
+      <span class="fa fa-stack"><i class="fa fa-star fa-stack-2x"></i></span>
+      {% endif %} 
+    {% endfor %} 
+	</div>
+	</td>
+    <td class="text-right">{{ review['date_added'] }}</td>
+  </tr>
+  <tr>
+    <td colspan="3">
+		<div class="comment">
+			{{ review['text'] }} 
+		</div>
+		{% if (show_review_plus and review['plus']) %} 
+			<div class="review_plus">
+				<div><span><i class="fa fa-plus" aria-hidden="true"></i> {{ text_plus }}</span>
+				{{ review['plus'] }} 
+				</div>
+			</div>
+		{% endif %} 
+		{% if (show_review_minus and review['minus']) %} 
+		<div class="review_minus">
+			<div><span><i class="fa fa-minus" aria-hidden="true"></i> {{ text_minus }}</span>
+			{{ review['minus'] }} 
+		</div>
+		</div>
+		{% endif %} 
+		
+		{% if (review['admin_reply'] is defined and review['admin_reply'] != '') %} 
+			<div class="admin_reply">
+				<span><i class="fa fa-reply fa-rotate-180" aria-hidden="true"></i> {{ text_admin_reply }}</span>
+				{{ review['admin_reply'] }} 
+			</div>
+		{% endif %} 
+	</td>
+  </tr>
+</table>
+{% endfor %} 
+<div class="text-right">{{ pagination }}</div>
+{% else %} 
+<p>{{ text_no_reviews }}</p>
+{% endif %} 

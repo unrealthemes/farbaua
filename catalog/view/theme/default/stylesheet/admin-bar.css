@@ -1,0 +1,34 @@
+body {padding: 34px 0 0 !important;}
+#admin-bar .edit_button input {border: 0 none; color: #FFFFFF;cursor: pointer;font-family: georgia;height: 31px;padding-left: 19px;text-decoration: none;}
+#admin-bar {font-family:Arial;background: #333333;box-shadow: 0 0 2px #333333;height: 34px;margin: 0;padding: 0;position: fixed;top: 0;width: 100%;z-index: 9999;}
+#admin-bar li.ver {color: #fff;margin-left: 0;margin-right: -20px;}
+#admin-bar li {float: left;line-height: 13px;list-style: none outside none;margin: 0 0 0 10px;padding: 0;position: relative;text-decoration: none;}
+#admin-bar li ul {display: none;left: 0;list-style: none outside none;margin: 0;padding: 0;position: absolute;top: 33px;}
+#admin-bar li ul li {background: none repeat scroll 0 0 #7F7F7F;float: none;margin: 0;}
+#admin-bar li a{color: #FFFFFF;display:block;line-height: 14px;margin-left: 10px;padding: 10px 10px 10px 10px;text-decoration: none;}
+#admin-bar li.adb-h:hover ul, #admin-bar li.jshover ul, #admin-bar li.view ul {display: block;}
+#admin-bar li:hover, #admin-bar li.jshover {background: none repeat scroll 0 0 #424242;}
+#admin-bar li.logs {float: right;}
+#admin-bar li.adb-info:hover{background: #333333; color:#fff;}
+#admin-bar li.new_order {float: right;position: relative;}
+#admin-bar li.new_order.s1 a{color: green;}
+#admin-bar li.new_order.s2 a{color: #A88600;}
+#admin-bar li > a {cursor:pointer}
+#admin-bar .adb-info table td{padding:5px;}
+#admin-bar .adb-info table td input{color:#000;}
+#admin-bar .adb-info table td a.edit{padding:5px;background:none; padding:0}
+#admin-bar .adb-sub{min-width:150px}
+#admin-bar .adb-sub.template{min-width:260px}
+#admin-bar .adb-sub2{min-width:200px}
+#admin-bar .fa-lg{font-size:20px;}
+#admin-bar a > .label {left: 10px; padding: 1px 4px; position: absolute; text-shadow: none; top: 5px;}
+#admin-bar .adb-sub.template{min-width:260px}
+#admin-bar .adb-sub.template li > span{color:#fff; display:inline-block;padding:5px;}
+#admin-bar ul.extra_field {width: 300px;}
+#admin-bar .extra_field  table {width:100%;}
+#admin-bar .extra_field > li td {color:#fff; border: 1px solid; padding:5px}
+
+#admin-bar #ctrls_holder a {padding:3px; margin:0}
+#admin-bar #ctrls_holder a.saveEdit{margin-right:2px}
+#admin-bar #ctrls_holder {border-left:1px solid;border-right:1px solid;border-top:1px solid; border-radius:2px; float: right}
+.editTextArea { color: #000; width: 100%; padding: 2%; border: 1px solid #fff;}

@@ -1,0 +1,272 @@
+<ul id="admin-bar">
+  {% if menu.catalog %}
+  <li class="adb-h">
+    <a class="cata adb-top"><i class="fa fa-folder-open fa-fix"> </i> {{ catalog }}</a>
+    <ul class="adb-sub">
+    {% for punct in menu.catalog %}
+      <li>
+        <a href="{{ punct.href }}" target="_blank"><i class="{{ punct.icon }}"></i> {{ punct.name }}</a>
+      </li>
+    {% endfor %}
+    </ul>
+  </li>
+  {% endif %}
+
+  {% if (menu.add) %}
+  <li class="adb-h">
+    <a class="adds adb-top"><i class="fa fa-plus fa-fix"> </i> {{ add }}</a>
+    <ul class="adb-sub">
+    {% for punct in menu.add %}
+      <li>
+        <a href="{{ punct.href }}" target="_blank"><i class="{{ punct.icon }}"></i> {{ punct.name }}</a>
+      </li>
+    {% endfor %}
+    </ul>
+  </li>
+  {% endif %}
+
+  {% if (adminbar.custom_links) %}
+  <li class="adb-h">
+    <a class="adb-top"> {{ custom_link }}</a>
+    <ul class="adb-sub">
+    {% for customlink in adminbar.custom_links %}
+      <li>
+      {% set data_ajax = customlink.ajax is defined and customlink.ajax?'data-ajax="ajax"':'' %}
+      {% set data_reload = customlink.reload is defined and customlink.reload?'data-reload="reload"':'' %}
+      {% set new_window = customlink.new_window is defined and customlink.new_window?'target="_blank"':'' %}
+      {% if new_window %}
+        <a href="{{ customlink.href }}" target="_blank">{{ customlink.name }}</a>
+      {% else %}
+        <a {{ data_ajax }} {{ data_reload }} href="{{ adminbar.admin_path }}index.php?{{ customlink.href }}&amp;user_token={{ adminbar.user_token }}" target="_blank">{{ customlink.name }}</a>
+      {% endif %}
+      </li>
+    {% endfor %}
+    </ul>
+  </li>
+  {% endif %}
+
+  {% if (adminbar_info) %}
+  {% if (adminbar.prod_id) %}
+  <li class="adb-h edit_button adb-top">
+    <a id="prod_id" href="{{ adminbar.admin_path }}index.php?route=catalog/product/edit&amp;user_token={{ adminbar.user_token }}&amp;product_id={{ adminbar.prod_id }}" target="_blank"><i class="fa fa-edit"> </i> {{ edit_product }}</a>
+    {% set out = '' %}
+    {% for field,value in adminbar.product_field %}
+        {% if value.value is defined %}
+          {% set out = out ~ '<tr data-product_id="' ~ adminbar.prod_id ~ '" data-field="' ~ field ~ '"><td>' ~ value.name ~ '</td><td class="editCell"><div class="editDiv">' ~ adminbar.product_info[field] ~ '</div></td></tr>' %}
+        {% endif %}
+    {% endfor %}
+    {% if out %}
+      <ul class="extra_field">
+        <li>
+          <table id="editTable" data-href="{{ adminbar.edit_href }}">
+            {{ out }}
+          </table>
+        </li>
+      </ul>
+    {% endif %}
+  </li>
+
+  <li class="adb-info" id="adb-fast">
+    <a id="adb-product_info" class="adb-info"><i class="fa fa-eye"></i> {{ edit_fast }}</a>
+    <ul>
+      <li>
+        <table class="table  form-horizontal">
+          {% for key,info in adminbar_info %}
+          {% if (info != constant('false')) %}
+          <tr>
+            <td class="text-right"><label class="control-label">{{ key }}:</label></td>
+            <td><input class="form-control-static" name="{{ key }}" value="{{ info.value }}" size="80"/></td>
+            <td><button class="edit btn btn-primary" data-href="{{ info.href }}"><i class="fa fa-check"></i> </button></td>
+          </tr>
+          {% endif %}
+          {% endfor %}
+        </table>
+      </li>
+    </ul>
+  </li>
+  {% elseif adminbar.cat_id %}
+  <li class="edit_button">
+    <a id="prod_id" href="{{ adminbar.admin_path }}index.php?route=catalog/category/edit&user_token={{ adminbar.user_token }}&amp;category_id={{ adminbar.cat_id }}" target="_blank">{{ edit_category }}</a>
+  </li>
+  <li class="asb-info" id="adb-fast">
+    <a id="adb-product_info" class="adb-info"><i class="fa fa-eye"></i> {{ edit_fast }}</a>
+    <ul>
+      <li>
+        <table class="table form-horizontal">
+          {% for key,info in adminbar_info %}
+          {% if (info != constant('false')) %}
+          <tr>
+            <td class="text-right"><label class="control-label">{{ key }}:</label></td>
+            <td>
+            <input class="form-control-static" name="{{ key }}" value="{{ info.value }}" size="80"/>
+            </td>
+            <td><button class="edit btn btn-primary" data-href="{{ info.href }}"><i class="fa fa-check"></i> </button></td>
+          </tr>
+          {% endif %}
+          {% endfor %}
+        </table>
+      </li>
+    </ul>
+  </li>
+  {% elseif (adminbar.information_id) %}
+  <li class="edit_button">
+    <a id="prod_id" href="{{ adminbar.admin_path }}index.php?route=catalog/information/edit&user_token={{ adminbar.user_token }}&amp;information_id={{ adminbar.information_id }}" target="_blank">{{ edit_information }}</a>
+  </li>
+  {% elseif (adminbar.manufacturer_id) %}
+  <li class="edit_button">
+    <a id="prod_id" href="{{ adminbar.admin_path }}index.php?route=catalog/manufacturer/edit&user_token={{ adminbar.user_token }}&amp;manufacturer_id={{ adminbar.manufacturer_id }}" target="_blank">{{ edit_manufacturer }}</a>
+  </li>
+  {% endif %}
+  {% endif %}
+
+  {% if menu.modules %}
+    <li class="adb-h" id="goto-modules">
+    <a class="adb-top"><i class="fa fa-puzzle-piece"></i> {{ text_goto_modules }}</a>
+    <ul class="adb-sub2">
+    {% for punct in menu.modules %}
+      <li>
+        <a href="{{ punct.href }}" target="_blank">{{ punct.name }}</a>
+      </li>
+    {% endfor %}
+    </ul>
+  </li>
+  {% endif %}
+
+    <li class="adb-h" id="clear-cache">
+    <a class="adb-top"><i class="fa fa-trash"></i> {{ text_clear_cache }}</a>
+        <ul class="sub2">
+      {% for element in adminbar.cleaer_system %}
+      <li>
+        <a href="{{ element.href }}"><i class="fa {{ element.icon }}"></i> {{ element.value }}</a>
+      </li>
+      {% endfor %}
+        </ul>
+    </li>
+  {% if templates %}
+  <li class="adb-h"><a class="cata adb-top"><i class="fa fa-folder-open fa-fix"> </i> Templates</a>
+    <ul class="adb-sub template">
+    {% for template in templates %}
+      <li><span><i class="fa fa-code-o"></i>{{ template }}</span></li>
+    {% endfor %}
+    </ul>
+  </li>
+  {% endif %}
+  <li>
+    <a href="{{ adminbar.admin_path }}index.php?route=tool/log&amp;user_token={{ adminbar.user_token}}" id="popup-error"><i class="fa fa-exclamation-circle"></i> {{ view_err }} </a>
+  </li>
+
+  {% if menu.logout %}
+  <li class="logs">
+    <a href="{{ menu.logout.href }}" target="_blank"><i class="fa {{ menu.logout.icon }}"></i> {{ menu.logout.name }}</a>
+  </li>
+  {% endif %}
+
+  {% if adminbar.new_review_result %}
+  <li class="new_order">
+    <a href="{{ adminbar.admin_path }}index.php?route=catalog/review&amp;user_token={{ adminbar.user_token }}&amp;filter_status=0" target="_blank" title="new comment">
+    <span class="label label-danger pull-left">{{ adminbar.new_review_result }}</span>
+    <i class="fa fa-comments-o fa-lg"></i>
+    </a>
+  </li>
+  {% endif %}
+
+  {% if adminbar.new_order_result %}
+    {% for new_order in adminbar.new_order_result %}
+    <li class="new_order s{{ new_order.status_id }}">
+      <a href="{{ adminbar.admin_path }}index.php?route=sale/order&amp;user_token={{ adminbar.user_token }}&amp;filter_order_status={{ new_order.status_id }}" target="_blank" title="{{ new_order.name }}">
+        <span class="label label-danger pull-left">{{ new_order.total }}</span>
+        <i class="fa fa-certificate fa-lg"></i>
+      </a>
+    </li>
+    {% endfor %}
+  {% endif %}
+
+</ul>
+
+<div class="modal fade" id="admin-barModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-body">
+        <iframe width="100%" height="100%" frameborder="0" scrolling="yes" allowtransparency="true"></iframe>'
+      </div>
+      </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<script type="text/javascript">
+$(document).ready(function(){
+  $('#admin-bar').on('click','#adb-product_info', function(){
+  $(this).closest('li').toggleClass('view')
+  });
+
+
+  $('#popup-error, #prod_id').click(function(e){
+    e.preventDefault();
+    var url = $(this).attr('href');
+
+    $("#admin-barModal .modal-body iframe").load(function(){
+      $("#admin-barModal").modal().show();
+    });
+
+    $("#admin-barModal .modal-body iframe").attr('src',url);
+  });
+
+  $('#admin-barModal').on('show.bs.modal', function () {
+    $(this).find('.modal-dialog').css({
+      width:'40%x', //choose your width
+      height:'100%',
+      'padding':'0'
+    });
+    $(this).find('.modal-content').css({
+      height:'100%',
+      'border-radius':'0',
+      'padding':'0'
+    });
+    $(this).find('.modal-body').css({
+      width:'auto',
+      height:'100%',
+      'padding':'0'
+    });
+    var iframe = $('#admin-barModal .modal-content iframe').contents();
+    iframe.find('#header').remove();
+    iframe.find('#column-left').remove();
+  });
+  $('#adb-fast [data-href]').on('click', function() {
+    var url = $(this).attr('data-href');
+    $.ajax({
+      url:url,
+      type:'post',
+      data:{'value':$(this).closest('tr').find('input').val()},
+      success: function(html){
+        location = location;
+      }
+    })
+  })
+  $('#clear-cache a').on('click', function() {
+    var url = $(this).attr('href');
+    $.ajax({
+      url:url,
+      type:'get',
+      success: function(html){
+        alert('Cache cleared');
+      }
+    });
+    return false;
+  })
+
+  $('#admin-bar [data-ajax]').on('click', function() {
+    var url = $(this).attr('href');
+    var elem = $(this);
+    $.ajax({
+      url:url,
+      type:'get',
+      success: function(html){
+        if (elem.is('[data-reload]')) { location=location; }
+      }
+    });
+    return false;
+  })
+
+});
+
+</script>

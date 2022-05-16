@@ -1,0 +1,291 @@
+{{ header }}
+<div class="container">
+<div class="breadcrumbs-box">
+ <ul class="breadcrumb">
+        {% for i,breadcrumb in breadcrumbs %}
+            {% if (i+1 < breadcrumbs|length) %}
+                <li><a itemprop="url" href="{{ breadcrumb.href }}"><span itemprop="title">{{ breadcrumb.text }}</span></a></li>
+            {% else %}
+                <li>{{ breadcrumb.text }}</li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+</div>
+  <div class="row">
+  {{ column_left }}
+    {% if (column_left and column_right) %}
+    {% set class = 'col-sm-8 col-md-6' %}
+	{% set cols_class = 'col-lg-6 col-md-6 col-sm-12 col-xs-12' %}
+    {% elseif (column_left or column_right) %}
+    {% set class = 'col-sm-8 col-md-9' %}
+	{% set cols_class = 'col-lg-4 col-md-4 col-sm-6 col-xs-12' %}
+    {% else %}
+    {% set class = 'col-sm-12' %}
+	{% set cols_class = 'col-lg-3 col-md-3 col-sm-6 col-xs-12' %}
+    {% endif %}
+    <div id="content" class="{{ class }}">
+		{{ content_top }}
+		<div class="row rating-info-box">
+			<div class="col-xs-12 col-md-12">
+				<div class="well well-sm">
+					<div class="row">
+						<div class="col-xs-12 col-md-3 text-center">
+							<div {% if (rating_store == 5) %}class="progress-striped-rev-full"{% endif %}>
+								<span class="rating-num
+							{% if ((rating_store >=1) and (rating_store < 2)) %}
+							rat-avg-1
+							{% elseif ((rating_store >=2) and (rating_store < 3)) %}
+							rat-avg-2
+							{% elseif ((rating_store >=3) and (rating_store < 4)) %}
+							rat-avg-3
+							{% elseif ((rating_store >=4) and (rating_store < 5)) %}
+							rat-avg-4
+							{% elseif (rating_store == 5) %}
+							rat-avg-5
+							{% endif %}
+							">{{ rating_store }}</span>
+							</div>
+							<div class="testimonial-rating">
+								<div class="testimonial-rating-stars"><div class="testimonial-realrating" style="width:{{ rating_store*100/5}}%;"></div></div>
+							</div>
+							<div>
+								<span class="glyphicon glyphicon-user"></span> {{ text_sum_reviews }} {{ total_rs }}
+							</div>
+
+						</div>
+						<div class="col-xs-12 col-md-5">
+							<div class="row rating-desc">
+								<div class="col-xs-3 col-md-2 text-right">
+									<i class="fa fa-star color-star-percent-5"></i>5
+								</div>
+								<div class="col-xs-8 col-md-9">
+									<div class="progress progress-striped">
+										<div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="20"
+											aria-valuemin="0" aria-valuemax="100" style="width: {{ percent_rating['star5'] }}%">
+											<span class="sr-only">{{ percent_rating['star5'] }}%</span>
+										</div>
+									</div>
+								</div>
+								<div class="col-xs-3 col-md-2 text-right">
+									<i class="fa fa-star color-star-percent-4"></i>4
+								</div>
+								<div class="col-xs-8 col-md-9">
+									<div class="progress">
+										<div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="20"
+											aria-valuemin="0" aria-valuemax="100" style="width: {{ percent_rating['star4'] }}%">
+											<span class="sr-only">{{ percent_rating['star4'] }}%</span>
+										</div>
+									</div>
+								</div>
+								<div class="col-xs-3 col-md-2 text-right">
+									<i class="fa fa-star color-star-percent-3"></i>3
+								</div>
+								<div class="col-xs-8 col-md-9">
+									<div class="progress">
+										<div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="20"
+											aria-valuemin="0" aria-valuemax="100" style="width: {{ percent_rating['star3'] }}%">
+											<span class="sr-only">{{ percent_rating['star3'] }}%</span>
+										</div>
+									</div>
+								</div>
+								<div class="col-xs-3 col-md-2 text-right">
+									<i class="fa fa-star color-star-percent-2"></i>2
+								</div>
+								<div class="col-xs-8 col-md-9">
+									<div class="progress">
+										<div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="20"
+											aria-valuemin="0" aria-valuemax="100" style="width: {{ percent_rating['star2'] }}%">
+											<span class="sr-only">{{ percent_rating['star2'] }}%</span>
+										</div>
+									</div>
+								</div>
+								<div class="col-xs-3 col-md-2 text-right">
+									<i class="fa fa-star color-star-percent-1"></i>1
+								</div>
+								<div class="col-xs-8 col-md-9">
+									<div class="progress">
+										<div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="80"
+											aria-valuemin="0" aria-valuemax="100" style="width: {{ percent_rating['star1'] }}%">
+											<span class="sr-only">{{ percent_rating['star1'] }}%</span>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="col-xs-12 col-md-4">
+							<div class="rsinfo">
+							{% for result_info in reviews_theme_rating %}
+								<div class="rsinfo-item">
+								<span>{{ result_info['theme_text'] }}</span>
+								<div class="avg-rating">
+									<div class="avg-rating-stars"><div class="avg-realrating" style="width:{{ result_info['avg_rating']*100/5}}%;"></div></div>
+								</div>
+								</div>
+							{% endfor %}
+							{% if (review_guest) %}
+								<button type="button" onclick="popupFormReviewStore()" class="btn btn-primary text-right btnpfrs">{{ btn_write_review }}</button>
+							{% else %}
+								{{ text_review_guest }}
+							{% endif %}
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+			{% if (reviews_store) %}
+			<div class="row">
+		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-xs-center text-sm-center text-md-center text-lg-left localstorage" style="margin:0px 0px 20px 0px">
+            <div class="btn-group">
+                 <div class="btn-group">
+                     <button type="button" class="btn btn-sort-limit dropdown-toggle" data-toggle="dropdown">
+                        {{ text_sort }}
+                        <span class="caret"></span>
+                      </button>
+                      <ul class="dropdown-menu text-left">
+                        {% for sorts in sorts %}
+                        {% if (sorts['value'] == sort) %}
+                        <li class="active"><a href="{{ sorts['href'] }}" rel="nofollow">{{ sorts['text'] }}</a></li>
+                        {% else %}
+                        <li><a href="{{ sorts['href'] }}" rel="nofollow">{{ sorts['text'] }}</a></li>
+                        {% endif %}
+                        {% endfor %}
+                      </ul>
+                </div>
+                <div class="btn-group">
+                  <ul class="dropdown-menu text-left">
+                    {% for limits in limits %}
+                    {% if (limits['value'] == limit) %}
+                    <li class="active"><a href="{{ limits['href'] }}" rel="nofollow">{{ limits['text'] }}</a></li>
+                    {% set mmr_limit_active = limits['text'] %}
+                    {% else %}
+                    <li><a href="{{ limits['href'] }}" rel="nofollow">{{ limits['text'] }}</a></li>
+                    {% endif %}
+                    {% endfor %}
+                  </ul>
+                  <button type="button" class="btn btn-sort-limit dropdown-toggle" data-toggle="dropdown" title="{{ text_limit }}">
+                    <i class="fa fa-arrows-v hidden-md hidden-lg"></i> <span class="hidden-xs hidden-sm">{{ text_limit }} </span>{{ mmr_limit_active is defined ? mmr_limit_active : limits['text'] }}
+                    <span class="caret"></span>
+                  </button>
+                </div>
+            </div>
+        </div>
+		 </div>
+			<div class="row">
+			<div class="col-sm-12">
+			<div class="all-review-box">
+				{% for review_store in reviews_store %}
+					<div id="review_store_box_{{ review_store['reviews_store_id']}}">
+						<div class="panel panel-default">
+							<div class="panel-heading clearfix">
+								<div class="col-xs-12 col-sm-4 rev-author"><span class="glyphicon glyphicon-user"></span> {{ review_store['author'] }}</div>
+								<div class="col-xs-12 col-sm-4 rev-rating">
+									<div class="avg-rating">
+										<div class="avg-rating-stars"><div class="avg-realrating" style="width:{{ review_store['avg_customer_rating']*100/5}}%;"></div></div>
+									</div>
+								</div>
+								<div class="col-xs-12 col-sm-4 rev-date-add">{{ review_store['date_added'] }}</div>
+							</div>
+							<div class="panel-body">
+								{{ review_store['description'] }}
+							</div>
+							{% if (reviews_store_setting['show_like_dislike'] is defined and (reviews_store_setting['show_like_dislike'] == 1)) %}
+							<div class="panel-footer clearfix pf-rev-mod">
+								<div class="like-dislike-box pull-right ">
+									<button type="button" onclick="likeDislike('{{ review_store['reviews_store_id']}}','like')" id="like_reviews_store{{ review_store['reviews_store_id']}}" class="btn-like like"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i>
+										<span class="likes">{{ review_store['like'] }}</span>
+									</button>
+									<button type="button" onclick="likeDislike('{{ review_store['reviews_store_id']}}','dislike')" id="dislike_reviews_store{{ review_store['reviews_store_id']}}" class="btn-dislike dislike"><i class="fa fa-thumbs-o-down" aria-hidden="true"></i>
+									<span class="dislikes">{{ review_store['dislike'] }}</span>
+									</button>
+								</div>
+							</div>
+							{% endif %}
+						</div>
+					</div>
+					{% if (review_store['admin_response']) %}
+						<div class="admin-response">
+							<span class="discussion-item-icon">
+							<i class="fa fa-level-up fa-rotate-90" aria-hidden="true"></i>
+							</span>
+							{{ review_store['admin_response'] }}
+						</div>
+					{% endif %}
+				{% endfor %}
+			</div>
+			</div>
+			</div>
+				<div class="row top-10">
+				<div class="col-sm-12 text-center">{{ pagination }}</div>
+				<div class="col-sm-12 text-right">{{ results }}</div>
+			  </div>
+			{% endif %}
+			{% if (not reviews_store) %}
+			<p>{{ text_empty }}</p>
+			<div class="buttons">
+			  <div class="pull-right"><a href="{{ continue }}" class="btn btn-primary">{{ button_continue }}</a></div>
+			</div>
+			{% endif %}
+		{{ content_bottom }}</div>
+    {{ column_right }}</div>
+{% if (reviews_store_setting['show_like_dislike'] is defined and (reviews_store_setting['show_like_dislike'] == 1)) %}
+<script><!--
+	function likeDislike(reviews_store_id,typebtn) {
+			var like = 0, dislike = 0;
+			var isActiveLike = localStorage.getItem('like_'+reviews_store_id) == 'enabled';
+			var hasActiveLike = localStorage.getItem('like_'+reviews_store_id) == 'enabled';
+			var hasActiveDislike = localStorage.getItem('dislike_'+reviews_store_id) == 'enabled';
+			var isActiveDislike = localStorage.getItem('dislike_'+reviews_store_id) == 'enabled';
+
+			if (typebtn === 'like') {
+				if (isActiveLike) {
+					localStorage.setItem('like_'+reviews_store_id, 'disabled');
+					like = -1;
+				} else {
+					if (hasActiveLike) {
+						localStorage.removeItem('like_'+reviews_store_id);
+						dislike = -1;
+					}
+					if (hasActiveDislike) {
+						localStorage.removeItem('dislike_'+reviews_store_id);
+						dislike = -1;
+					}
+					localStorage.setItem('like_'+reviews_store_id, 'enabled');
+					like = 1;
+					value = 1;
+				}
+			} else {
+				if (isActiveDislike) {
+					localStorage.setItem('dislike_'+reviews_store_id, 'disabled');
+					dislike = -1;
+				} else {
+					if(hasActiveLike){
+						localStorage.removeItem('like_'+reviews_store_id);
+						like = -1;
+					}
+					if(hasActiveDislike){
+						localStorage.removeItem('dislike_'+reviews_store_id);
+						like = -1;
+					}
+					localStorage.setItem('dislike_'+reviews_store_id, 'enabled');
+					dislike = 1;
+					value = -1;
+				}
+			}
+
+			$.ajax({
+				url: 'index.php?route=product/reviews_store/likeDislike',
+				type: 'post',
+				data: 'reviews_store_id='+ reviews_store_id + '&typebtn='+typebtn+'&like='+like+'&dislike='+dislike,
+				dataType: 'json',
+				success: function(json) {
+					 $('#like_reviews_store'+reviews_store_id).find('.likes').text(json.like);
+					 $('#dislike_reviews_store'+reviews_store_id).find('.dislikes').text(json.dislike);
+				}
+			});
+
+    }
+//--></script>
+{% endif %}
+</div>
+{{ footer }}

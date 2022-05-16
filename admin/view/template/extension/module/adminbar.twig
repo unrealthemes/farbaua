@@ -1,0 +1,212 @@
+{{ header }}{{ column_left }}
+<div id="content">
+  <div class="page-header">
+    <div class="container-fluid">
+      <div class="pull-right">
+        <button type="submit" form="form-adminbar" data-toggle="tooltip" title="{{ button_save }}" class="btn btn-primary"><i class="fa fa-save"></i></button>
+        <a href="{{ cancel }}" data-toggle="tooltip" title="{{ button_cancel }}" class="btn btn-default"><i class="fa fa-reply"></i></a></div>
+      <h1>{{ heading_title }}</h1>
+      <ul class="breadcrumb">
+        {% for breadcrumb in breadcrumbs %}
+        <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  <div class="container-fluid">
+    {% if (error_warning) %}
+    <div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+    </div>
+    {% endif %}
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title"><i class="fa fa-pencil"></i> {{ text_edit }}</h3>
+      </div>
+      <div class="panel-body">
+        <form action="{{ action }}" method="post" enctype="multipart/form-data" id="form-adminbar" class="form-horizontal">
+          <div class="form-group">
+            <label class="col-sm-2 control-label" for="input-status">{{ entry_status }}</label>
+            <div class="col-sm-10">
+              <select name="adminbar[status]" id="input-status" class="form-control">
+                {% if (adminbar.status) %}
+                <option value="1" selected="selected">{{ text_enabled }}</option>
+                <option value="0">{{ text_disabled }}</option>
+                {% else %}
+                <option value="1">{{ text_enabled }}</option>
+                <option value="0" selected="selected">{{ text_disabled }}</option>
+                {% endif %}
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+				<label class="col-sm-2 control-label" for="adminbar_order">{{ entry_order }}</label>
+				<div class="col-sm-4">
+					<select name="adminbar[order]" id="adminbar_order" class="form-control" onchange="show_status()">
+						{% if (adminbar.order) %}
+						<option value="1" selected="selected">{{ text_enabled }}</option>
+						<option value="0">{{ text_disabled }}</option>
+						{% else %}
+						<option value="1">{{ text_enabled }}</option>
+						<option value="0" selected="selected">{{ text_disabled }}</option>
+						{% endif %}
+					</select>
+				</div>
+	
+				<div class="col-sm-1">
+				</div>
+	
+				<div class="col-sm-5">
+					<div class="well well-sm" style="height:200px; overflow: auto;" id="adminbar_neworder">
+					{% for order_status in order_statuses %}
+						<div class="checkbox">
+						<label>
+							{% set checked ='' %}
+							
+							{% if order_status.order_status_id in adminbar.neworder %}
+								{% set checked="checked" %}
+							{% endif %}
+							<input type="checkbox" name="adminbar[neworder][]" value="{{ order_status.order_status_id }}" {{ checked }} />
+							{{ order_status.name }}
+						</label>
+						</div>
+						{% endfor %}
+					</div>
+				</div>
+		  </div>
+          <div class="form-group">
+            <label class="col-sm-2 control-label" for="input-status">{{ text_custom_link }}</label>
+            <div id="custom_link" class="col-sm-10">
+				{% set row_link=0 %}
+				{% for link_data in adminbar.custom_link %}
+				<div id="custom_link_{{ row_link }}">
+					<div class="form-group col-sm-12">
+						<label class="">{{ text_linkname }}</label>
+						<input type="text"  name="adminbar[custom_link][{{ row_link }}][name]" class="form-control" value="{{ link_data.name }}" />
+					</div>
+					<div class="form-group col-sm-12">
+						<label class="" >{{ text_link }}</label>
+						<input type="text"  name="adminbar[custom_link][{{ row_link }}][href]" class="form-control" size="60" value="{{ link_data.href }}" />
+					</div>
+					 
+					<div class="col-sm-12 form-inline">
+						<div class="checkbox"><label>Ajax:
+						{% set checked = '' %}
+						{% if (link_data.ajax is defined and link_data.ajax) %}{% set checked ='checked="checked"' %}{% endif %}
+						<input type="checkbox"  name="adminbar[custom_link][{{ row_link }}][ajax]" class="form-control" value="1" {{ checked }} />
+						</label></div>
+					
+						<div class="checkbox"><label>Reload:
+						{% set checked = '' %}
+						{% if (link_data.reload is defined and link_data.reload) %}{% set checked ='checked="checked"' %}{% endif %}
+						<input type="checkbox"  name="adminbar[custom_link][{{ row_link }}][reload]" class="form-control" value="1" {{ checked }} />
+						</label></div>
+
+						<div class="checkbox"><label>New window:
+						{% set checked = '' %}
+						{% if (link_data.new_window is defined and link_data.new_window) %}{% set checked ='checked="checked"' %}{% endif %}
+						<input type="checkbox"  name="adminbar[custom_link][{{ row_link }}][new_window]" class="form-control" value="1" {{ checked }} />
+						</label></div>
+					<button class="btn btn-danger" title="" data-toggle="tooltip" onclick="$('#custom_link_{{ row_link }}').remove();"  type="button" data-original-title=" {{ button_delete }}"><i class="fa fa-minus-circle"></i></button>				
+					</div>
+					<style>
+						.checkbox label {margin-right:1.5em;}
+					</style>
+				</div>
+				{% set row_link = row_link + 1 %}
+				{% endfor %}
+            </div>
+			<div class="col-sm-12">
+				<div class="pull-right">
+					<button type="button" onclick="addLink()" data-toggle="tooltip" title="{{ text_add_custom_link }}" class="btn btn-primary"><i class="fa fa-plus"></i></button>
+				</div>
+			</div>
+          </div>
+
+          <div class="form-group">
+            <label class="col-sm-2 control-label" for="input-status">{{ text_custom_field }}</label>
+            <div id="custom_link" class="col-sm-10">
+				<div class="well well-sm" id="adminbar_product_field">
+					{% for field in product_field %}
+					<div class="checkbox form-inline">
+					  <label>
+						{% set checked = adminbar.product[field].value is defined?'checked="checked"':'' %}
+						<input type="checkbox" name="adminbar[product][{{ field }}][value]" value="1" {{ checked }}/>
+					  </label>
+					  <input type="input" class="form-control" name="adminbar[product][{{ field }}][name]" value="{{ adminbar_product[field].name is defined and adminbar.product[field].name is not empty?adminbar.product[field].name:field }}" />
+					  <label>{{ field }}</label>
+					</div>
+					{% endfor %}
+				</div>
+			</div>
+		
+          <div class="form-group">
+				<label class="col-sm-2 control-label" for="adminbar_popup_width"><span data-toggle="tooltip"
+						title="{{ entry_adminbar_popup_width_help }}">{{ entry_adminbar_popup_width }}</span></label>
+				<div class="col-sm-10">
+					<input type="text" name="adminbar[popup_width]" value="{{ adminbar.popup_width }}" id="adminbar_popup_width" class="form-control"/>
+				</div>
+			</div>
+		
+		
+		  <input type="hidden" name="adminbar[path]" value="{{ path_to_admin }}" />
+		  <input type="hidden" name="adminbar[version]" value="{{ version }}" />
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<style>
+.form-horizontal .form-inline .form-group {
+    display: inline-block;
+    margin-bottom: 0;
+    margin-left: 0;
+    margin-right: 10px;
+    vertical-align: middle;
+	border:0;
+}
+</style>
+<script type="text/javascript"><!--
+function show_status() {
+	var val = parseInt($('#adminbar_order').val());
+	if (val) {
+		$('#adminbar_neworder').show();
+	} else {
+		$('#adminbar_neworder').hide();
+	}
+}
+show_status();
+//--></script>
+<script type="text/javascript"><!--
+row_link = {{ row_link }};
+function addLink() {
+	var html='';
+	html +='			<div id="custom_link_' + row_link +'">';
+	html +='				<div class="form-group col-sm-12">';
+	html +='					<label class="">{{ text_linkname }}</label>';
+	html +='					<input type="text"  name="adminbar[custom_link][' + row_link + '][name]" class="form-control" value="" />';
+	html +='				</div>';
+	html +='				<div class="form-group col-sm-12">';
+	html +='					<label class="" >{{ text_link }}</label>';
+	html +='					<input type="text"  name="adminbar[custom_link][' + row_link + '][href]" class="form-control" value="" />';
+	html +='				</div>';
+	html +='				 ';
+	html +='				<div class="col-sm-12 form-inline">';
+	html +='					<div class="checkbox"><label>Ajax:';
+	html +='					<input type="checkbox"  name="adminbar[custom_link][' + row_link + '][ajax]" class="form-control" value="1" />';
+	html +='					</label></div>';
+	html +='					<div class="checkbox"><label>Reload:';
+	html +='					<input type="checkbox"  name="adminbar[custom_link][' + row_link + '][reload]" class="form-control" value="1" />';
+	html +='					</label></div>';
+	html +='					<div class="checkbox"><label>New window:';
+	html +='					<input type="checkbox"  name="adminbar[custom_link][' + row_link + '][new_window]" class="form-control" value="1" />';
+	html +='					</label></div>';
+	html +='				<button class="btn btn-danger" title="" data-toggle="tooltip" onclick="$(\'#custom_link_' + row_link + '\').remove();"  type="button" data-original-title=" {{ button_delete }}"><i class="fa fa-minus-circle"></i></button>';
+	html +='				</div>';
+	html +='			</div>';
+	$('#custom_link').append(html);
+	row_link++;
+}
+
+//--></script>
+{{ footer }}

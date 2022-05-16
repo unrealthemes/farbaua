@@ -1,0 +1,126 @@
+<div class="megasliderpro">
+<div class="row">
+<div class="megasliderpro-container col-sm-12">
+	<div class="oc-nivoslider">
+        <div class="oc-loading"></div>
+		<div id="oc-inivoslider{{ module }}" class="slides">
+			{% set config = slide_setting[0] %} 
+			{% set i = 1 %}
+			{% for resultbg in megasliders %} 
+					<img class="bg-image-slider" style="display: none;" src="{{ resultbg['image'] }}" alt="" title="#msp-caption{{ i }}{{ module }}"  />
+			{% set i = i + 1 %}			
+			{% endfor %} 
+		</div>
+				{% set i = 1 %}
+				{% for result in megasliders %} 
+					
+					{% set class = "" %}
+					{% if (result['type'] == 1) %} {% set class = "slide-type1" %} {% endif %}
+					{% if (result['type'] == 2) %} {% set class = "slide-type2" %} {% endif %}
+					
+						<div id="msp-caption{{ i }}{{ module }}" class="msp-caption nivo-html-caption nivo-caption move-slides-effect">
+						<div class="{{ class }}">	
+							{% if (result['small_image']) %} 
+							<div class="msp-small_image">
+								<img src="{{ result['small_image'] }}" alt="" title="small" />
+							</div>
+							{% endif %} 
+							{% if (result['title']) %} 
+							<div class="msp-title effect_title{{ i }}{{ module }}">
+								<h3 style="background:{{ result['bg_title'] }};color:{{ result['color_title'] }}">{{ result['title'] }}</h3>
+							</div>
+							{% endif %} 
+							{% if (result['sub_title']) %} 
+							<div class="sub-title effect_sub_title{{ i }}{{ module }}">
+								<h3 style="background:{{ result['bg_sub_title'] }};color:{{ result['color_sub_title'] }}">{{ result['sub_title'] }}</h3>
+							</div>
+							{% endif %} 
+							<div class="msp-des effect_description_title{{ i }}{{ module }}">
+								{{ result['description'] }} 
+							</div>
+							{% if (result['link'] and result['text_btn_readmore']) %} 
+								<div class="msp-readmore effect_btn_title{{ i }}{{ module }}">
+									<a class="btn-readmore-slider{{ i }}{{ module }}" href="{{ result['link']}}" title="{{ result['text_btn_readmore'] }}">{{ result['text_btn_readmore'] }}</a>	
+								</div>
+							{% endif %} 
+							<style>
+								{% if (result['effect_title'] != 'no_select') %}
+								.msp-title.effect_title{{ i }}{{ module }} {
+									-webkit-animation: {{ result['effect_title'] }} 1500ms ease-in-out;
+									-moz-animation: {{ result['effect_title'] }} 1500ms ease-in-out;
+									-ms-animation: {{ result['effect_title'] }} 1500ms ease-in-out;
+									animation: {{ result['effect_title'] }} 1500ms ease-in-out;
+								}
+								{% endif %} 
+								{% if (result['effect_sub_title'] != 'no_select') %}
+								.sub-title.effect_sub_title{{ i }}{{ module }} {
+									-webkit-animation: {{ result['effect_sub_title'] }} 1700ms ease-in-out;
+									-moz-animation: {{ result['effect_sub_title'] }} 1700ms ease-in-out;
+									-ms-animation: {{ result['effect_sub_title'] }} 1700ms ease-in-out;
+									animation: {{ result['effect_sub_title'] }} 1700ms ease-in-out;
+								}
+								{% endif %} 
+								{% if (result['effect_description_title'] != 'no_select') %}
+								.msp-des.effect_description_title{{ i }}{{ module }} {
+									-webkit-animation: {{ result['effect_description_title'] }} 2000ms ease-in-out;
+									-moz-animation: {{ result['effect_description_title'] }} 2000ms ease-in-out;
+									-ms-animation: {{ result['effect_description_title'] }} 2000ms ease-in-out;
+									animation: {{ result['effect_description_title'] }} 2000ms ease-in-out;
+								}
+								{% endif %} 
+								
+								{% if (result['link'] and result['text_btn_readmore']) %} 
+								{% if (result['effect_btn_title'] != 'no_select') %}
+								.msp-readmore.effect_btn_title{{ i }}{{ module }} {
+									-webkit-animation: {{ result['effect_btn_title'] }} 2100ms ease-in-out;
+									-moz-animation: {{ result['effect_btn_title'] }} 2100ms ease-in-out;
+									-ms-animation: {{ result['effect_btn_title'] }} 2100ms ease-in-out;
+									animation: {{ result['effect_btn_title'] }} 2100ms ease-in-out;
+								}
+								{% endif %} 
+								.btn-readmore-slider{{ i }}{{ module }} {
+									background:{{ result['bg_btn_readmore'] }} !important;
+									color:{{ result['color_text_btn_readmore'] }} !important;
+									border:1px solid {{ result['border_btn_readmore'] }} !important;
+								}
+								.btn-readmore-slider{{ i }}{{ module }}:hover {
+									background:{{ result['bg_btn_readmore_hover'] }} !important;
+									color:{{ result['color_text_btn_readmore_hover'] }} !important;
+									border:1px solid {{ result['border_btn_readmore_hover'] }} !important;
+								}
+								{% endif %} 
+							</style>
+						</div>							
+						</div>						
+				{% set i = i + 1 %} 
+				{% endfor %} 
+				
+		<script>
+            $(window).load(function() {
+                $('#oc-inivoslider{{ module }}').nivoSlider({
+					effect: {% if (config.effect) %} '{{ config.effect }}'{% else %} 'random' {% endif %},
+                    slices: 15,
+                    boxCols: 8,
+                    boxRows: 4,
+                    animSpeed:500,
+					startSlide: 0,
+                   	pauseTime: {% if (config.delay) %} '{{ config.delay }}' {% else %} 3000 {% endif %},
+					controlNav:   {% if (config.contrl is defined and config.contrl == 1) %} true {% else %} false{% endif %},
+					directionNav:   {% if (config.nextback is defined and config.nextback == 1) %} true {% else %} false{% endif %},
+                    controlNavThumbs: false,
+                    pauseOnHover:   {% if (config.hover is defined and config.hover == 1) %} true {% else %} false{% endif %},
+                    ocnualAdvance: false,
+                    prevText: 'Prev',
+                    nextText: 'Next',				
+                    afterLoad: function(){
+                        $('.oc-loading').css("display","none");						
+					},
+						
+                });
+            });
+			
+		</script>
+	</div>
+</div>
+</div>
+</div>

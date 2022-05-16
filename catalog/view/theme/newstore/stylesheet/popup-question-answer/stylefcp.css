@@ -1,0 +1,54 @@
+.info-client {
+  background-color: #f5f5f5;
+  border: 1px solid #e3e3e3;
+  border-radius: 4px;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05) inset;
+  margin-bottom: 5px;
+  padding: 6px 12px;
+  overflow:hidden;
+}
+.info-client .client-name {
+	float:left;
+}
+.info-client .client-date-added {
+  float: right;
+}
+.question-client {
+  color: #555;
+  font-size: 14px;
+  padding: 5px 15px;
+}
+.answer-admin span {
+  color: #2b8cdb;
+  padding-right: 5px;
+}
+.answer-admin {
+  font-size: 14px;
+  padding: 5px 20px;
+}
+.pagination_question {
+	padding:5px 10px;
+	margin-bottom:5px;
+}
+#form-question-answer {
+	display:none;
+}
+#form-question-answer .sections_block_rquaired .fa {
+	color:#fc5c3c !important;
+}
+#form-question-answer .sections_block .fa {
+	color:#67ca67 !important;
+}
+#form-question-answer .error_input {
+	border:1px solid red !important;
+	box-shadow: 0 1px 1px rgba(255, 0, 0, 0.075) inset !important;
+}
+#form-question-answer .form-control.error_input::-moz-placeholder {
+	color:red !important;
+}
+#form-question-answer .form-control.error_input:-ms-input-placeholder {
+	color:red !important;
+}
+#form-question-answer .form-control.error_input::-webkit-input-placeholder {
+	color:red !important;
+}

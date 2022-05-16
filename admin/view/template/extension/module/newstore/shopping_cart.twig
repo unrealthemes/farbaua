@@ -1,0 +1,111 @@
+<div class="form-group">
+	<div class="col-sm-12 title-setting">{{ text_setting_shopping_cart }}</div>
+</div>
+<div class="form-group">
+	<label class="col-sm-3 control-label">{{ text_on_off_hover_shopping_cart }}</label>
+	<div class="col-sm-9">
+		<div class="radio-group-infinity">	
+			{% if (config_on_off_shopping_cart_hover) %} 
+				<input id="config_on_off_shopping_cart_hover_yes" class="hide-radio" type="radio" name="config_on_off_shopping_cart_hover" value="1" checked="checked" />
+				<label for="config_on_off_shopping_cart_hover_yes">{{ text_yes }}</label>
+			{% else %} 
+				<input id="config_on_off_shopping_cart_hover_yes" class="hide-radio" type="radio" name="config_on_off_shopping_cart_hover" value="1" />
+				<label for="config_on_off_shopping_cart_hover_yes">{{ text_yes }}</label>
+			{% endif %} 
+			{% if (not config_on_off_shopping_cart_hover) %} 
+				<input id="config_on_off_shopping_cart_hover_no" class="hide-radio" type="radio" name="config_on_off_shopping_cart_hover" value="0" checked="checked" />							
+				<label for="config_on_off_shopping_cart_hover_no">{{ text_no }}</label>
+			{% else %} 
+				<input id="config_on_off_shopping_cart_hover_no" class="hide-radio" type="radio" name="config_on_off_shopping_cart_hover" value="0" />							
+				<label for="config_on_off_shopping_cart_hover_no">{{ text_no }}</label>
+			{% endif %}						  
+		</div>
+	</div>
+</div>
+<div class="form-group">
+	<label class="col-sm-3 control-label" >{{ text_on_off_click_shopping_cart }}</label>
+	<div class="col-sm-9">
+		<select name="config_on_off_shopping_cart_click" class="form-control">
+			{% if (config_on_off_shopping_cart_click == '1') %} 
+				<option value="1" selected="selected">{{ popup_shopping_cart }}</option>
+				<option value="0">{{ popup_standart }}</option>
+			{% else %} 
+				<option value="0" selected="selected">{{ popup_standart }}</option>
+				<option value="1">{{ popup_shopping_cart }}</option>                  
+			{% endif %}					
+		</select>
+	</div>
+</div>
+<div class="form-group">
+	<label class="col-sm-3 control-label" >{{ text_shopping_cart_after_add }}</label>
+	<div class="col-sm-9">
+		<select name="config_shopping_cart_after_add" class="form-control">	
+			{% if (config_shopping_cart_after_add == '1') %} 
+				<option value="1" selected="selected">{{ popup_shopping_cart }}</option>
+				<option value="0">{{ popup_standart }}</option>
+				<option value="2">{{ mini_informer }}</option>
+			{% elseif (config_shopping_cart_after_add == '0') %} 
+				<option value="0" selected="selected">{{ popup_standart }}</option>
+				<option value="1">{{ popup_shopping_cart }}</option> 
+				<option value="2">{{ mini_informer }}</option>	
+			{% else %} 
+				<option value="2" selected="selected">{{ mini_informer }}</option>
+				<option value="1">{{ popup_shopping_cart }}</option>
+				<option value="0">{{ popup_standart }}</option>	
+			{% endif %}	
+		</select>
+	</div>
+</div>
+<div class="form-group">
+	<label class="col-sm-3 control-label" >{{ text_icon_vs_image_cart }}</label>
+	<div class="col-sm-9 icon_vs_image">
+		<div class="icon_vs_image_cart">
+			<a onclick="funt_icon_vs_image('icon_vs_image_cart', 'image_view');" class="img btn btn-sm btn-{{'fa fa-' in icon_shopcart ? 'default' : 'info selected'}}">{{ text_image }}</a>
+			<a onclick="funt_icon_vs_image('icon_vs_image_cart', 'icon_view');" class="ico btn btn-sm btn-{{'fa fa-' in icon_shopcart ? 'info selected' : 'default'}}">{{ text_icon }}</a>
+			<div class="cont-image-icon-block">
+				<a href="" id="thumb-image-shopcart-image" data-toggle="image" class="img-thumbnail image_block {{'fa fa-' in icon_shopcart ? '' : 'selected'}}">
+					<img src="{{'fa fa-' in icon_shopcart and icon_shopcart != '' ? placeholder : icon_shopcart}}" alt="" title="" data-placeholder="{{ placeholder }}" />
+				</a>
+				<a id="thumb-image-shopcart-icon" onclick="icon_fontawesome_popup($(this).attr('id'))" class="ico_block {{'fa fa-' in icon_shopcart ? 'selected' : ''}}">
+					
+					<i class="{{'fa fa-' in icon_shopcart ? icon_shopcart : 'fa fa-plus-circle'}}"></i>
+				</a>
+				<input type="hidden" name="icon_shopcart" value="{{ icon_shopcart }}" id="image-shopcart-image" />
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript"><!--			
+	function funt_icon_vs_image(id, view) {
+		if(view == 'icon_view') {
+			$('.'+id).find('.img').removeClass('btn-info selected');
+			$('.'+id).find('.image_block').removeClass('selected');
+			$('.'+id).find('.img').addClass('btn-default');
+			$('.'+id).find('.ico').removeClass('btn-default');
+			$('.'+id).find('.ico_block').addClass('selected');
+			$('.'+id).find('.ico').addClass('btn-info selected');
+		}	else {
+			$('.'+id).find('.img').addClass('btn-info selected');
+			$('.'+id).find('.image_block').addClass('selected');
+			$('.'+id).find('.img').removeClass('btn-default');
+			$('.'+id).find('.ico').removeClass('btn-info selected');
+			$('.'+id).find('.ico_block').removeClass('selected');
+			$('.'+id).find('.ico').addClass('btn-default');	
+		}
+	}
+//--></script> 
+<div class="form-group">
+	<label class="col-sm-3 control-label" >{{ text_type_cart }}</label>
+	<div class="col-sm-9">
+		<select name="type_shop_cart" class="form-control">	
+			{% if (type_shop_cart == '1') %} 
+				<option value="0">{{ text_type_cart_standart }}</option>
+				<option value="1" selected="selected">{{ text_type_cart_compact }}</option>
+			{% else %} 
+				<option value="0" selected="selected">{{ text_type_cart_standart }}</option>	
+				<option value="1">{{ text_type_cart_compact }}</option>
+			{% endif %}	
+		</select>
+	</div>
+</div>
+

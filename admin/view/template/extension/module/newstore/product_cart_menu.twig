@@ -1,0 +1,514 @@
+<div class="form-group">
+	<div class="col-sm-12 title-setting">{{ text_card_roduct_tunes_here}}</div>
+</div>
+<div class="form-group">
+	<label class="col-sm-3 control-label">{{ text_next_prev_product }}</label>
+	<div class="col-sm-9">
+		<div class="radio-group-infinity">	
+			{% if (ns_show_nextprev_prod) %} 
+				<input id="ns_show_nextprev_prod_yes" class="hide-radio" type="radio" name="ns_show_nextprev_prod" value="1" checked="checked" />
+				<label for="ns_show_nextprev_prod_yes">{{ text_yes }}</label>
+			{% else %} 
+				<input id="ns_show_nextprev_prod_yes" class="hide-radio" type="radio" name="ns_show_nextprev_prod" value="1" />
+				<label for="ns_show_nextprev_prod_yes">{{ text_yes }}</label>
+			{% endif %} 
+			{% if (not ns_show_nextprev_prod) %} 
+				<input id="ns_show_nextprev_prod_no" class="hide-radio" type="radio" name="ns_show_nextprev_prod" value="0" checked="checked" />							
+				<label for="ns_show_nextprev_prod_no">{{ text_no }}</label>
+			{% else %} 
+				<input id="ns_show_nextprev_prod_no" class="hide-radio" type="radio" name="ns_show_nextprev_prod" value="0" />							
+				<label for="ns_show_nextprev_prod_no">{{ text_no }}</label>
+			{% endif %}						  
+		</div>
+	</div>
+</div>
+<div class="form-group">
+	<label class="col-sm-3 control-label">{{ text_fix_left_block }}</label>
+	<div class="col-sm-9">
+		<div class="radio-group-infinity">	
+			{% if (config_fix_left_block) %} 
+				<input id="config_fix_left_block_yes" class="hide-radio" type="radio" name="config_fix_left_block" value="1" checked="checked" />
+				<label for="config_fix_left_block_yes">{{ text_yes }}</label>
+			{% else %} 
+				<input id="config_fix_left_block_yes" class="hide-radio" type="radio" name="config_fix_left_block" value="1" />
+				<label for="config_fix_left_block_yes">{{ text_yes }}</label>
+			{% endif %} 
+			{% if (not config_fix_left_block) %} 
+				<input id="config_fix_left_block_no" class="hide-radio" type="radio" name="config_fix_left_block" value="0" checked="checked" />							
+				<label for="config_fix_left_block_no">{{ text_no }}</label>
+			{% else %} 
+				<input id="config_fix_left_block_no" class="hide-radio" type="radio" name="config_fix_left_block" value="0" />							
+				<label for="config_fix_left_block_no">{{ text_no }}</label>
+			{% endif %}						  
+		</div>
+	</div>
+</div>
+<div class="form-group">
+	<label class="col-sm-3 control-label">{{ text_fix_right_block }}</label>
+	<div class="col-sm-9">
+		<div class="radio-group-infinity">	
+			{% if (config_fix_right_block) %} 
+				<input id="config_fix_right_block_yes" class="hide-radio" type="radio" name="config_fix_right_block" value="1" checked="checked" />
+				<label for="config_fix_right_block_yes">{{ text_yes }}</label>
+			{% else %} 
+				<input id="config_fix_right_block_yes" class="hide-radio" type="radio" name="config_fix_right_block" value="1" />
+				<label for="config_fix_right_block_yes">{{ text_yes }}</label>
+			{% endif %} 
+			{% if (not config_fix_right_block) %} 
+				<input id="config_fix_right_block_no" class="hide-radio" type="radio" name="config_fix_right_block" value="0" checked="checked" />							
+				<label for="config_fix_right_block_no">{{ text_no }}</label>
+			{% else %} 
+				<input id="config_fix_right_block_no" class="hide-radio" type="radio" name="config_fix_right_block" value="0" />							
+				<label for="config_fix_right_block_no">{{ text_no }}</label>
+			{% endif %}						  
+		</div>
+	</div>
+</div>
+<div class="form-group">
+	<label class="col-sm-3 control-label">{{ text_short_description_status }}</label>
+	<div class="col-sm-9">
+		<div class="radio-group-infinity">	
+			{% if (config_short_description_status) %} 
+				<input id="config_short_description_status_yes" class="hide-radio" type="radio" name="config_short_description_status" value="1" checked="checked" />
+				<label for="config_short_description_status_yes">{{ text_yes }}</label>
+			{% else %} 
+				<input id="config_short_description_status_yes" class="hide-radio" type="radio" name="config_short_description_status" value="1" />
+				<label for="config_short_description_status_yes">{{ text_yes }}</label>
+			{% endif %} 
+			{% if (not config_short_description_status) %} 
+				<input id="config_short_description_status_no" class="hide-radio" type="radio" name="config_short_description_status" value="0" checked="checked" />							
+				<label for="config_short_description_status_no">{{ text_no }}</label>
+			{% else %} 
+				<input id="config_short_description_status_no" class="hide-radio" type="radio" name="config_short_description_status" value="0" />							
+				<label for="config_short_description_status_no">{{ text_no }}</label>
+			{% endif %}						  
+		</div>
+	</div>
+</div>
+<div class="form-group">
+	<label class="col-sm-3 control-label">{{ text_short_attribute_status }}</label>
+	<div class="col-sm-9">
+		<div class="radio-group-infinity">	
+			{% if (config_short_attribut_status) %} 
+				<input id="config_short_attribut_status_yes" class="hide-radio" type="radio" name="config_short_attribut_status" value="1" checked="checked" />
+				<label for="config_short_attribut_status_yes">{{ text_yes }}</label>
+			{% else %} 
+				<input id="config_short_attribut_status_yes" class="hide-radio" type="radio" name="config_short_attribut_status" value="1" />
+				<label for="config_short_attribut_status_yes">{{ text_yes }}</label>
+			{% endif %} 
+			{% if (not config_short_attribut_status) %} 
+				<input id="config_short_attribut_status_no" class="hide-radio" type="radio" name="config_short_attribut_status" value="0" checked="checked" />							
+				<label for="config_short_attribut_status_no">{{ text_no }}</label>
+			{% else %} 
+				<input id="config_short_attribut_status_no" class="hide-radio" type="radio" name="config_short_attribut_status" value="0" />							
+				<label for="config_short_attribut_status_no">{{ text_no }}</label>
+			{% endif %}						  
+		</div>
+	</div>
+</div>
+<div class="form-group">
+	<label class="col-sm-3 control-label">{{ text_short_attribute_show_name }}</label>
+	<div class="col-sm-9">
+		<div class="radio-group-infinity">	
+			{% if (config_short_attribute_show_name) %} 
+				<input id="config_short_attribute_show_name_yes" class="hide-radio" type="radio" name="config_short_attribute_show_name" value="1" checked="checked" />
+				<label for="config_short_attribute_show_name_yes">{{ text_yes }}</label>
+			{% else %} 
+				<input id="config_short_attribute_show_name_yes" class="hide-radio" type="radio" name="config_short_attribute_show_name" value="1" />
+				<label for="config_short_attribute_show_name_yes">{{ text_yes }}</label>
+			{% endif %} 
+			{% if (not config_short_attribute_show_name) %} 
+				<input id="config_short_attribute_show_name_no" class="hide-radio" type="radio" name="config_short_attribute_show_name" value="0" checked="checked" />							
+				<label for="config_short_attribute_show_name_no">{{ text_no }}</label>
+			{% else %} 
+				<input id="config_short_attribute_show_name_no" class="hide-radio" type="radio" name="config_short_attribute_show_name" value="0" />							
+				<label for="config_short_attribute_show_name_no">{{ text_no }}</label>
+			{% endif %}						  
+		</div>
+	</div>
+</div>
+<div class="form-group">
+	<label class="col-sm-3 control-label">{{ text_short_attribute_group_product }}</label>
+	<div class="col-sm-9">
+		<input class="form-control"  type="text" name="config_short_attribute_group_product" value="{{ config_short_attribute_group_product }}"/>
+	</div>
+</div>
+<div class="form-group">
+	<label class="col-sm-3 control-label">{{ text_short_attribute_group_product_item }}</label>
+	<div class="col-sm-9">
+		<input class="form-control"  type="text" name="config_short_attribute_group_product_item" value="{{ config_short_attribute_group_product_item }}"/>
+	</div>
+</div>
+
+<div class="form-group">
+	<label class="col-sm-3 control-label">{{ text_on_off_featured_fastorder }}</label>
+	<div class="col-sm-9">
+		<div class="radio-group-infinity">	
+			{% if (config_show_nsproduct_btn_fastorder) %} 
+				<input id="config_show_nsproduct_btn_fastorder_yes" class="hide-radio" type="radio" name="config_show_nsproduct_btn_fastorder" value="1" checked="checked" />
+				<label for="config_show_nsproduct_btn_fastorder_yes">{{ text_yes }}</label>
+			{% else %} 
+				<input id="config_show_nsproduct_btn_fastorder_yes" class="hide-radio" type="radio" name="config_show_nsproduct_btn_fastorder" value="1" />
+				<label for="config_show_nsproduct_btn_fastorder_yes">{{ text_yes }}</label>
+			{% endif %} 
+			{% if (not config_show_nsproduct_btn_fastorder) %} 
+				<input id="config_show_nsproduct_btn_fastorder_no" class="hide-radio" type="radio" name="config_show_nsproduct_btn_fastorder" value="0" checked="checked" />							
+				<label for="config_show_nsproduct_btn_fastorder_no">{{ text_no }}</label>
+			{% else %} 
+				<input id="config_show_nsproduct_btn_fastorder_no" class="hide-radio" type="radio" name="config_show_nsproduct_btn_fastorder" value="0" />							
+				<label for="config_show_nsproduct_btn_fastorder_no">{{ text_no }}</label>
+			{% endif %}						  
+		</div>
+	</div>
+</div>
+<div class="form-group">
+	<label class="col-sm-3 control-label">{{ text_on_off_featured_wishlist }}</label>
+	<div class="col-sm-9">
+		<div class="radio-group-infinity">	
+			{% if (config_show_nsproduct_btn_wishlist) %} 
+				<input id="config_show_nsproduct_btn_wishlist_yes" class="hide-radio" type="radio" name="config_show_nsproduct_btn_wishlist" value="1" checked="checked" />
+				<label for="config_show_nsproduct_btn_wishlist_yes">{{ text_yes }}</label>
+			{% else %} 
+				<input id="config_show_nsproduct_btn_wishlist_yes" class="hide-radio" type="radio" name="config_show_nsproduct_btn_wishlist" value="1" />
+				<label for="config_show_nsproduct_btn_wishlist_yes">{{ text_yes }}</label>
+			{% endif %} 
+			{% if (not config_show_nsproduct_btn_wishlist) %} 
+				<input id="config_show_nsproduct_btn_wishlist_no" class="hide-radio" type="radio" name="config_show_nsproduct_btn_wishlist" value="0" checked="checked" />							
+				<label for="config_show_nsproduct_btn_wishlist_no">{{ text_no }}</label>
+			{% else %} 
+				<input id="config_show_nsproduct_btn_wishlist_no" class="hide-radio" type="radio" name="config_show_nsproduct_btn_wishlist" value="0" />							
+				<label for="config_show_nsproduct_btn_wishlist_no">{{ text_no }}</label>
+			{% endif %}						  
+		</div>
+	</div>
+</div>
+<div class="form-group">
+	<label class="col-sm-3 control-label">{{ text_on_off_featured_compare }}</label>
+	<div class="col-sm-9">
+		<div class="radio-group-infinity">	
+			{% if (config_show_nsproduct_btn_compare) %} 
+				<input id="config_show_nsproduct_btn_compare_yes" class="hide-radio" type="radio" name="config_show_nsproduct_btn_compare" value="1" checked="checked" />
+				<label for="config_show_nsproduct_btn_compare_yes">{{ text_yes }}</label>
+			{% else %} 
+				<input id="config_show_nsproduct_btn_compare_yes" class="hide-radio" type="radio" name="config_show_nsproduct_btn_compare" value="1" />
+				<label for="config_show_nsproduct_btn_compare_yes">{{ text_yes }}</label>
+			{% endif %} 
+			{% if (not config_show_nsproduct_btn_compare) %} 
+				<input id="config_show_nsproduct_btn_compare_no" class="hide-radio" type="radio" name="config_show_nsproduct_btn_compare" value="0" checked="checked" />							
+				<label for="config_show_nsproduct_btn_compare_no">{{ text_no }}</label>
+			{% else %} 
+				<input id="config_show_nsproduct_btn_compare_no" class="hide-radio" type="radio" name="config_show_nsproduct_btn_compare" value="0" />							
+				<label for="config_show_nsproduct_btn_compare_no">{{ text_no }}</label>
+			{% endif %}						  
+		</div>
+	</div>
+</div>
+<div class="form-group">
+	<label class="col-sm-3 control-label">{{ text_on_off_countdown_product }}</label>
+		<div class="col-sm-9">
+			<div class="radio-group-infinity">	
+				{% if (config_on_off_countdown_product) %} 
+				<input id="config_on_off_countdown_product_yes" class="hide-radio" type="radio" name="config_on_off_countdown_product" value="1" checked="checked" />
+				<label for="config_on_off_countdown_product_yes">{{ text_yes }}</label>
+				{% else %} 
+				<input id="config_on_off_countdown_product_yes" class="hide-radio" type="radio" name="config_on_off_countdown_product" value="1" />
+				<label for="config_on_off_countdown_product_yes">{{ text_yes }}</label>
+				{% endif %} 
+				{% if (not config_on_off_countdown_product) %} 
+				<input id="config_on_off_countdown_product_no" class="hide-radio" type="radio" name="config_on_off_countdown_product" value="0" checked="checked" />							
+				<label for="config_on_off_countdown_product_no">{{ text_no }}</label>
+				{% else %} 
+				<input id="config_on_off_countdown_product_no" class="hide-radio" type="radio" name="config_on_off_countdown_product" value="0" />							
+				<label for="config_on_off_countdown_product_no">{{ text_no }}</label>
+				{% endif %}						  
+			</div>
+		</div>
+</div>
+<div class="form-group">
+	<div class="col-sm-12 title-setting">{{ text_on_off_social_sharing }}</div>
+</div>
+<div class="form-group">
+	<label class="col-sm-3 control-label">{{ text_on_off_product_sharing_facebock }}</label>
+		<div class="col-sm-9">
+			<div class="radio-group-infinity">	
+				{% if (config_on_off_product_sharing_facebock) %} 
+				<input id="config_on_off_product_sharing_facebock_yes" class="hide-radio" type="radio" name="config_on_off_product_sharing_facebock" value="1" checked="checked" />
+				<label for="config_on_off_product_sharing_facebock_yes">{{ text_yes }}</label>
+				{% else %} 
+				<input id="config_on_off_product_sharing_facebock_yes" class="hide-radio" type="radio" name="config_on_off_product_sharing_facebock" value="1" />
+				<label for="config_on_off_product_sharing_facebock_yes">{{ text_yes }}</label>
+				{% endif %} 
+				{% if (not config_on_off_product_sharing_facebock) %} 
+				<input id="config_on_off_product_sharing_facebock_no" class="hide-radio" type="radio" name="config_on_off_product_sharing_facebock" value="0" checked="checked" />							
+				<label for="config_on_off_product_sharing_facebock_no">{{ text_no }}</label>
+				{% else %} 
+				<input id="config_on_off_product_sharing_facebock_no" class="hide-radio" type="radio" name="config_on_off_product_sharing_facebock" value="0" />							
+				<label for="config_on_off_product_sharing_facebock_no">{{ text_no }}</label>
+				{% endif %}						  
+			</div>
+		</div>
+</div>
+<div class="form-group">
+	<label class="col-sm-3 control-label">{{ text_on_off_product_sharing_twitter }}</label>
+		<div class="col-sm-9">
+			<div class="radio-group-infinity">	
+				{% if (config_on_off_product_sharing_twitter) %} 
+				<input id="config_on_off_product_sharing_twitter_yes" class="hide-radio" type="radio" name="config_on_off_product_sharing_twitter" value="1" checked="checked" />
+				<label for="config_on_off_product_sharing_twitter_yes">{{ text_yes }}</label>
+				{% else %} 
+				<input id="config_on_off_product_sharing_twitter_yes" class="hide-radio" type="radio" name="config_on_off_product_sharing_twitter" value="1" />
+				<label for="config_on_off_product_sharing_twitter_yes">{{ text_yes }}</label>
+				{% endif %} 
+				{% if (not config_on_off_product_sharing_twitter) %} 
+				<input id="config_on_off_product_sharing_twitter_no" class="hide-radio" type="radio" name="config_on_off_product_sharing_twitter" value="0" checked="checked" />							
+				<label for="config_on_off_product_sharing_twitter_no">{{ text_no }}</label>
+				{% else %} 
+				<input id="config_on_off_product_sharing_twitter_no" class="hide-radio" type="radio" name="config_on_off_product_sharing_twitter" value="0" />							
+				<label for="config_on_off_product_sharing_twitter_no">{{ text_no }}</label>
+				{% endif %}						  
+			</div>
+		</div>
+</div>
+<div class="form-group">
+	<label class="col-sm-3 control-label">{{ text_on_off_product_sharing_mailru }}</label>
+		<div class="col-sm-9">
+			<div class="radio-group-infinity">	
+				{% if (config_on_off_product_sharing_mailru) %} 
+				<input id="config_on_off_product_sharing_mailru_yes" class="hide-radio" type="radio" name="config_on_off_product_sharing_mailru" value="1" checked="checked" />
+				<label for="config_on_off_product_sharing_mailru_yes">{{ text_yes }}</label>
+				{% else %} 
+				<input id="config_on_off_product_sharing_mailru_yes" class="hide-radio" type="radio" name="config_on_off_product_sharing_mailru" value="1" />
+				<label for="config_on_off_product_sharing_mailru_yes">{{ text_yes }}</label>
+				{% endif %} 
+				{% if (not config_on_off_product_sharing_mailru) %} 
+				<input id="config_on_off_product_sharing_mailru_no" class="hide-radio" type="radio" name="config_on_off_product_sharing_mailru" value="0" checked="checked" />							
+				<label for="config_on_off_product_sharing_mailru_no">{{ text_no }}</label>
+				{% else %} 
+				<input id="config_on_off_product_sharing_mailru_no" class="hide-radio" type="radio" name="config_on_off_product_sharing_mailru" value="0" />							
+				<label for="config_on_off_product_sharing_mailru_no">{{ text_no }}</label>
+				{% endif %}						  
+			</div>
+		</div>
+</div>	
+<div class="form-group">
+	<label class="col-sm-3 control-label">{{ text_on_off_product_sharing_vk }}</label>
+		<div class="col-sm-9">
+			<div class="radio-group-infinity">	
+				{% if (config_on_off_product_sharing_vk) %} 
+				<input id="config_on_off_product_sharing_vk_yes" class="hide-radio" type="radio" name="config_on_off_product_sharing_vk" value="1" checked="checked" />
+				<label for="config_on_off_product_sharing_vk_yes">{{ text_yes }}</label>
+				{% else %} 
+				<input id="config_on_off_product_sharing_vk_yes" class="hide-radio" type="radio" name="config_on_off_product_sharing_vk" value="1" />
+				<label for="config_on_off_product_sharing_vk_yes">{{ text_yes }}</label>
+				{% endif %} 
+				{% if (not config_on_off_product_sharing_vk) %} 
+				<input id="config_on_off_product_sharing_vk_no" class="hide-radio" type="radio" name="config_on_off_product_sharing_vk" value="0" checked="checked" />							
+				<label for="config_on_off_product_sharing_vk_no">{{ text_no }}</label>
+				{% else %} 
+				<input id="config_on_off_product_sharing_vk_no" class="hide-radio" type="radio" name="config_on_off_product_sharing_vk" value="0" />							
+				<label for="config_on_off_product_sharing_vk_no">{{ text_no }}</label>
+				{% endif %}						  
+			</div>
+		</div>
+</div>	
+<div class="form-group">
+	<label class="col-sm-3 control-label">{{ text_on_off_product_sharing_ok }}</label>
+		<div class="col-sm-9">
+			<div class="radio-group-infinity">	
+				{% if (config_on_off_product_sharing_ok) %} 
+				<input id="config_on_off_product_sharing_ok_yes" class="hide-radio" type="radio" name="config_on_off_product_sharing_ok" value="1" checked="checked" />
+				<label for="config_on_off_product_sharing_ok_yes">{{ text_yes }}</label>
+				{% else %} 
+				<input id="config_on_off_product_sharing_ok_yes" class="hide-radio" type="radio" name="config_on_off_product_sharing_ok" value="1" />
+				<label for="config_on_off_product_sharing_ok_yes">{{ text_yes }}</label>
+				{% endif %} 
+				{% if (not config_on_off_product_sharing_ok) %} 
+				<input id="config_on_off_product_sharing_ok_no" class="hide-radio" type="radio" name="config_on_off_product_sharing_ok" value="0" checked="checked" />							
+				<label for="config_on_off_product_sharing_ok_no">{{ text_no }}</label>
+				{% else %} 
+				<input id="config_on_off_product_sharing_ok_no" class="hide-radio" type="radio" name="config_on_off_product_sharing_ok" value="0" />							
+				<label for="config_on_off_product_sharing_ok_no">{{ text_no }}</label>
+				{% endif %}						  
+			</div>
+		</div>
+</div>	
+<div class="form-group">
+	<label class="col-sm-3 control-label">{{ entry_status_zoom_image }}</label>
+	<div class="col-sm-9">
+		<div class="radio-group-infinity">	
+				{% if (config_status_zoom_image) %} 
+				<input id="status_zoom_image_yes" class="hide-radio" type="radio" name="config_status_zoom_image" value="1" checked="checked" />
+				<label for="status_zoom_image_yes">{{ text_yes }}</label>
+				{% else %} 
+				<input id="status_zoom_image_yes" class="hide-radio" type="radio" name="config_status_zoom_image" value="1" />
+				<label for="status_zoom_image_yes">{{ text_yes }}</label>
+				{% endif %} 
+				{% if (not config_status_zoom_image) %} 
+				<input id="status_zoom_image_no" class="hide-radio" type="radio" name="config_status_zoom_image" value="0" checked="checked" />							
+				<label for="status_zoom_image_no">{{ text_no }}</label>
+				{% else %} 
+				<input id="status_zoom_image_no" class="hide-radio" type="radio" name="config_status_zoom_image" value="0" />							
+				<label for="status_zoom_image_no">{{ text_no }}</label>
+				{% endif %}						  
+			</div>
+	</div>
+</div>
+<div class="form-group">
+	<label class="col-sm-3 control-label">{{ entry_status_delivery_options_status }}</label>
+	<div class="col-sm-9">
+		<div class="radio-group-infinity">	
+				{% if (config_status_delivery_options) %} 
+				<input id="status_delivery_options_yes" class="hide-radio" type="radio" name="config_status_delivery_options" value="1" checked="checked" />
+				<label for="status_delivery_options_yes">{{ text_yes }}</label>
+				{% else %} 
+				<input id="status_delivery_options_yes" class="hide-radio" type="radio" name="config_status_delivery_options" value="1" />
+				<label for="status_delivery_options_yes">{{ text_yes }}</label>
+				{% endif %} 
+				{% if (not config_status_delivery_options) %} 
+				<input id="status_delivery_options_no" class="hide-radio" type="radio" name="config_status_delivery_options" value="0" checked="checked" />							
+				<label for="status_delivery_options_no">{{ text_no }}</label>
+				{% else %} 
+				<input id="status_delivery_options_no" class="hide-radio" type="radio" name="config_status_delivery_options" value="0" />							
+				<label for="status_delivery_options_no">{{ text_no }}</label>
+				{% endif %}						  
+			</div>
+	</div>
+</div>
+<div class="form-group">
+	<label class="col-sm-3 control-label">{{ entry_status_delivery_options_title }}</label>
+	<div class="col-sm-9">
+	{% for language in languages %} 
+		<div class="input-group"><span class="input-group-addon"><img src="language/{{ language.code }}/{{ language.code }}.png" title="{{ language.name }}" /></span>
+		<input type="text" name="config_delivery_options_title[{{ language.language_id }}][config_delivery_options_title]" value="{{ config_delivery_options_title[language.language_id].config_delivery_options_title }}" placeholder="" class="form-control" />				  
+	</div>
+	{% endfor %} 
+	</div>
+</div>
+<table id="banner_delivery_options_items" class="table table-bordered table-hover">
+			<thead>
+				<tr>
+					<td>{{ entry_image }}</td>
+					<td>{{ entry_title }}</td>
+					<td>{{ entry_description }}</td>
+					<td>{{ entry_link }}</td>
+					<td>{{ entry_sort_order }}</td>
+					<td></td>
+				</tr>
+			</thead>
+			<tbody>
+			{% set banner_delivery_row = 0 %} 
+			{% for banner_delivery_options in banner_delivery_options %} 
+				<tr id="item-row{{ banner_delivery_row }}">
+					<td class="text-left">
+						<a href="" id="thumb-image-banner-delivery-row{{ banner_delivery_row }}" data-toggle="image" class="img-thumbnail"><img src="{{ banner_delivery_options.thumb }}" alt="" title="" data-placeholder="{{ placeholder }}"  /></a><input type="hidden" name="banner_delivery_option[{{ banner_delivery_row }}][image]" value="{{ banner_delivery_options.image }}" id="input-image-banner-delivery-row{{ banner_delivery_row }}" />
+					</td>
+					<td class="text-left">
+						{% for language in languages %} 
+						<div class="input-group pull-left">
+							<span class="input-group-addon"><img src="language/{{ language.code }}/{{ language.code }}.png" title="{{ language.name }}" /></span>
+							<input class="form-control" type="text" name="banner_delivery_option[{{ banner_delivery_row }}][title][{{ language.language_id }}]" value="{{ banner_delivery_options.title[language.language_id] }}" />
+						</div>
+						{% endfor %} 
+					</td>
+					<td class="text-left">
+						{% for language in languages %} 
+						<div class="input-group pull-left">
+							<span class="input-group-addon"><img src="language/{{ language.code }}/{{ language.code }}.png" title="{{ language.name }}" /></span>
+							<textarea class="form-control" type="text" name="banner_delivery_option[{{ banner_delivery_row }}][description][{{ language.language_id }}]">{{ banner_delivery_options.description[language.language_id] }}</textarea>										
+						</div>
+						{% endfor %} 
+					</td>
+					<td class="text-left">
+						{% for language in languages %} 
+						<div class="input-group pull-left">
+							<span class="input-group-addon"><img src="language/{{ language.code }}/{{ language.code }}.png" title="{{ language.name }}" /></span>
+								<input class="form-control" type="text" name="banner_delivery_option[{{ banner_delivery_row }}][link][{{ language.language_id }}]" value="{{ banner_delivery_options.link[language.language_id] }}" />
+						</div>
+						{% endfor %} 
+						<div class="form-group">
+							<label class="col-sm-12 text-center">{{ text_open_banner_popup }}</label>
+							<div class="col-sm-12 text-center">
+								<div class="radio-group-infinity">	
+									{% if (banner_delivery_options.popup) %} 
+										<input id="config_open_banner_popup_yes_{{ banner_delivery_row }}" class="hide-radio" type="radio" name="banner_delivery_option[{{ banner_delivery_row }}][popup]" value="1" checked="checked" />
+										<label for="config_open_banner_popup_yes_{{ banner_delivery_row }}">{{ text_yes }}</label>
+									{% else %} 
+										<input id="config_open_banner_popup_yes_{{ banner_delivery_row }}" class="hide-radio" type="radio" name="banner_delivery_option[{{ banner_delivery_row }}][popup]" value="1" />
+										<label for="config_open_banner_popup_yes_{{ banner_delivery_row }}">{{ text_yes }}</label>
+									{% endif %} 
+									{% if (not banner_delivery_options.popup) %} 
+										<input id="config_open_banner_popup_no_{{ banner_delivery_row }}" class="hide-radio" type="radio" name="banner_delivery_option[{{ banner_delivery_row }}][popup]" value="0" checked="checked" />							
+										<label for="config_open_banner_popup_no_{{ banner_delivery_row }}">{{ text_no }}</label>
+									{% else %} 
+										<input id="config_open_banner_popup_no_{{ banner_delivery_row }}" class="hide-radio" type="radio" name="banner_delivery_option[{{ banner_delivery_row }}][popup]" value="0" />							
+										<label for="config_open_banner_popup_no_{{ banner_delivery_row }}">{{ text_no }}</label>
+									{% endif %}						  
+								</div>
+							</div>
+						</div>
+					</td>
+					<td class="text-left">
+						<input  class="form-control" type="text" name="banner_delivery_option[{{ banner_delivery_row }}][sort]" value="{{ banner_delivery_options.sort }}" />
+					</td>
+					<td class="text-right">
+						<a class="btn btn-danger" onclick="$('#item-row{{ banner_delivery_row }}').remove();" data-toggle="tooltip" title="{{ text_delete }}"><i class="fa fa-trash-o"></i></a>
+					</td>
+				</tr>
+			{% set banner_delivery_row = banner_delivery_row + 1 %} 
+			{% endfor %} 
+			</tbody>
+			<tfoot>
+				<tr>
+					<td colspan="5"></td>
+					<td class="text-right"><a class="btn btn-primary" onclick="addBannerDelivery();" data-toggle="tooltip" title="{{ button_add }}"><i class="fa fa-plus-circle"></i></a></td>
+				</tr>
+			</tfoot>
+	</table>
+
+<script type="text/javascript">
+var banner_delivery_row = {{ banner_delivery_row }};
+
+function addBannerDelivery() {
+html  = '<tr id="item-row' + banner_delivery_row + '">';
+html += '<td class="text-left"><a href="" id="thumb-image-banner-delivery-row' + banner_delivery_row + '" data-toggle="image" class="img-thumbnail"><img data-placeholder="{{ placeholder }}" src="{{ placeholder }}"  /></a><input type="hidden" name="banner_delivery_option[' + banner_delivery_row + '][image]" value="" id="input-image-banner-delivery-row' + banner_delivery_row + '" /></td>';
+html += '<td class="text-left">';
+{% for language in languages %} 
+html += '<div class="input-group pull-left"><span class="input-group-addon"><img src="language/{{ language.code }}/{{ language.code }}.png" title="{{ language.name }}" /></span>';
+html += '<input class="form-control" type="text" name="banner_delivery_option[' + banner_delivery_row + '][title][{{ language.language_id }}]" value="" />';
+html += '</div>';
+{% endfor %} 
+html += '</td>';
+html += '<td class="text-left">';
+{% for language in languages %} 
+html += '<div class="input-group pull-left"><span class="input-group-addon"><img src="language/{{ language.code }}/{{ language.code }}.png" title="{{ language.name }}" /></span>';
+html += '<textarea class="form-control" type="text" name="banner_delivery_option[' + banner_delivery_row + '][description][{{ language.language_id }}]"></textarea>';
+html += '</div>';
+{% endfor %} 
+html += '</td>';
+html += '<td class="text-left">';
+{% for language in languages %} 
+html += '<div class="input-group pull-left"><span class="input-group-addon"><img src="language/{{ language.code }}/{{ language.code }}.png" title="{{ language.name }}" /></span>';
+html += '<input class="form-control"  type="text" name="banner_delivery_option[' + banner_delivery_row + '][link][{{ language.language_id }}]" value="" />';
+html += '</div>';
+{% endfor %} 
+html += '<div class="form-group">';
+html += '	<label class="col-sm-12 text-center">{{ text_open_banner_popup }}</label>';
+html += '	<div class="col-sm-12 text-center">';
+html += '	<div class="radio-group-infinity">';
+html += '		<input id="config_open_banner_popup_yes_' + banner_delivery_row + '" class="hide-radio" type="radio" name="banner_delivery_option[' + banner_delivery_row + '][popup]" value="1"/>';
+html += '		<label for="config_open_banner_popup_yes_' + banner_delivery_row + '">{{ text_yes }}</label>';
+html += '		<input id="config_open_banner_popup_no_' + banner_delivery_row + '" class="hide-radio" type="radio" name="banner_delivery_option[' + banner_delivery_row + '][popup]" value="0" checked="checked" />';						
+html += '		<label for="config_open_banner_popup_no_' + banner_delivery_row + '">{{ text_no }}</label>';									  
+html += '	</div>';
+html += '	</div>';
+html += '</div>';
+html += '</td>';
+html += '<td class="text-left"><input class="form-control" type="text" name="banner_delivery_option[' + banner_delivery_row + '][sort]" size="1" value="" /></td>';
+html += '<td class="text-right"><a class="btn btn-danger" onclick="$(\'#item-row' + banner_delivery_row  + '\').remove();" data-toggle="tooltip" title="{{ text_delete }}"><i class="fa fa-trash-o"></i></a></td>';
+html += '</tr>'; 
+
+$('#banner_delivery_options_items tbody').append(html);;
+
+banner_delivery_row++;
+}
+</script>

@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<modification>
+  <code>NS->Found Cheaper Product</code>
+  <name>NS->Found Cheaper Product</name>
+  <version>2.6.1</version>
+  <author>Alex.Konushin(29aleksey)</author>
+  <file path="admin/view/template/common/header.twig">
+		<operation>
+			<search><![CDATA[<ul class="nav navbar-nav navbar-right">]]></search>
+			<add position="after"><![CDATA[
+			 {% if found_cheaper_product.status is defined and found_cheaper_product.status %} 
+				<li class="dropdown"><a data-placement="bottom" data-toggle="tooltip" title="{{ title_icon_header_fcp }}" class="dropdown-toggle" href="{{ found_cheaper_product_url }}"><span class="label label-danger pull-left">{{ countfound_cheaper }}</span> <i class="fa fa fa-bullhorn fa-lg"></i></a></li>
+			{% endif %}
+			]]></add>
+		</operation>
+	</file>
+	<file path="admin/controller/common/column_left.php">	
+		<operation>
+		<search><![CDATA[if ($this->user->hasPermission('access', 'catalog/category')) {]]></search>
+		<add position="after"><![CDATA[	
+			$this->load->language('extension/module/found_cheaper_product');        
+			$found_cheaper_product = (array)$this->config->get('fcpdata');
+			if (isset($found_cheaper_product['status']) && $found_cheaper_product['status']) {
+			$newstore_left_menu[] = array(
+				'name'	   => $this->language->get('title_icon_header_fcp'),
+				'href'     => $this->url->link('extension/module/found_cheaper_product', 'tablist=1&user_token=' . $this->session->data['user_token'], 'SSL'),
+				'children' => array()		
+			);
+			}
+		]]></add>
+		</operation>
+	</file>
+	<file path="admin/controller/common/header.php">		
+		<operation>
+			<search><![CDATA[$data['logged'] = true;]]></search>
+			<add position="after"><![CDATA[	
+				$this->load->model('extension/module/found_cheaper_product');
+				$found_cheaper_product = (array)$this->config->get('fcpdata');
+				$data['found_cheaper_product'] = (array)$this->config->get('fcpdata'); 
+				if (isset($found_cheaper_product['status']) && $found_cheaper_product['status']) {
+					$data['title_icon_header_fcp'] = $this->language->get('title_icon_header_fcp');
+					$data['countfound_cheaper'] = $this->model_extension_module_found_cheaper_product->getTotalNewFoundCheaper();
+					$data['found_cheaper_product_url'] = $this->url->link('extension/module/found_cheaper_product', 'tablist=1&user_token=' . $this->session->data['user_token'], 'SSL');
+				}									
+			]]></add>
+		</operation>
+	</file>
+	<file path="admin/language/en-gb/common/header.php">
+		<operation>
+			<search><![CDATA[// Text]]></search>
+			<add position="after"><![CDATA[
+	$_['title_icon_header_fcp'] = 'Found Cheaper';
+			]]></add>
+		</operation>
+	</file>
+	<file path="admin/language/ru-ru/common/header.php">
+		<operation>
+			<search><![CDATA[// Text]]></search>
+			<add position="after"><![CDATA[
+	$_['title_icon_header_fcp'] = 'Нашли дешевле';
+			]]></add>
+		</operation>
+	</file>
+  <file path="catalog/controller/product/product.php">
+     <operation error="skip">
+      <search><![CDATA[public function index() {]]></search>
+      <add position="after"><![CDATA[       
+        $data['fcpdata'] = $this->config->get('fcpdata');
+		if (isset($data['fcpdata']['status']) && $data['fcpdata']['status']) {
+		$this->document->addStyle('catalog/view/theme/newstore/stylesheet/popup-found_cheaper_product/stylefcp.css');
+		}
+      ]]></add>
+    </operation>
+  </file>
+  <file path="catalog/view/theme/newstore/template/product/product.twig">
+     <operation error="skip">
+      <search><![CDATA[{{ footer }}]]></search>
+      <add position="before"><![CDATA[
+        {% if (fcpdata['status'] is defined and fcpdata['status']) %} 
+		<style type="text/css">
+		{% if (fcpdata['color_found_cheaper_button']) %} 
+		.btn-cheaper {color:{{ fcpdata['color_found_cheaper_button'] }} !important; }
+		{% endif %} 
+		{% if (fcpdata['background_found_cheaper_button']) %} 
+		.btn-cheaper {background:{{ fcpdata['background_found_cheaper_button'] }} !important; }
+		{% endif %} 
+		{% if (fcpdata['background_found_cheaper_button_hover']) %} 
+		.btn-cheaper:hover {background:{{ fcpdata['background_found_cheaper_button_hover'] }} !important; }
+		{% endif %} 
+		{% if (fcpdata['border_found_cheaper_button']) %} 
+		.btn-cheaper {border-color:{{ fcpdata['border_found_cheaper_button'] }} !important; }
+		{% endif %} 
+		{% if (fcpdata['border_found_cheaper_button_hover']) %} 
+		.btn-cheaper:hover {border-color:{{ fcpdata['border_found_cheaper_button_hover'] }} !important; }
+		{% endif %} 
+		</style>
+        <script>
+        function open_popup_fcp(product_id) {  
+          $.magnificPopup.open({
+            tLoading: loading_masked_img,
+            items: {
+              src: 'index.php?route=extension/module/found_cheaper_product&product_id='+product_id,
+              type: 'ajax'
+            }
+          });
+        }
+        </script>
+      {% endif %}
+      ]]></add>
+    </operation>
+  </file>
+</modification>

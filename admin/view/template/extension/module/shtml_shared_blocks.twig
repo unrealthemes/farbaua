@@ -1,0 +1,53 @@
+<input type="hidden" name="page" value="{{ page }}">
+<input type="hidden" name="sort_field" value="{{ sort_field }}">
+<input type="hidden" name="sort_order" value="{{ sort_order }}">
+<style>
+.block-image {
+	max-width: {{ img_width }}px;
+	max-height: {{ img_height }}px;
+	width: 100%;
+}
+.sharedblock {
+	cursor: pointer;
+}
+{# Andrey Bondarenko 25/03/2021 #}
+.block_selected {
+	background-color: lightgreen;
+}
+{# Andrey Bondarenko end 25/03/2021 #}
+</style>
+{% if error %}
+	{% for error_text in error %}
+		<div class="alert alert-danger">{{ error_text }}</div>
+	{% endfor %}
+{% endif %}
+{% for block in blocks %}
+	<div class="row sharedblock {% if block.selected %}block_selected{% endif %} table-bordered" data-block-id="{{ block.shtml_block_id }}">
+	<textarea class="hide" name="sharedblock[{{ block.shtml_block_id }}][block_json]">{{ block.block_json }}</textarea>
+	 <div class="col-sm-2 form-group">			  		  
+	 {% for language in languages %}
+		<a class="btn block-change-language{% if loop.first %} btn-primary{% endif %}" data-language-code="{{ language.code }}" onclick="changeBlockLanguage(this)" data-toggle="tooltip" title="{{ language.name }}"><img src="language/{{ language.code }}/{{ language.code }}.png" title="{{ language.name }}" /></a>
+	 {% endfor %}			  		  
+	 </div>
+	 <div class="col-sm-2 form-group">
+	{% for language in languages %}
+	  <div data-language-code="{{ language.code }}" class="{% if not loop.first %} hide{% endif %}" >{{ block.shtml_block_name[language.code]?block.shtml_block_name[language.code]:'' }}</div>
+	{% endfor %}
+	 </div>
+	 <div class="col-sm-3 form-group">	
+	  <div>{{ block.author }} (<a href="mailto:{{ block.email }}" target="_blank">{{ block.email }}</a>)</div>
+	 </div>
+	 <div class="col-sm-1 form-group">	
+		<a href="{{ server_url }}{{ block.image }}" target="_blank"><img class="block-image" src="{{ server_url }}{{ block.image }}"></a>
+	 </div>
+	 <div class="col-sm-3 form-group">
+	  <div>{{ block.comment_brief }}</div>
+	 </div>
+	 <div class="col-sm-1 form-group">
+		<a class="btn btn-success copy-block" onclick="copySharedBlock(this)" data-toggle="tooltip" title="{{ text_add }}"><i class="fa fa-check"></i></a>
+	 </div>
+	</div>
+{% endfor %}
+
+{{ pagination }}
+

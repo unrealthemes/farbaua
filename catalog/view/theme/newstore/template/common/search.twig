@@ -1,0 +1,45 @@
+<script>
+$(document).ready(function() {
+  var category_id_page = $('#content select[name=\'category_id\']').find("option:selected").attr("value");
+  var category_id_html = $('#content select[name=\'category_id\']').find("option:selected").html();
+
+  $("#selected_category").val(category_id_page);
+  $("#category_now").val(category_id_page);
+  $(".category-name").html(category_id_html);
+  $('.select-category').find('.filter-option').html(category_id_html)
+  });
+ </script>
+<div id="searchtop">
+<div id="search" class="input-group {% if (search_word is defined and (search_word is not empty)) %}pt20{% endif %}">
+<input type="text" name="search" value="{{ search }}" placeholder="{{ text_search }}" class="form-control input-lg search-autocomplete" />
+  {% if (show_hc_search == '1') %}
+	<div class="input-group-btn categories">
+    <button id="change_category" type="button" class="btn btn-search-select dropdown-toggle" data-toggle="dropdown">
+		{% for search_category in categories %} {% if (search_category['category_id'] == filter_category_id) %}{% set text_search_everywhere = search_category['name'] %}{% endif %}{% endfor %}
+		<span class="category-name">{{ text_search_everywhere }}&nbsp;</span>&nbsp;<span class="fa fa-angle-down fa-fw car-down"></span>
+	</button>
+    <ul class="dropdown-menu">
+			<li><a href="#" onclick="return false;" data-idsearch="0">{{ text_search_everywhere }}</a></li>
+			{% for search_category in categories %}
+			<li><a href="#" onclick="return false;" data-idsearch="{{ search_category['category_id'] }}">{{ search_category['name'] }}</a></li>
+
+			{% endfor %}
+		</ul>
+		<input id="selected_category" type="hidden" name="category_id" value="0" />
+
+  </div>
+  {% endif %}
+  <span class="input-group-btn button_search">
+    <button type="button" class="btn btn-search"><i class="fa fa-search"></i></button>
+  </span>
+</div>
+{% if (search_word is defined and (search_word is not empty)) %}
+<div id="search_word" class="hidden-xs hidden-sm">{{ text_search_word }}<a>{{ search_word }}</a></div>
+{% endif %}
+</div>
+<script>
+$('#search a').click(function(){
+$("#selected_category").val($(this).attr('data-idsearch'));
+$('.category-name').html($(this).html());
+});
+</script>

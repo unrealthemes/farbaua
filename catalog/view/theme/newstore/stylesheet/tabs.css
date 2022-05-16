@@ -1,0 +1,289 @@
+/*TABS*/
+.tab-content #tab-description img {
+  max-width: 100%;
+}
+.tab-content .product-thumb .image-carousel .owl-buttons .owl-prev{
+	left:-20% !important;
+    transition: all 0.4s ease-out 0s;
+}
+.tab-content .product-thumb:hover .image-carousel .owl-buttons .owl-prev{ 
+	left:0px !important;
+}
+
+.tab-content .product-thumb .image-carousel .owl-buttons .owl-next{
+	right:-10% !important;
+    transition: all 0.4s ease-out 0s;
+}
+.tab-content .product-thumb:hover .image-carousel .owl-buttons .owl-next{ 
+	right:24px !important;
+}
+.product-thumb .caption-tabs {
+	margin-bottom: 10px;
+    padding: 0 10px;
+    position: relative;
+}
+.nav-tabs-all {
+	margin-bottom:15px;
+	clear:both;
+}
+.nav-tabs-all > li {
+	display:inline-block;	
+	margin-left:-2px;
+	margin-right:-2px;
+}
+
+.nav-tabs-all > li > a {
+	padding:5px 10px;
+	border-bottom:2px solid transparent;
+	text-transform:uppercase;
+	color:#474747;
+	font-weight:400;
+	font-size:20px;
+}
+
+.nav-tabs-all > li > a:hover, .nav-tabs-all > li > a:focus{
+	background:none;
+	color:#076BB7;
+}
+.nav-tabs-all > li > a:after {
+	content:"";
+	position:absolute;
+	left:50%;
+	bottom:-1px;
+	border-bottom:2px solid #076BB7;
+	width:0%;
+}
+.nav-tabs-all > li > a:before {
+	content:"";
+	position:absolute;
+	right:50%;
+	bottom:-1px;
+	border-bottom:2px solid #076BB7;
+	width:0%;
+}
+.nav-tabs-all > li > a:hover:after {
+	background:#fff;
+	border-bottom:2px solid #076BB7;
+	transition:width 100ms;
+	width:50%;
+}
+.nav-tabs-all > li > a:hover:before {
+	background:#fff;
+	border-bottom:2px solid #076BB7;
+	transition:width 100ms;
+	width:50%;
+}
+.nav-tabs-all > li.active a {
+	border-bottom:2px solid #076BB7;
+	color:#076BB7;
+}
+.nav-tabs-all > li.active:after {
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 5px solid #076bb7;
+  content: "";
+  left: 45%;
+  position: absolute;
+}
+
+.tab-content  .owl-carousel .owl-buttons div {
+	opacity:1;
+	top:-20px;
+}
+.tab-content .owl-carousel:hover .owl-buttons div {
+	opacity: 1;
+}
+.tab-content .owl-carousel .owl-buttons .owl-prev {
+	right:80px;
+}
+.tab-content .owl-carousel .owl-buttons .owl-next {
+	right:42px;
+}
+.tab-content .owl-carousel .owl-buttons div i {
+	font-size: 25px;
+	margin: 0;
+	font-weight: bold;
+}
+
+.tab-content  .owl-buttons .owl-prev {
+  left: 10px !important;
+}
+.tab-content .owl-buttons .owl-next {
+  right: 40px !important;
+}
+.all_tabs {
+  padding: 0 35px;
+}
+.my-tabs > li.active > a:after {
+  content: "";
+  height: 10px;
+  left: 0;
+  position: absolute;
+  top: 100%;
+  width: 100%;
+}
+.my-tabs > li.active > a {
+  margin-top: 0;
+  padding-bottom: 12px;
+  padding-top: 12px;
+  position: relative;
+  border-bottom:2px solid #2B8CDB;
+}
+.my-tabs > li.active > a:hover,
+.my-tabs > li.active > a:focus {
+  margin-top: 0;
+  padding-bottom: 12px;
+  padding-top: 12px;
+  position: relative;
+  border-bottom:2px solid #2B8CDB;
+}
+.my-tabs > li > a {
+  background: #f5f5f5 none repeat scroll 0 0;
+  border-color: #ccc;
+  margin-right: 5px;
+  margin-top: 4px;
+  font-size:14px;
+  color:#333;
+  border-bottom:2px solid #ccc;
+}
+.my-tabs > li > a:hover {
+  background: #f5f5f5 none repeat scroll 0 0;
+  border-color: #ccc;
+  font-size:14px;
+  color:#2B8CDB;
+  border-bottom:2px solid #ccc;
+}
+.nav-tabs {
+	margin-bottom: 15px;
+}
+.tabs-product  .nav-tabs {
+	margin-bottom:0px;
+}
+
+.tabs-product .tab-content {
+  background: #fff none repeat scroll 0 0;
+  padding: 15px;
+  border-left:1px solid #cccccc;
+  border-right:1px solid #cccccc;
+  border-bottom:1px solid #cccccc;
+}
+.tab-pane.active {
+	max-width:100%;
+}
+.tab-pane.active iframe{
+	max-width:100%;
+}
+@media (max-width: 768px) {
+.nav-tabs.my-tabs > li {
+  float: left;
+  margin-bottom: -1px;
+  text-align: center;
+  width: 100%;
+}
+.nav-tabs.my-tabs > li a {
+ margin-right:0px;
+}
+}
+/*PRODUCT - CATEGORY - TABS*/
+.tabs-product-category {
+	float: right;
+}
+.nav-tabs-product-category {
+	clear:both;
+}
+.nav-tabs-product-category > li {
+	display:inline-block;	
+	margin-left:-2px;
+	margin-right:-2px;
+}
+.nav-tabs-product-category > li + li:last-child:after {
+	content: '';
+	padding: 0;
+}
+.nav-tabs-product-category > li:after {
+	content: "/";
+	display: block;
+	height: 26px;
+	position: absolute;
+	top: 4px;
+	right: -5px;
+	width: 7px;
+	color: #474747;
+}
+.nav-tabs-product-category > li > a {
+	padding:5px 10px;
+	text-transform:uppercase;
+	color:#474747;
+	font-weight:600;
+	font-size:14px;
+}
+.nav-tabs-product-category > li > a:hover, .nav-tabs-product-category > li > a:focus{
+	background:none;
+	color:#076BB7;
+}
+.nav-tabs-product-category > li.active a {
+	color:#076BB7;
+}
+.product-category .tab-content .owl-controls .owl-page span {
+	background: #fff;
+	border-radius: 2px;
+	box-shadow: 0 0 3px rgba(0, 0, 0, 0.3) inset;
+	display: block;
+	height: 10px;
+	width: 10px;
+}
+.product-category .tab-content .owl-controls .owl-page {
+	display: inline-block;
+	margin: 0 4px;
+}
+.product-category .tab-content .owl-controls .owl-page.active span {
+	background: #2b8cdb;
+}
+.carousel-container .owl-controls .owl-page.active span {
+ background: #2b8cdb;
+}
+.product-category .tab-content .product-thumb .image-carousel .owl-buttons .owl-prev{
+	left:-20% !important;
+    transition: all 0.4s ease-out 0s;
+}
+.product-category .tab-content .product-thumb:hover .image-carousel .owl-buttons .owl-prev{ 
+	left:0px !important;
+}
+.product-category .tab-content .product-thumb .image-carousel .owl-buttons .owl-next{
+	right:-10% !important;
+    transition: all 0.4s ease-out 0s;
+}
+.product-category .tab-content .product-thumb:hover .image-carousel .owl-buttons .owl-next{ 
+	right:24px !important;
+}
+.product-category .tab-content  .owl-carousel .owl-buttons div {
+	opacity:1;
+	top:40%;
+}
+.product-category .tab-content .owl-carousel:hover .owl-buttons div {
+	opacity: 1;
+}
+.product-category .tab-content .owl-carousel .owl-buttons div i {
+	font-size: 25px;
+	margin: 0;
+	font-weight: bold;
+}
+.product-category .tab-content  .owl-buttons .owl-prev {
+  left: 10px !important;
+  opacity:0 !important;
+}
+.product-category .tab-content .owl-buttons .owl-next {
+  right: 35px !important;
+  opacity:0 !important;
+}
+.product-category .tab-content:hover .owl-buttons .owl-prev {
+	opacity:1 !important;
+}
+.product-category .tab-content:hover .owl-buttons .owl-next {
+	opacity:1 !important;
+}
+@media (max-width: 768px) { 
+	.tabs-product-category {
+		float:none;
+	}
+}

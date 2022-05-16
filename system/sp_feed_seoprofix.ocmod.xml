@@ -1,0 +1,27 @@
+<modification>
+    <name>seo_pro_feed_fix</name>
+    <code>seo_pro_feed_fix</code>
+    <version>1</version>
+    <author>spectre</author>
+    <link>https://freelancer.od.ua</link>
+  <file path="catalog/controller/startup/seo_pro.php">
+        <operation error="skip">
+            <search><![CDATA[function validate() {]]></search>
+            <add position="after"><![CDATA[
+			if (strpos($_SERVER['REQUEST_URI'], 'xml_feed') !== false) {
+				return;
+			}
+			]]></add>
+        </operation>
+    </file>
+  <file path="system/library/seopro.php">
+        <operation error="skip">
+            <search><![CDATA[function validate() {]]></search>
+            <add position="after"><![CDATA[
+			if (strpos($_SERVER['REQUEST_URI'], 'xml_feed') !== false) {
+				return;
+			}
+			]]></add>
+        </operation>
+    </file>
+</modification>

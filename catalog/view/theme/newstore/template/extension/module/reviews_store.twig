@@ -1,0 +1,165 @@
+<div class="mod-rs-cont container-module">
+	<div class="title-module"><span>{{ heading_title }}</span></div>
+<div class="row rating-info-box">
+	<div class="col-xs-12 col-md-12">
+			<div class="well well-sm">
+			<div class="row">
+				<div class="col-xs-12 col-md-3 text-center bottom-10 col-rl">
+					<div {% if (rating_store == 5) %}class="progress-striped-rev-full"{% endif %}>
+						<span class="rating-num
+					{% if ((rating_store >=1) and (rating_store < 2)) %}
+					rat-avg-1
+					{% elseif ((rating_store >=2) and (rating_store < 3)) %}
+					rat-avg-2
+					{% elseif ((rating_store >=3) and (rating_store < 4)) %}
+					rat-avg-3
+					{% elseif ((rating_store >=4) and (rating_store < 5)) %}
+					rat-avg-4
+					{% elseif (rating_store == 5) %}
+					rat-avg-5
+					{% endif %}
+					">{{ rating_store }}</span>
+					</div>
+					<div class="testimonial-rating">
+						<div class="testimonial-rating-stars"><div class="testimonial-realrating" style="width:{{ rating_store*100/5}}%;"></div></div>
+					</div>
+					<div class="rs-sum-total">
+						<span class="glyphicon glyphicon-user"></span> {{ text_sum_reviews }} {{ total_rs }}
+					</div>
+
+				</div>
+				<div class="col-xs-12 col-md-5 bottom-10 col-rl">
+					<div class="row rating-desc">
+						<div class="col-xs-3 col-md-3 text-right">
+							<i class="fa fa-star color-star-percent-5"></i>5
+						</div>
+						<div class="col-xs-8 col-md-9">
+							<div class="progress progress-striped">
+								<div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="20"
+									aria-valuemin="0" aria-valuemax="100" style="width: {{ percent_rating['star5'] }}%">
+									<span class="sr-only">{{ percent_rating['star5'] }}%</span>
+								</div>
+							</div>
+						</div>
+						<div class="col-xs-3 col-md-3 text-right">
+							<i class="fa fa-star color-star-percent-4"></i>4
+						</div>
+						<div class="col-xs-8 col-md-9">
+							<div class="progress">
+								<div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="20"
+									aria-valuemin="0" aria-valuemax="100" style="width: {{ percent_rating['star4'] }}%">
+									<span class="sr-only">{{ percent_rating['star4'] }}%</span>
+								</div>
+							</div>
+						</div>
+						<div class="col-xs-3 col-md-3 text-right">
+							<i class="fa fa-star color-star-percent-3"></i>3
+						</div>
+						<div class="col-xs-8 col-md-9">
+							<div class="progress">
+								<div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="20"
+									aria-valuemin="0" aria-valuemax="100" style="width: {{ percent_rating['star3'] }}%">
+									<span class="sr-only">{{ percent_rating['star3'] }}%</span>
+								</div>
+							</div>
+						</div>
+						<div class="col-xs-3 col-md-3 text-right">
+							<i class="fa fa-star color-star-percent-2"></i>2
+						</div>
+						<div class="col-xs-8 col-md-9">
+							<div class="progress">
+								<div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="20"
+									aria-valuemin="0" aria-valuemax="100" style="width: {{ percent_rating['star2'] }}%">
+									<span class="sr-only">{{ percent_rating['star2'] }}%</span>
+								</div>
+							</div>
+						</div>
+						<div class="col-xs-3 col-md-3 text-right">
+							<i class="fa fa-star color-star-percent-1"></i>1
+						</div>
+						<div class="col-xs-8 col-md-9">
+							<div class="progress">
+								<div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="80"
+									aria-valuemin="0" aria-valuemax="100" style="width: {{ percent_rating['star1'] }}%">
+									<span class="sr-only">{{ percent_rating['star1'] }}%</span>
+								</div>
+							</div>
+						</div>
+					</div>
+
+				</div>
+				<div class="col-xs-12 col-sm-4 col-md-4 col-rl">
+					<div class="rsinfo">
+					{% for result_info in reviews_theme_rating %}
+						<div class="rsinfo-item">
+						<span>{{ result_info['theme_text'] }}</span>
+						<div class="avg-rating">
+							<div class="avg-rating-stars"><div class="avg-realrating" style="width:{{ result_info['avg_rating']*100/5}}%;"></div></div>
+						</div>
+						</div>
+					{% endfor %}
+					{% if (not review_guest) %}
+						{{ text_review_guest }}
+					{% endif %}
+					</div>
+					<div class="btn-block-rs {% if (not review_guest) %}fend{% endif %}">
+						{% if (review_guest) %}
+						<button type="button" onclick="popupFormReviewStore()" class="btn btn-primary">{{ btn_write_review }}</button>
+						{% endif %}
+						<a href="{{ all_review_link }}" class="btn btn-primary">{{ btn_all_review }}</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="review-store-box review-store{{ module }}">
+		{% for review_store in reviews_store %}
+		<div class="col-xs-12 col-sm-6 col-md-4 no-slider">
+			<div class="item-rs">
+				<div class="mod-desc-reviews">
+					{{ review_store['description'] }}
+				</div>
+				<div class="mod-rev-rating">
+					<div class="avg-rating">
+						<div class="avg-rating-stars"><div class="avg-realrating" style="width:{{ review_store['avg_customer_rating']*100/5}}%;"></div></div>
+					</div>
+				</div>
+				<div class="row-flex jcsb">
+					<div class="rev-author"><span class="glyphicon glyphicon-user"></span> {{ review_store['author'] }}</div>
+					<div class="rev-date-add">{{ review_store['date_added'] }}</div>
+				</div>
+			</div>
+		</div>
+		{% endfor %}
+	</div>
+	{% if (status_showmore is defined and status_showmore != 0) %}
+	{% if (nextPage) %}
+		<div class="showmore-review-store{{ module }} box-showmore"><div class="box-ajax-load"></div><span data-nextpage="{{ nextPage }}" class="review-store-ajax-load{{ module }}">{{ text_showmore }}</span></div>
+	{% endif %}
+	{% endif %}
+</div>
+{% if (status_showmore is defined and status_showmore != 0) %}
+<script>
+$(document).on('click', '.review-store-ajax-load{{ module }}', function () {
+	$.ajax({
+		url: 'index.php?route=extension/module/reviews_store/getNextPage',
+		type: 'post',
+		data: 'page=' + $(this).attr('data-nextpage') + '&module={{ module }}&setting={{ setting }}',
+		dataType: 'html',
+		beforeSend: function() {
+			$('.showmore-review-store{{ module }} i.fa-repeat').addClass('fa-spin');
+		},
+		complete: function() {
+			$('.showmore-review-store{{ module }} i.fa-repeat').removeClass('fa-spin');
+		},
+		success:function(data){
+			$data = $(data);
+			var $reviews_store = $data.find('.review-store{{ module }} > div.col-xs-12');
+			$('.review-store{{ module }}').append($reviews_store);
+			$('.showmore-review-store{{ module }}').replaceWith($data.find('.showmore-review-store{{ module }}'));
+		}
+	});
+})
+</script>
+{% endif %}
+</div>

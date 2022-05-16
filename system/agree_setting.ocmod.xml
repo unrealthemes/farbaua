@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<modification>
+  <name>NS > Agree Setting</name>
+  <code>NS > Agree Setting</code>
+  <version>2.6.1</version>
+  <author>Alex.Konushin(29aleksey)</author>
+	<file path="admin/view/template/setting/setting.twig">
+		<operation>
+			<search><![CDATA[<div class="tab-pane" id="tab-option">]]></search>
+			<add position="after"><![CDATA[
+				<div class="form-group">
+                  <label class="col-sm-2 control-label" for="input-callback-agree">
+				  <span data-toggle="tooltip" title="{{ help_callback_agree }}">{{ entry_callback_agree }}</span></label>
+                  <div class="col-sm-10">
+                    <select name="config_callback_id" id="input-callback-agree" class="form-control">
+                      <option value="0">{{ text_none }}</option>
+                      {% for information in informations %} 
+                      {% if (information.information_id == config_callback_id) %} 
+                      <option value="{{ information.information_id }}" selected="selected">{{ information.title }}</option>
+                      {% else %} 
+                      <option value="{{ information.information_id }}">{{ information.title }}</option>
+                      {% endif %} 
+                      {% endfor %} 
+                    </select>
+                  </div>
+                </div>
+				
+				<div class="form-group">
+                  <label class="col-sm-2 control-label" for="input-quickorder-agree">
+				  <span data-toggle="tooltip" title="{{ help_quickorder_agree }}">{{ entry_quickorder_agree }}</span></label>
+                  <div class="col-sm-10">
+                    <select name="config_quickorder_id" id="input-quickorder-agree" class="form-control">
+                      <option value="0">{{ text_none }}</option>
+                      {% for information in informations %} 
+                      {% if (information.information_id == config_quickorder_id) %} 
+                      <option value="{{ information.information_id }}" selected="selected">{{ information.title }}</option>
+                      {% else %} 
+                      <option value="{{ information.information_id }}">{{ information.title }}</option>
+                      {% endif %} 
+                      {% endfor %} 
+                    </select>
+                  </div>
+                </div>
+				
+				<div class="form-group">
+                  <label class="col-sm-2 control-label" for="input-foundcheaper-agree">
+				  <span data-toggle="tooltip" title="{{ help_foundcheaper_agree }}">{{ entry_foundcheaper_agree }}</span></label>
+                  <div class="col-sm-10">
+                    <select name="config_foundcheaper_id" id="input-foundcheaper-agree" class="form-control">
+                      <option value="0">{{ text_none }}</option>
+                      {% for information in informations %} 
+                      {% if (information.information_id == config_foundcheaper_id) %} 
+                      <option value="{{ information.information_id }}" selected="selected">{{ information.title }}</option>
+                      {% else %} 
+                      <option value="{{ information.information_id }}">{{ information.title }}</option>
+                      {% endif %} 
+                      {% endfor %} 
+                    </select>
+                  </div>
+                </div>
+			]]></add>
+		</operation>
+	</file>
+	<file path="admin/language/ru-ru/setting/setting.php">
+		<operation>
+			<search><![CDATA[// Heading]]></search>
+			<add position="after"><![CDATA[
+			$_['entry_callback_agree']		= 'Подтверждение при оформлении обратного звонка';
+			$_['help_callback_agree'] 		= 'Требовать подтверждение согласия с правилами при оформлении обратного звонка';
+			
+			$_['entry_quickorder_agree']	= 'Подтверждение при оформлении заказа через купить в 1 клик';
+			$_['help_quickorder_agree'] 	= 'Требовать подтверждение согласия с правилами при оформлении заказа через купить в 1 клик';
+			
+			$_['entry_foundcheaper_agree']	= 'Подтверждение при заполнении формы Нашли дешевле';
+			$_['help_foundcheaper_agree'] 	= 'Требовать подтверждение согласия с правилами при заполнении формы Нашли дешевле';
+			]]></add>
+		</operation>
+	</file>
+	<file path="admin/language/russian/setting/setting.php">
+		<operation>
+			<search><![CDATA[// Heading]]></search>
+			<add position="after"><![CDATA[
+			$_['entry_callback_agree']	= 'Подтверждение при оформлении обратного звонка';
+			$_['help_callback_agree'] = 'Требовать подтверждение согласия с правилами при оформлении обратного звонка';
+			
+			$_['entry_quickorder_agree']	= 'Подтверждение при оформлении заказа через купить в 1 клик';
+			$_['help_quickorder_agree'] 	= 'Требовать подтверждение согласия с правилами при заказа через купить в 1 клик';
+			
+			$_['entry_foundcheaper_agree']	= 'Подтверждение при заполнении формы Нашли дешевле';
+			$_['help_foundcheaper_agree'] 	= 'Требовать подтверждение согласия с правилами при заполнении формы Нашли дешевле';
+			]]></add>
+		</operation>
+	</file>
+	<file path="admin/language/en-gb/setting/setting.php">
+		<operation>
+			<search><![CDATA[// Heading]]></search>
+			<add position="after"><![CDATA[
+			$_['entry_callback_agree']		= 'Confirmation when making a return call';
+			$_['help_callback_agree'] 		= 'Require confirmation of compliance with the rules when preparing a return call';
+			
+			$_['entry_quickorder_agree']	= 'Confirmation when placing an order through buy in 1 click';
+			$_['help_quickorder_agree'] 	= 'Require confirmation of compliance with the rules when placing an order through buy in 1 click';
+			
+			$_['entry_foundcheaper_agree']	= 'Confirmation when completing the form Found cheaper';
+			$_['help_foundcheaper_agree'] 	= 'Require confirmation of compliance with the rules when completing the form Found cheaper';
+			]]></add>
+		</operation>
+	</file>
+	<file path="admin/language/english/setting/setting.php">
+		<operation>
+			<search><![CDATA[// Heading]]></search>
+			<add position="after"><![CDATA[
+			$_['entry_callback_agree']		= 'Confirmation when making a return call';
+			$_['help_callback_agree'] 		= 'Require confirmation of compliance with the rules when preparing a return call';
+			
+			$_['entry_quickorder_agree']	= 'Confirmation when placing an order through buy in 1 click';
+			$_['help_quickorder_agree'] 	= 'Require confirmation of compliance with the rules when placing an order through buy in 1 click';
+			
+			$_['entry_foundcheaper_agree']	= 'Confirmation when completing the form Found cheaper';
+			$_['help_foundcheaper_agree'] 	= 'Require confirmation of compliance with the rules when completing the form Found cheaper';
+			]]></add>
+		</operation>
+	</file>
+	<file path="admin/controller/setting/setting.php">
+		<operation>
+			<search><![CDATA[$this->load->model('catalog/information');]]></search>
+			<add position="after"><![CDATA[
+			$data['help_callback_agree'] = $this->language->get('help_callback_agree');
+			$data['entry_callback_agree'] = $this->language->get('entry_callback_agree');
+			
+			if (isset($this->request->post['config_callback_id'])) {
+				$data['config_callback_id'] = $this->request->post['config_callback_id'];
+			} else {
+				$data['config_callback_id'] = $this->config->get('config_callback_id');
+			}
+			
+			$data['help_quickorder_agree'] = $this->language->get('help_quickorder_agree');
+			$data['entry_quickorder_agree'] = $this->language->get('entry_quickorder_agree');
+			
+			if (isset($this->request->post['config_quickorder_id'])) {
+				$data['config_quickorder_id'] = $this->request->post['config_quickorder_id'];
+			} else {
+				$data['config_quickorder_id'] = $this->config->get('config_quickorder_id');
+			}
+			
+			$data['help_foundcheaper_agree'] = $this->language->get('help_foundcheaper_agree');
+			$data['entry_foundcheaper_agree'] = $this->language->get('entry_foundcheaper_agree');
+			
+			if (isset($this->request->post['config_foundcheaper_id'])) {
+				$data['config_foundcheaper_id'] = $this->request->post['config_foundcheaper_id'];
+			} else {
+				$data['config_foundcheaper_id'] = $this->config->get('config_foundcheaper_id');
+			}
+			]]></add>
+		</operation>
+	</file>
+</modification>

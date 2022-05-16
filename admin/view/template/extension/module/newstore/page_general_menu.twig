@@ -1,0 +1,1399 @@
+<div class="form-group">
+	<div class="col-sm-12 title-setting">{{ tab_menu_general }}</div>
+</div>
+<div class="form-group">
+    <label class="col-sm-3 control-label" for="input-menu-selection">{{ entry_menu_selection }}</label>
+    <div class="col-sm-9">
+        <select onchange="change_menu_theme(this.value);" name="config_main_menu_selection" id="input-menu-selection" class="form-control">
+            {% if (config_main_menu_selection == '1') %} 
+                <option value="1" selected="selected">{{ text_main_vertical_menu }}</option>
+                <option value="0">{{ text_main_horizontal_menu }}</option>
+            {% else %} 
+                <option value="0" selected="selected">{{ text_main_horizontal_menu }}</option>
+                <option value="1">{{ text_main_vertical_menu }}</option>                  
+            {% endif %}					
+        </select>
+    </div>
+</div>
+<div class="form-group">
+    <label class="col-sm-3 control-label" for="input-menu-animation">{{ entry_menu_animation }}</label>
+    <div class="col-sm-9">
+        <select name="main_menu_animation" id="input-menu-animation" class="form-control">
+            {% if (main_menu_animation == '1') %} 
+                <option value="1" selected="selected">{{ text_enabled }}</option>
+                <option value="0">{{ text_disabled }}</option>
+            {% else %} 
+                <option value="0" selected="selected">{{ text_disabled }}</option>
+                <option value="1">{{ text_enabled }}</option>                  
+            {% endif %}					
+        </select>
+    </div>
+</div>
+<div class="form-group">
+    <label class="col-sm-3 control-label" for="input-menu-fix-mobile">{{ entry_menu_fix_mobile }}</label>
+    <div class="col-sm-9">
+        <select name="main_menu_fix_mobile" id="input-menu-fix-mobile" class="form-control">
+            {% if (main_menu_fix_mobile == '1') %} 
+                <option value="1" selected="selected">{{ text_enabled }}</option>
+                <option value="0">{{ text_disabled }}</option>
+            {% else %} 
+                <option value="0" selected="selected">{{ text_disabled }}</option>
+                <option value="1">{{ text_enabled }}</option>                  
+            {% endif %}					
+        </select>
+    </div>
+</div>
+<div class="form-group">
+    <label class="col-sm-3 control-label" for="input-type-mobile-menu">{{ entry_type_mobile_menu }} <i aria-hidden="true" class="fa fa-level-up "></i></label>
+    <div class="col-sm-9">
+        <select name="type_mobile_menu" id="input-type-mobile-menu" class="form-control">
+            {% if (type_mobile_menu == '1') %} 
+                <option value="1" selected="selected">Canvas Menu</option>
+                <option value="0">DropDown Menu</option>
+            {% else %} 
+                <option value="0" selected="selected">DropDown Menu</option>
+                <option value="1">Canvas Menu</option>                  
+            {% endif %}					
+        </select>
+    </div>
+</div>
+<div class="form-group">
+    <label class="col-sm-3 control-label" for="input-menu-mask">{{ entry_menu_mask }}</label>
+    <div class="col-sm-9">
+        <select name="main_menu_mask" id="input-menu-mask" class="form-control">
+            {% if (main_menu_mask == '1') %} 
+                <option value="1" selected="selected">{{ text_enabled }}</option>
+                <option value="0">{{ text_disabled }}</option>
+            {% else %} 
+                <option value="0" selected="selected">{{ text_disabled }}</option>
+                <option value="1">{{ text_enabled }}</option>                  
+            {% endif %}					
+        </select>
+    </div>
+</div>
+<div class="form-group">
+    <label class="col-sm-3 control-label" for="input-fixed-panel-top">{{ entry_fixed_panel_top }}</label>
+    <div class="col-sm-9">
+        <select name="config_fixed_panel_top" id="input-fixed-panel-top" class="form-control">
+            {% if (config_fixed_panel_top) %} 
+                <option value="1" selected="selected">{{ text_enabled }}</option>
+                <option value="0">{{ text_disabled }}</option>
+            {% else %} 
+                <option value="1">{{ text_enabled }}</option>
+                <option value="0" selected="selected">{{ text_disabled }}</option>
+            {% endif %} 
+        </select>
+    </div>
+</div>
+<div class="form-group horizontal_menu">
+	<label class="col-sm-3 control-label">{{ text_main_horizontal_menu }}</label>
+	<div class="col-sm-9">
+		<select onchange="horizontal_menu_width_setting(this.value);" name="horizontal_menu_width_setting" id="input-horizontal-menu-width-setting" class="form-control">
+			{% if (horizontal_menu_width_setting) %} 
+				<option value="1" selected="selected">{{ text_full_screen_menu }}</option>
+				<option value="0">{{ text_full_screen_layout }}</option>
+			{% else %} 
+				<option value="1">{{ text_full_screen_menu }}</option>
+				<option value="0" selected="selected">{{ text_full_screen_layout }}</option>
+			{% endif %} 
+		</select>
+	</div>
+</div>	
+<div class="form-group menu_always_open">
+	<label class="col-sm-3 control-label">{{ text_home_page }}</label>
+	<div class="col-sm-9">
+		<div class="radio-group-infinity">
+			{% if (config_menu_always_open_on_the_left) %} 
+				<input id="config_menu_always_open_on_the_left_yes" class="hide-radio" type="radio" name="config_menu_always_open_on_the_left" value="1" checked="checked" />
+				<label for="config_menu_always_open_on_the_left_yes">{{ text_yes }}</label>
+			{% else %} 
+				<input id="config_menu_always_open_on_the_left_yes" class="hide-radio" type="radio" name="config_menu_always_open_on_the_left" value="1" />
+				<label for="config_menu_always_open_on_the_left_yes">{{ text_yes }}</label>
+			{% endif %} 
+				{% if (not config_menu_always_open_on_the_left) %} 
+				<input id="config_menu_always_open_on_the_left_no" class="hide-radio" type="radio" name="config_menu_always_open_on_the_left" value="0" checked="checked" />							
+				<label for="config_menu_always_open_on_the_left_no">{{ text_no }}</label>
+			{% else %} 
+				<input id="config_menu_always_open_on_the_left_no" class="hide-radio" type="radio" name="config_menu_always_open_on_the_left" value="0" />							
+				<label for="config_menu_always_open_on_the_left_no">{{ text_no }}</label>
+			{% endif %}						  
+		</div>
+	</div>
+</div>
+
+
+
+
+<div class="form-group menu_always_open">
+	<label class="col-sm-3 control-label">{{ text_page_open_menu }}<br>
+	<div class="label-description-exclamation"><i class="fa fa-exclamation-triangle required"></i> {{ text_page_open_menu_description }}</div></label>
+	<div class="col-sm-9">
+	<div class="menu_open_page_info">
+	<span>{{ text_menu_open_category }}</span><br>
+		<div class="radio-group-infinity">
+			{% if (config_menu_open_category) %} 
+				<input id="config_menu_open_category_yes" class="hide-radio" type="radio" name="config_menu_open_category" value="1" checked="checked" />
+				<label for="config_menu_open_category_yes">{{ text_yes }}</label>
+			{% else %} 
+				<input id="config_menu_open_category_yes" class="hide-radio" type="radio" name="config_menu_open_category" value="1" />
+				<label for="config_menu_open_category_yes">{{ text_yes }}</label>
+			{% endif %} 
+				{% if (not config_menu_open_category) %} 
+				<input id="config_menu_open_category_no" class="hide-radio" type="radio" name="config_menu_open_category" value="0" checked="checked" />							
+				<label for="config_menu_open_category_no">{{ text_no }}</label>
+			{% else %} 
+				<input id="config_menu_open_category_no" class="hide-radio" type="radio" name="config_menu_open_category" value="0" />							
+				<label for="config_menu_open_category_no">{{ text_no }}</label>
+			{% endif %}						  
+		</div>
+	</div>
+	<div class="menu_open_page_info">
+	<span>{{ text_menu_open_special }}</span><br>
+		<div class="radio-group-infinity">
+			{% if (config_menu_open_special) %} 
+				<input id="config_menu_open_special_yes" class="hide-radio" type="radio" name="config_menu_open_special" value="1" checked="checked" />
+				<label for="config_menu_open_special_yes">{{ text_yes }}</label>
+			{% else %} 
+				<input id="config_menu_open_special_yes" class="hide-radio" type="radio" name="config_menu_open_special" value="1" />
+				<label for="config_menu_open_special_yes">{{ text_yes }}</label>
+			{% endif %} 
+				{% if (not config_menu_open_special) %} 
+				<input id="config_menu_open_special_no" class="hide-radio" type="radio" name="config_menu_open_special" value="0" checked="checked" />							
+				<label for="config_menu_open_special_no">{{ text_no }}</label>
+			{% else %} 
+				<input id="config_menu_open_special_no" class="hide-radio" type="radio" name="config_menu_open_special" value="0" />							
+				<label for="config_menu_open_special_no">{{ text_no }}</label>
+			{% endif %}						  
+		</div>
+	</div>
+	<div class="menu_open_page_info">
+	<span>{{ text_menu_open_search }}</span><br>
+		<div class="radio-group-infinity">
+			{% if (config_menu_open_search) %} 
+				<input id="config_menu_open_search_yes" class="hide-radio" type="radio" name="config_menu_open_search" value="1" checked="checked" />
+				<label for="config_menu_open_search_yes">{{ text_yes }}</label>
+			{% else %} 
+				<input id="config_menu_open_search_yes" class="hide-radio" type="radio" name="config_menu_open_search" value="1" />
+				<label for="config_menu_open_search_yes">{{ text_yes }}</label>
+			{% endif %} 
+				{% if (not config_menu_open_search) %} 
+				<input id="config_menu_open_search_no" class="hide-radio" type="radio" name="config_menu_open_search" value="0" checked="checked" />							
+				<label for="config_menu_open_search_no">{{ text_no }}</label>
+			{% else %} 
+				<input id="config_menu_open_search_no" class="hide-radio" type="radio" name="config_menu_open_search" value="0" />							
+				<label for="config_menu_open_search_no">{{ text_no }}</label>
+			{% endif %}						  
+		</div>
+	</div>
+	<div class="menu_open_page_info">
+	<span>{{ text_menu_open_information }}</span><br>
+		<div class="radio-group-infinity">
+			{% if (config_menu_open_information) %} 
+				<input id="config_menu_open_information_yes" class="hide-radio" type="radio" name="config_menu_open_information" value="1" checked="checked" />
+				<label for="config_menu_open_information_yes">{{ text_yes }}</label>
+			{% else %} 
+				<input id="config_menu_open_information_yes" class="hide-radio" type="radio" name="config_menu_open_information" value="1" />
+				<label for="config_menu_open_information_yes">{{ text_yes }}</label>
+			{% endif %} 
+				{% if (not config_menu_open_information) %} 
+				<input id="config_menu_open_information_no" class="hide-radio" type="radio" name="config_menu_open_information" value="0" checked="checked" />							
+				<label for="config_menu_open_information_no">{{ text_no }}</label>
+			{% else %} 
+				<input id="config_menu_open_information_no" class="hide-radio" type="radio" name="config_menu_open_information" value="0" />							
+				<label for="config_menu_open_information_no">{{ text_no }}</label>
+			{% endif %}						  
+		</div>
+	</div>
+	<div class="menu_open_page_info">
+	<span>{{ text_menu_open_manufacturer }}</span><br>
+		<div class="radio-group-infinity">
+			{% if (config_menu_open_manufacturer) %} 
+				<input id="config_menu_open_manufacturer_yes" class="hide-radio" type="radio" name="config_menu_open_manufacturer" value="1" checked="checked" />
+				<label for="config_menu_open_manufacturer_yes">{{ text_yes }}</label>
+			{% else %} 
+				<input id="config_menu_open_manufacturer_yes" class="hide-radio" type="radio" name="config_menu_open_manufacturer" value="1" />
+				<label for="config_menu_open_manufacturer_yes">{{ text_yes }}</label>
+			{% endif %} 
+				{% if (not config_menu_open_manufacturer) %} 
+				<input id="config_menu_open_manufacturer_no" class="hide-radio" type="radio" name="config_menu_open_manufacturer" value="0" checked="checked" />							
+				<label for="config_menu_open_manufacturer_no">{{ text_no }}</label>
+			{% else %} 
+				<input id="config_menu_open_manufacturer_no" class="hide-radio" type="radio" name="config_menu_open_manufacturer" value="0" />							
+				<label for="config_menu_open_manufacturer_no">{{ text_no }}</label>
+			{% endif %}						  
+		</div>
+	</div>
+	</div>
+</div>
+
+<div class="form-group">
+				<label class="col-sm-3 control-label">{{ text_category_add_auto }}
+				<div class="label-description-exclamation"><i class="fa fa-exclamation-triangle required"></i> {{ text_category_add_auto_description }}</div>
+				</label>
+				<div class="col-sm-9 title-setting"><button type="button" class="btn btn-success" id="autocategoryadd" data-loading-text='{{ text_creating_categories }}'>{{ btn_category_add_auto }}</button></div>
+			</div>
+<script type="text/javascript">
+$('#autocategoryadd').bind('click',function() {
+				var autocategoryadd = 1;
+				var success = 'false';				
+					$.ajax({
+						type:'get',
+						dataType:'json',
+						
+						data:'autocategoryadd=' + autocategoryadd,
+						url:'index.php?route=extension/module/settingnewstore/autocategoryadd&user_token={{ user_token }}',	
+						beforeSend: function() {
+							$('#autocategoryadd').button('loading');
+						},
+						complete: function() {
+							$('#autocategoryadd').button('reset');
+						},						
+						success: function(json){
+							if (json['success']) {							
+								location.reload(); 
+							}	
+						}
+					});				
+			
+			});
+</script>
+<div class="form-group">
+	<div class="col-sm-12 title-setting">{{ ns_text_setting_general_menu }}</div>
+</div>
+
+<div class="row">
+	{% set menu_item_row = 0 %} 
+		<div id="ns-left-block-menu" class="col-lg-3 col-md-4 vtabs">
+			<ul class="nav nav-pills nav-stacked"> 
+				{% for config_menu_item in config_menu_items %}				
+					<li id="menu-item-{{ menu_item_row }}">
+						<a data-toggle="tab" class="btn btn-primary menu-tab-link" href="#tab-menu-item-{{ menu_item_row }}" >
+							 {{ config_menu_item.namemenu[lang_id] }} 
+							<i class="fa fa-minus-circle remove_menu_item" onclick="$('#menu-item-{{ menu_item_row }}').remove(); $('#tab-menu-item-{{ menu_item_row }}').remove(); $('a[href=\'#tab-menu-item-0\']').trigger('click'); return false;"></i> 
+						</a>
+					</li>
+				{% set menu_item_row = menu_item_row + 1 %} 
+				{% endfor %} 
+					<li id="addMenuItem"><a class="btn btn-primary" onclick="addItemCategoryBanner();" title="{{ text_add }}">{{ text_add }} <i class="fa fa-plus-circle"></i> </a></li>
+			</ul>
+		</div>
+	{% set menu_item_row = 0 %}
+	<div id="ns-right-block-menu" class="col-lg-9 col-md-8" style="margin-bottom:50px;padding-bottom:10px; border-bottom:1px solid #ccc;">
+		<div class="tab-content banner-category">
+		
+			
+			{% for config_menu_item in config_menu_items %}
+				<div class="tab-pane" id="tab-menu-item-{{ menu_item_row }}">
+					<ul class="nav nav-tabs">
+						<li class="active"><a href="#tab-menu-setting-{{ menu_item_row }}" data-toggle="tab">{{ ns_tab_menu_setting }}</a></li> 
+						<li class="show_elements_{{ menu_item_row }} show_elements_category_{{ menu_item_row }}"><a href="#tab-category-{{ menu_item_row }}_options" data-toggle="tab">{{ ns_tab_options }}</a></li>
+						<li class="show_elements_{{ menu_item_row }} show_elements_manufacturer_{{ menu_item_row }}"><a href="#tab-manufacturer-{{ menu_item_row }}_options" data-toggle="tab">{{ ns_tab_options }}</a></li> 								
+						<li class="show_elements_{{ menu_item_row }} show_elements_information_{{ menu_item_row }}"><a href="#tab-information-{{ menu_item_row }}_options" data-toggle="tab">{{ ns_tab_options }}</a></li> 								
+						<li class="show_elements_{{ menu_item_row }} show_elements_product_{{ menu_item_row }}"><a href="#tab-product-{{ menu_item_row }}_options" data-toggle="tab">{{ ns_tab_options }}</a></li> 								
+						<li class="show_elements_{{ menu_item_row }} show_elements_freelink_{{ menu_item_row }}"><a href="#tab-freelink-{{ menu_item_row }}_options" data-toggle="tab">{{ ns_tab_options }}</a></li>
+						<li class="show_elements_{{ menu_item_row }} show_elements_link_{{ menu_item_row }}"><a href="#tab-link-{{ menu_item_row }}_options" data-toggle="tab">{{ ns_tab_options }}</a></li> 																
+						<li class="show_elements_{{ menu_item_row }} show_elements_html_{{ menu_item_row }}"><a href="#tab-html-{{ menu_item_row }}_options" data-toggle="tab">{{ ns_tab_html }}</a></li> 
+						<li class="show_elements_{{ menu_item_row }} show_elements_add_html_{{ menu_item_row }}"><a href="#tab-add-{{ menu_item_row }}-html" data-toggle="tab">{{ ns_tab_add_html }}</a></li> 
+					</ul>
+					<div class="tab-content">
+						<div class="tab-pane active in" id="tab-menu-setting-{{ menu_item_row }}">					
+							<div class="form-group required">
+								<label class="col-sm-3 control-label">{{ ns_text_menu_name }}</label>
+								<div class="col-sm-5">
+									{% for language in languages %} 
+										<div class="input-group pull-left">
+											<span class="input-group-addon"><img src="language/{{ language.code }}/{{ language.code }}.png" title="{{ language.name }}" /></span>
+											<input id="namemenu_{{ menu_item_row }}_{{ language.language_id }}" onChange="change_name_menu('{{ menu_item_row }}', '{{ language.language_id }}')" class="form-control" type="text" name="config_menu_item[{{ menu_item_row }}][namemenu][{{ language.language_id }}]" value="{{ config_menu_item.namemenu[language.language_id] }}" />
+										</div>
+									{% endfor %} 
+								</div>
+							</div>
+							<div class="form-group additional_menu">
+								<label class="col-sm-3 control-label" for="input-additional-menu">{{ ns_text_additional_menu }}</label>
+								<div class="col-sm-5">
+									<select name="config_menu_item[{{ menu_item_row }}][additional_menu]" id="input-status-additional-menu" class="form-control">
+										{% if (config_menu_item.additional_menu == 'additional') %} 
+											<option value="additional" selected="selected">{{ text_enabled }}</option>
+											<option value="left">{{ text_disabled }}</option>
+										{% else %} 
+											<option value="additional">{{ text_enabled }}</option>
+											<option value="left" selected="selected">{{ text_disabled }}</option>
+										{% endif %} 
+									</select>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-3 control-label">{{ ns_text_menu_link }}</label>
+								<div class="col-sm-5">
+									{% for language in languages %} 
+										<div class="input-group pull-left">
+											<span class="input-group-addon"><img src="language/{{ language.code }}/{{ language.code }}.png" title="{{ language.name }}" /></span>
+											<input class="form-control" type="text" name="config_menu_item[{{ menu_item_row }}][link][{{ language.language_id}}]" value="{{ config_menu_item.link[language.language_id] is defined ? config_menu_item.link[language.language_id]: '' }}" />
+										</div>
+									{% endfor %} 
+								</div>
+							</div>
+							<div class="form-group required">
+								<label class="col-sm-3 control-label">{{ ns_text_type }}</label>
+								<div class="col-sm-5">
+									<select onChange="sel_type_category('{{ menu_item_row }}')"  name="config_menu_item[{{ menu_item_row }}][menu_type]" id="input-menu_type_{{ menu_item_row }}" class="form-control">											
+										<option value="category" {% if (config_menu_item.menu_type == 'category') %} selected="selected" {% endif %}>{{ ns_text_type_category }}</option>
+										<option value="html" {% if (config_menu_item.menu_type == 'html') %} selected="selected" {% endif %}>{{ ns_text_type_html }}</option>
+										<option value="manufacturer" {% if (config_menu_item.menu_type == 'manufacturer') %} selected="selected" {% endif %}>{{ ns_text_type_manufacturer }}</option>
+										<option value="information" {% if (config_menu_item.menu_type == 'information') %} selected="selected" {% endif %}>{{ ns_text_type_information }}</option>
+										<option value="product" {% if (config_menu_item.menu_type == 'product') %} selected="selected" {% endif %}>{{ ns_text_type_product }}</option>											
+										<option value="freelink" {% if (config_menu_item.menu_type == 'freelink') %} selected="selected" {% endif %}>{{ ns_text_type_freelink }}</option>											
+										<option value="link" {% if (config_menu_item.menu_type == 'link') %} selected="selected" {% endif %}>{{ ns_text_type_link }}</option>
+									</select>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-3 control-label" for="input-status">{{ ns_text_status }}</label>
+								<div class="col-sm-5">
+									<select name="config_menu_item[{{ menu_item_row }}][status]" id="input-status" class="form-control">
+										{% if (config_menu_item.status) %} 
+											<option value="1" selected="selected">{{ text_enabled }}</option>
+											<option value="0">{{ text_disabled }}</option>
+										{% else %} 
+											<option value="1">{{ text_enabled }}</option>
+											<option value="0" selected="selected">{{ text_disabled }}</option>
+										{% endif %} 
+									</select>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-3 control-label" for="input-status">{{ ns_text_sticker_parent }}</label>
+								<div class="col-sm-5">
+									<select class="form-control" name="config_menu_item[{{ menu_item_row }}][sticker_parent]">
+										<option value="0">{{ ns_text_select_sticker }}</option>					
+										<option value="new" {% if (config_menu_item.sticker_parent == 'new') %} selected="selected" {% endif %}>{{ "NEW" }}</option>
+										<option value="top" {% if (config_menu_item.sticker_parent == 'top') %} selected="selected" {% endif %}>{{ "TOP" }}</option>
+										<option value="sale" {% if (config_menu_item.sticker_parent == 'sale') %} selected="selected" {% endif %}>{{ "SALE" }}</option>
+									</select>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-3 control-label">{{ ns_text_sort_menu }}</label>
+								<div class="col-sm-5">
+									<input class="form-control" type="text" name="config_menu_item[{{ menu_item_row }}][sort_menu]" value="{{ config_menu_item.sort_menu }}" />
+								</div>
+							</div>	
+							<div class="form-group">
+								<label class="col-sm-3 control-label" for="input-image">{{ ns_text_thumb }}</label>
+								<div class="col-sm-5">
+									<a href="" id="thumb-image{{ menu_item_row }}" data-toggle="image" class="img-thumbnail"><img src="{{ config_menu_item.thumb }}" alt="" title="" data-placeholder="{{ placeholder }}" /></a>
+									<input type="hidden" name="config_menu_item[{{ menu_item_row }}][image]" value="{{ config_menu_item.image }}" id="input-image{{ menu_item_row }}" />
+								</div>								
+							</div>								
+						</div>
+						<div class="tab-pane fade" id="tab-category-{{ menu_item_row }}_options">			
+							<div class="form-group required">
+								<label class="col-sm-4 control-label" for="input_variant_category_{{ menu_item_row }}">{{ ns_type_dropdown_list }}</label>
+								<div class="col-sm-6">
+									<select onChange="sel_type_category('{{ menu_item_row }}')" name="config_menu_item[{{ menu_item_row }}][variant_category]" id="input_variant_category_{{ menu_item_row }}" class="form-control">
+										<option value="simple" {% if (config_menu_item.variant_category == 'simple') %} selected="selected" {% endif %}>{{ ns_type_dropdown_simple }}</option>
+										<option value="full" {% if (config_menu_item.variant_category == 'full') %} selected="selected" {% endif %}>{{ ns_type_dropdown_full }}</option>
+										<option value="full_image" {% if (config_menu_item.variant_category == 'full_image') %} selected="selected" {% endif %}>{{ ns_type_dropdown_full_image }}</option>
+									</select>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-4 control-label" for="input-category_show_subcategory">{{ ns_show_sub_categories }}</label>
+								<div class="col-sm-6">
+									<select id="input-category_show_subcategory" name="config_menu_item[{{ menu_item_row }}][show_sub_category]" class="form-control">
+										{% if (config_menu_item.show_sub_category) %} 
+											<option value="1" selected="selected">{{ text_enabled }}</option>
+											<option value="0">{{ text_disabled }}</option>
+										{% else %} 
+											<option value="1">{{ text_enabled }}</option>
+											<option value="0" selected="selected">{{ text_disabled }}</option>
+										{% endif %} 
+									</select>										
+								</div>
+							</div>		
+							<div class="form-group">
+								<label class="col-sm-4 control-label">{{ ns_text_product_width }}</label>
+								<div class="col-sm-6">
+									<input type="text" name="config_menu_item[{{ menu_item_row }}][category_img_width]" value="{{ config_menu_item.category_img_width is defined ? config_menu_item.category_img_width : '50' }}" placeholder="{{ ns_text_product_width }}" class="form-control" />						 
+								</div>
+							</div>		
+							<div class="form-group">
+								<label class="col-sm-4 control-label">{{ ns_text_product_height }}</label>
+								<div class="col-sm-6">
+									<input type="text" name="config_menu_item[{{ menu_item_row }}][category_img_height]" value="{{ config_menu_item.category_img_height is defined ? config_menu_item.category_img_height : '50' }}" placeholder="{{ ns_text_product_height }}" class="form-control" />								 
+								</div>
+							</div>							
+							<div class="form-group">
+								<label class="col-sm-2 control-label" for="input-category-{{ menu_item_row }}">{{ ns_text_category }}</label>
+								<div class="col-sm-10">
+									<input type="text" name="category" value="" placeholder="{{ ns_text_category }}" id="input-category-{{ menu_item_row }}" class="form-control" />
+									<div id="category-category-{{ menu_item_row }}" class="well well-sm" style="height: 450px; overflow: auto;">
+										{% if (config_menu_item.category_list_sel is not empty) %} 
+											{% for category_list in config_menu_item.category_list_sel %} 
+												<div class="row-category-menu" id="category-item-{{ menu_item_row }}-{{ category_list['category_id'] }}">
+													<i class="btn btn-danger fa fa-minus-circle"></i>
+													<input class="form-control input-sort-category" size="3" type="text" name="config_menu_item[{{ menu_item_row }}][sort_category][{{ category_list.category_id }}]" value="{{ sort_category[menu_item_row][category_list.category_id] }}"/>
+													<select class="input-sticker-category" name="config_menu_item[{{ menu_item_row }}][sticker][{{ category_list.category_id }}]">
+														<option value="0">{{ ns_text_select_sticker }}</option>					
+														<option value="new" {% if (sticker_list_new[menu_item_row][category_list['category_id']] is defined) %} selected="selected" {% endif %}>{{ "NEW" }}</option>
+														<option value="top" {% if (sticker_list_top[menu_item_row][category_list['category_id']] is defined) %} selected="selected" {% endif %}>{{ "TOP" }}</option>
+														<option value="sale" {% if (sticker_list_sale[menu_item_row][category_list['category_id']] is defined) %} selected="selected" {% endif %}>{{ "SALE" }}</option>
+													</select>
+													{{ category_list['name'] }} 
+													<input type="hidden" name="config_menu_item[{{ menu_item_row }}][category_list][]" value="{{ category_list.category_id }}" />
+												</div>
+											{% endfor %}	
+										{% endif %}	
+									</div>
+								</div>
+							</div>							
+						</div>
+						<div class="tab-pane fade" id="tab-html-{{ menu_item_row }}_options">
+							<ul class="nav nav-tabs" id="language_html_{{ menu_item_row }}">
+								{% for language in languages %} 
+									<li><a href="#language_html_{{ menu_item_row }}_{{ language.language_id }}" data-toggle="tab"><img src="language/{{ language.code }}/{{ language.code }}.png" title="{{ language.name }}" /> {{ language.name }}</a></li>
+								{% endfor %} 
+							</ul>
+							<div class="tab-content">
+								{% for language in languages %} 
+									<div class="tab-pane" id="language_html_{{ menu_item_row }}_{{ language.language_id }}">
+										<div class="form-group required">
+											<label class="col-sm-2 control-label" for="html_description_{{ menu_item_row }}_{{ language.language_id }}">{{ ns_text_html_description }}</label>
+											<div class="col-sm-10">
+												<textarea class="form-control summernote" name="config_menu_item[{{ menu_item_row }}][html_block][{{ language.language_id }}]" id="html_description_{{ menu_item_row }}_{{ language.language_id }}">{{ config_menu_item.html_block[language.language_id] is defined ? config_menu_item.html_block[language.language_id] : '' }}</textarea>
+											</div>
+										</div>
+									</div>
+								{% endfor %} 
+							</div>	
+						</div>
+						<div class="tab-pane fade" id="tab-manufacturer-{{ menu_item_row }}_options">
+							<div class="form-group required">
+								<label class="col-sm-4 control-label">{{ ns_type_dropdown_list }}</label>
+								<div class="col-sm-6">
+									<select name="config_menu_item[{{ menu_item_row }}][type_manuf]" class="form-control">
+										<option value="type_image" {% if (config_menu_item['type_manuf'] == "type_image") %} selected="selected" {% endif %}>{{ ns_type_manuf_image }}</option>
+										<option value="type_alphabet" {% if (config_menu_item['type_manuf'] == "type_alphabet") %} selected="selected" {% endif %}>{{ ns_type_manuf_alphabet_image }}</option>
+										
+									</select>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label">{{ ns_text_manufacturer }}</label>
+								<div class="col-sm-10">
+									<div class="well well-sm">
+										{% for manufacturer in manufacturers_list %}
+											<div class="checkbox">
+												<label>
+													<input type="checkbox" name="config_menu_item[{{ menu_item_row }}][manufacturers_list][]" {% if (manufacturers_list_selected[menu_item_row][manufacturer['manufacturer_id']] is defined) %} checked="checked" {% endif %} value="{{ manufacturer.manufacturer_id }}"/> {{ manufacturer.name }}
+												</label>
+											</div>
+										{% endfor %} 
+									</div>
+								</div>
+							</div>	
+						</div>
+						<div class="tab-pane fade" id="tab-information-{{ menu_item_row }}_options">
+							<div class="form-group">
+								<label class="col-sm-2 control-label">{{ ns_text_information }}</label>
+								<div class="col-sm-10">
+									<div class="well well-sm">
+										{% for information in informations_list %} 
+											<div class="checkbox">
+												<label>
+													<input type="checkbox" name="config_menu_item[{{ menu_item_row }}][informations_list][]" {% if (informations_list_selected[menu_item_row][information['information_id']] is defined) %} checked="checked" {% endif %} value="{{ information.information_id }}"/> {{ information.title }}
+												</label>
+											</div>
+										{% endfor %} 				
+									</div>
+								</div>
+							</div>
+						</div>
+						
+						<div class="tab-pane fade" id="tab-product-{{ menu_item_row }}_options">
+							<div class="form-group">
+								<label class="col-sm-2 control-label" for="input-product_width">{{ ns_text_product_width }}</label>
+								<div class="col-sm-10">
+									<input type="text" name="config_menu_item[{{ menu_item_row }}][product_width]" value="{{ config_menu_item.product_width is defined ? config_menu_item.product_width : '50' }}" placeholder="{{ ns_text_product_width }}" id="input-product_width" class="form-control" />									 
+								</div>
+							</div>		
+							<div class="form-group">
+								<label class="col-sm-2 control-label" for="input-product_height">{{ ns_text_product_height }}</label>
+								<div class="col-sm-10">
+									<input type="text" name="config_menu_item[{{ menu_item_row }}][product_height]" value="{{ config_menu_item.product_height is defined ? config_menu_item.product_height : '50' }}" placeholder="{{ ns_text_product_height }}" id="input-product_height" class="form-control" />									 
+								</div>
+							</div>		
+							<div class="form-group">
+								<label class="col-sm-2 control-label" for="input-product-{{ menu_item_row }}">{{ ns_text_product }}</label>
+								<div class="col-sm-10">
+									<input type="text" name="product" value="" placeholder="{{ ns_text_product }}" id="input-product-{{ menu_item_row }}" class="form-control" />
+									<div id="product-product-{{ menu_item_row }}" class="well well-sm" style="height: 450px; overflow: auto;">
+										{% if (config_menu_item.products_list_sel is not empty) %} 
+											{% for products_list in config_menu_item.products_list_sel %} 
+											<div id="product-item-{{ menu_item_row }}-{{ products_list.product_id }}"><i class="fa fa-minus-circle"></i> {{ products_list.name }} 
+												<input type="hidden" name="config_menu_item[{{ menu_item_row }}][products_list][]" value="{{ products_list.product_id }}" />
+											</div>
+											{% endfor %} 
+										{% endif %} 
+									</div>
+								</div>
+							</div>
+						</div>
+						
+						<div class="tab-pane fade" id="tab-freelink-{{ menu_item_row }}_options">
+							<div class="form-group required">
+								<label class="col-sm-4 control-label" for="input_variant_category_{{ menu_item_row }}">{{ ns_type_dropdown_list }}</label>
+								<div class="col-sm-6">
+									<select onChange="sel_type_category('{{ menu_item_row }}')" name="config_menu_item[{{ menu_item_row }}][sfl][variant_category]" class="form-control">
+										{% if (config_menu_item['sfl']['variant_category'] is defined and config_menu_item['sfl']['variant_category'] == 'simple') %}
+										<option value="simple" {% if (config_menu_item['sfl']['variant_category'] == "simple") %} selected="selected" {% endif %}>{{ ns_type_dropdown_simple }}</option>
+										<option value="full">{{ ns_type_dropdown_full }}</option>
+										<option value="full_image">{{ ns_type_dropdown_full_image }}</option>
+										{% elseif (config_menu_item['sfl']['variant_category'] is defined and config_menu_item['sfl']['variant_category'] == 'full') %}
+										<option value="simple">{{ ns_type_dropdown_simple }}</option>
+										<option value="full" {% if (config_menu_item['sfl']['variant_category'] == "full") %} selected="selected" {% endif %}>{{ ns_type_dropdown_full }}</option>
+										<option value="full_image">{{ ns_type_dropdown_full_image }}</option>
+										{% elseif (config_menu_item['sfl']['variant_category'] is defined and config_menu_item['sfl']['variant_category'] == 'full_image') %}
+										<option value="simple">{{ ns_type_dropdown_simple }}</option>
+										<option value="full">{{ ns_type_dropdown_full }}</option>
+										<option value="full_image" {% if (config_menu_item['sfl']['variant_category'] == "full_image") %} selected="selected" {% endif %}>{{ ns_type_dropdown_full_image }}</option>
+										{% else %} 
+										<option value="simple">{{ ns_type_dropdown_simple }}</option>
+										<option value="full">{{ ns_type_dropdown_full }}</option>
+										<option value="full_image">{{ ns_type_dropdown_full_image }}</option>
+										{% endif %} 
+									</select>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-4 control-label">{{ ns_text_product_width }}</label>
+								<div class="col-sm-6">
+									<input type="text" name="config_menu_item[{{ menu_item_row }}][sfl][freelink_img_width]" value="{{ config_menu_item['sfl']['freelink_img_width'] is defined ? config_menu_item['sfl']['freelink_img_width'] : '50' }}" placeholder="{{ ns_text_product_width }}" class="form-control" />									 
+								</div>
+							</div>	
+							<div class="form-group">
+								<label class="col-sm-4 control-label">{{ ns_text_product_height }}</label>
+								<div class="col-sm-6">
+									<input type="text" name="config_menu_item[{{ menu_item_row }}][sfl][freelink_img_height]" value="{{ config_menu_item['sfl']['freelink_img_height'] is defined ? config_menu_item['sfl']['freelink_img_height'] : '50' }}" placeholder="{{ ns_text_product_height }}" class="form-control" />									 
+								</div>
+							</div>
+							<ul class="nav nav-tabs" id="language-freelink-{{ menu_item_row }}">
+							{% for language in languages %} 
+							<li><a href="#language-freelink-{{ menu_item_row }}-{{ language['language_id'] }}" data-toggle="tab"><img src="language/{{ language['code'] }}/{{ language['code'] }}.png" title="{{ language['name'] }}" /> {{ language['name'] }}</a></li>
+							{% endfor %} 
+						</ul>
+						{% for language in languages %} 
+							<div class="tab-pane" id="language-freelink-{{ menu_item_row }}-{{ language['language_id'] }}">	
+								<table id="freelinkitems{{ menu_item_row }}" class="table table-bordered table-hover">
+									<thead>
+										<tr>
+											<td>{{ ns_text_thumb }}</td>
+											<td>{{ ns_text_menu_name }}</td>
+											<td>{{ ns_text_type_link }}</td>
+											<td>{{ column_3level }}</td>
+											<td>{{ ns_text_sort_menu }}</td>
+											<td></td>
+										</tr>
+									</thead>
+									<tbody>
+									{% set freelinkitem_row = 0 %} 
+									{% if (config_menu_item['banner_items'][language['language_id']] is defined) %}
+									{% for banner_item in config_menu_item['banner_items'][language['language_id']] %} 
+										<tr id="freelinkitem-row{{ menu_item_row }}{{ freelinkitem_row }}">
+											<td class="text-center">
+												<a href="" id="thumb-image-freelink-{{ menu_item_row }}{{ freelinkitem_row }}" data-toggle="image" class="img-thumbnail"><img src="{{ banner_item['thumb'] }}" alt="" title="" data-placeholder="{{ placeholder }}"  /></a><input type="hidden" name="config_menu_item[{{ menu_item_row }}][banner_item][{{ language['language_id'] }}][{{ freelinkitem_row }}][image]" value="{{ banner_item['image'] }}" id="input-image-freelink-{{ menu_item_row }}{{ freelinkitem_row }}" />
+											</td>
+											<td class="text-left">
+												<input class="form-control" type="text" name="config_menu_item[{{ menu_item_row }}][banner_item][{{ language['language_id'] }}][{{ freelinkitem_row }}][title]" value="{{ banner_item['title'] }}" />
+											</td>
+											<td class="text-left">
+												<input class="form-control" type="text" name="config_menu_item[{{ menu_item_row }}][banner_item][{{ language['language_id'] }}][{{ freelinkitem_row }}][link]" value="{{ banner_item['link'] }}" />
+											</td>
+											<td class="text-left ns-input-group" style="min-width:250px;">
+												{% set freelinkitem_row3level = 0 %} 
+												<div id="subcatfreelink{{ menu_item_row }}{{ freelinkitem_row }}">
+													{% if (banner_item['subcat'] is defined) %} 
+													{% for subcat3level in banner_item['subcat'] %}
+														<div id="subcatfreelink-row-{{ menu_item_row }}{{ freelinkitem_row }}{{ freelinkitem_row3level }}">
+															<div class="input-group">
+																<input class="form-control" type="text" name="config_menu_item[{{ menu_item_row }}][banner_item][{{ language['language_id'] }}][{{ freelinkitem_row }}][subcat][{{ freelinkitem_row3level }}][title]" value="{{ subcat3level['title'] is defined ? subcat3level['title'] : '' }}" />			
+																<input class="form-control" type="text" name="config_menu_item[{{ menu_item_row }}][banner_item][{{ language['language_id'] }}][{{ freelinkitem_row }}][subcat][{{ freelinkitem_row3level }}][link]" value="{{ subcat3level['link'] is defined ? subcat3level['link'] : '' }}" />
+																<span class="input-group-addon"><a class="text-danger" onclick="$('#language-freelink-{{ menu_item_row }}-{{ language['language_id'] }} #subcatfreelink-row-{{ menu_item_row }}{{ freelinkitem_row }}{{ freelinkitem_row3level }}').remove();" data-toggle="tooltip" title="{{ text_delete }}"><i class="fa fa-trash-o"></i></a></span>
+															</div>
+														<hr>
+														{% set freelinkitem_row3level = freelinkitem_row3level + 1 %} 
+														</div>	
+													{% endfor %} 
+													{% endif %} 
+												<input type="hidden" id="subcatfreelink-row-number-{{ menu_item_row }}{{ freelinkitem_row }}" value="{{ freelinkitem_row3level }}">	
+												</div>
+												<a class="btn btn-success" onclick="addFreelinkItem3level('{{ menu_item_row }}','{{ freelinkitem_row }}','{{ language['language_id'] }}');">{{ text_add }}</a>
+											</td>
+											<td class="text-left">
+												<input  class="form-control" type="text" name="config_menu_item[{{ menu_item_row }}][banner_item][{{ language['language_id'] }}][{{ freelinkitem_row }}][sort]" value="{{ banner_item['sort'] }}" />
+											</td>
+											<td class="text-right">
+												<a class="btn btn-danger" onclick="$('#freelinkitem-row{{ menu_item_row }}{{ freelinkitem_row }}').remove();" data-toggle="tooltip" title="{{ text_delete }}"><i class="fa fa-trash-o"></i></a>
+											</td>
+										</tr>
+									{% set freelinkitem_row = freelinkitem_row + 1 %} 
+									{% endfor %} 
+									{% endif %} 
+									<input type="hidden" id="freelink-row-number-{{ menu_item_row }}" value="{{ freelinkitem_row }}">	
+									</tbody>
+									<tfoot>
+										<tr>
+											<td colspan="4"></td>
+											<td class="text-right"><a class="btn btn-primary" onclick="addFreelinkItem('{{ menu_item_row }}','{{ language['language_id'] }}');" data-toggle="tooltip" title="{{ text_add }}"><i class="fa fa-plus-circle"></i></a></td>
+										</tr>
+									</tfoot>
+								</table>
+							</div>
+						{% endfor %}
+						</div>
+						<div class="tab-pane fade" id="tab-link-{{ menu_item_row }}_options">
+							<div class="tab-content">
+								<div class="col-sm-3">{{ ns_text_link_options }}</div>
+								<div class="col-sm-9">
+									<select id="input-new_blank" name="config_menu_item[{{ menu_item_row }}][new_blank]" class="form-control">
+										{% if (config_menu_item.new_blank) %} 
+											<option value="1" selected="selected">{{ text_enabled }}</option>
+											<option value="0">{{ text_disabled }}</option>
+										{% else %} 
+											<option value="1">{{ text_enabled }}</option>
+											<option value="0" selected="selected">{{ text_disabled }}</option>
+										{% endif %} 
+									</select>
+								</div>
+							</div>
+						</div>	
+						<div class="tab-pane fade" id="tab-add-{{ menu_item_row }}-html">
+							<div class="form-group">
+								<label class="col-sm-4 control-label" for="input_use_html_category">{{ ns_text_add_html }}</label>
+								<div class="col-sm-8">
+									<select id="input_use_html_category" name="config_menu_item[{{ menu_item_row }}][use_add_html]" class="form-control">
+										{% if (config_menu_item.use_add_html) %} 
+										<option value="1" selected="selected">{{ text_enabled }}</option>
+										<option value="0">{{ text_disabled }}</option>
+										{% else %} 
+										<option value="1">{{ text_enabled }}</option>
+										<option value="0" selected="selected">{{ text_disabled }}</option>
+										{% endif %} 
+									</select>								
+								</div>
+							</div>
+							<ul class="nav nav-tabs" id="language_add_html_{{ menu_item_row }}">
+								{% for language in languages %} 
+									<li><a href="#language_add_html_{{ menu_item_row }}_{{ language.language_id }}" data-toggle="tab"><img src="language/{{ language.code }}/{{ language.code }}.png" title="{{ language.name }}" /> {{ language.name }}</a></li>
+								{% endfor %} 
+							</ul>
+							<div class="tab-content">							
+								{% for language in languages %} 
+									<div class="tab-pane" id="language_add_html_{{ menu_item_row }}_{{ language.language_id }}">
+										<div class="form-group required">
+											<label class="col-sm-2 control-label" for="input_add_html_description_{{ menu_item_row }}_{{ language.language_id }}">{{ ns_text_html_description }}</label>
+											<div class="col-sm-10">
+												<textarea class="form-control" data-toggle="summernote" name="config_menu_item[{{ menu_item_row }}][add_html][{{ language.language_id }}]" id="input_add_html_description_{{ menu_item_row }}_{{ language.language_id }}" >{{ config_menu_item.add_html[language.language_id] is defined ? config_menu_item.add_html[language.language_id] : '' }}</textarea>
+											</div>
+										</div>
+									</div>
+								{% endfor %} 
+							</div>
+						</div>
+						
+						
+					</div>
+				
+				</div>
+				
+<script type="text/javascript">
+$(document).ready(function() {	
+	sel_type_category('{{ menu_item_row }}');
+	$('#language_add_html_{{ menu_item_row }} a:first').tab('show');
+	$('#language_html_{{ menu_item_row }} a:first').tab('show');
+	$('#language-freelink-{{ menu_item_row }} a:first').tab('show');
+});
+
+$('#input-category-{{ menu_item_row }}').autocomplete({
+	'source': function(request, response) {
+		$.ajax({
+			url: 'index.php?route=catalog/category/autocomplete&user_token={{ user_token }}&filter_name=' +  encodeURIComponent(request),
+			dataType: 'json',
+			success: function(json) {				
+				response($.map(json, function(item) {
+					return {
+						label: item['name'],
+						value: item['category_id']
+					}
+				}));
+			}
+		});
+	},
+	'select': function(item) {
+		$('#input-category-{{ menu_item_row }}').val('');		
+		$('#category-item-{{ menu_item_row }}-' + item['value']).remove();	
+		cathtml1  = '<div class="row-category-menu" id="category-item-{{ menu_item_row }}' + item['value'] + '">';
+		cathtml1 += '<i class="btn btn-danger fa fa-minus-circle"></i> ';
+		cathtml1 += '<input class="form-control input-sort-category" size="3" type="text" name="config_menu_item[{{ menu_item_row }}][sort_category][' + item['value'] + ']" value="0"/>';
+		cathtml1 += '<select class="input-sticker-category" name="config_menu_item[{{ menu_item_row }}][sticker][' + item['value'] + ']">';
+		cathtml1 += '	<option value="0">{{ ns_text_select_sticker }}</option>';					
+		cathtml1 += '	<option value="new">{{ "NEW" }}</option>';
+		cathtml1 += '	<option value="top">{{ "TOP" }}</option>';
+		cathtml1 += '	<option value="sale">{{ "SALE" }}</option>';
+		cathtml1 += '</select>';
+		cathtml1 += '<span>'+item['label']+'</span>';		
+		cathtml1 += '<input type="hidden" name="config_menu_item[{{ menu_item_row }}][category_list][]" value="' + item['value'] + '" /></div>';
+		
+		$('#category-category-{{ menu_item_row }}').append(cathtml1);	
+	}
+});
+$('#category-category-{{ menu_item_row }}').delegate('.fa-minus-circle', 'click', function() {
+	$(this).parent().remove();
+});
+
+$('#input-product-{{ menu_item_row }}').autocomplete({
+	'source': function(request, response) {
+		$.ajax({
+			url: 'index.php?route=catalog/product/autocomplete&user_token={{ user_token }}&filter_name=' +  encodeURIComponent(request),
+			dataType: 'json',
+			success: function(json) {
+				response($.map(json, function(item) {
+					return {
+						label: item['name'],
+						value: item['product_id']
+					}
+				}));
+			}
+		});
+	},
+	'select': function(item) {
+		$('#input-product-{{ menu_item_row }}').val('');		
+		$('#product-item-{{ menu_item_row }}' + item['value']).remove();		
+		$('#product-product-{{ menu_item_row }}').append('<div id="product-item-{{ menu_item_row }}' + item['value'] + '"><i class="fa fa-minus-circle"></i> ' + item['label'] + '<input type="hidden" name="config_menu_item[{{ menu_item_row }}][products_list][]" value="' + item['value'] + '" /></div>');	
+	}
+});
+$('#product-product-{{ menu_item_row }}').delegate('.fa-minus-circle', 'click', function() {
+	$(this).parent().remove();
+});
+</script>
+			{% set menu_item_row = menu_item_row + 1 %} 
+			{% endfor %} 
+
+
+
+												
+<script type="text/javascript">
+$('a[href=\'#tab-menu-item-0\']').trigger('click');
+var menu_item_row = {{ menu_item_row }};
+
+function addItemCategoryBanner() {
+	html  = '<div class="tab-pane" id="tab-menu-item-' + menu_item_row + '">';
+	html +='<ul class="nav nav-tabs">';
+	html +='	<li class="active"><a href="#tab-menu-setting-'+ menu_item_row +'" data-toggle="tab">{{ ns_tab_menu_setting }}</a></li>';
+	html +='	<li class="show_elements_' + menu_item_row +' show_elements_category_'+ menu_item_row +'"><a href="#tab-category-'+ menu_item_row +'_options" data-toggle="tab">{{ ns_tab_options }}</a></li> ';
+	html +='	<li class="show_elements_'+ menu_item_row +' show_elements_manufacturer_'+ menu_item_row +'"><a href="#tab-manufacturer-'+ menu_item_row +'_options" data-toggle="tab">{{ ns_tab_options }}</a></li>'; 								
+	html +='	<li class="show_elements_'+ menu_item_row +' show_elements_information_'+ menu_item_row +'"><a href="#tab-information-'+ menu_item_row +'_options" data-toggle="tab">{{ ns_tab_options }}</a></li>'; 								
+	html +='	<li class="show_elements_'+ menu_item_row +' show_elements_product_'+ menu_item_row +'"><a href="#tab-product-'+ menu_item_row +'_options" data-toggle="tab">{{ ns_tab_options }}</a></li>'; 
+	html +='	<li class="show_elements_'+ menu_item_row +' show_elements_link_'+ menu_item_row +'"><a href="#tab-link-'+ menu_item_row +'_options" data-toggle="tab">{{ ns_tab_options }}</a></li>'; 
+	html +='    <li class="show_elements_'+ menu_item_row +' show_elements_freelink_'+ menu_item_row +'"><a href="#tab-freelink-'+ menu_item_row +'_options" data-toggle="tab">{{ ns_tab_options }}</a></li>';
+	html +='	<li class="show_elements_' + menu_item_row +' show_elements_html_'+ menu_item_row +'"><a href="#tab-html-'+ menu_item_row +'_options" data-toggle="tab">{{ ns_tab_html }}</a></li> ';
+	html +='	<li class="show_elements_' + menu_item_row +' show_elements_add_html_'+menu_item_row+'"><a href="#tab-add-'+ menu_item_row +'-html" data-toggle="tab">{{ ns_tab_add_html }}</a></li>';	
+								
+	
+	html +='</ul>';
+	
+	html +='<div class="tab-content">';
+	html +='	<div class="tab-pane active in" id="tab-menu-setting-'+ menu_item_row +'">';
+				
+	html +='<div class="form-group required">';
+	html +='	<label class="col-sm-3 control-label">{{ ns_text_menu_name }}</label>';
+	html +='	<div class="col-sm-5">';
+	html +='		{% for language in languages %}';
+	html +='			<div class="input-group pull-left">';
+	html +='				<span class="input-group-addon"><img src="language/{{ language['code'] }}/{{ language['code'] }}.png" title="{{ language['name'] }}" /></span>';
+	html +='					<input id="namemenu_'+ menu_item_row +'_{{ language['language_id'] }}" onChange="change_name_menu('+ menu_item_row +','+{{ language['language_id'] }}+')" class="form-control" type="text" name="config_menu_item['+ menu_item_row +'][namemenu][{{ language['language_id'] }}]" value="" />';
+	html +='			</div>';
+	html +='		{% endfor %}';
+	html +='	</div>';
+	html +='</div>';
+	
+	html +='	<div class="form-group additional_menu">';
+	html +='		<label class="col-sm-3 control-label" for="input-additional-menu">{{ ns_text_additional_menu }}</label>';
+	html +='		<div class="col-sm-5">';
+	html +='			<select name="config_menu_item['+ menu_item_row +'][additional_menu]" id="input-status-additional-menu" class="form-control">';			
+	html +='				<option value="additional">{{ text_enabled }}</option>';
+	html +='				<option value="left" selected="selected">{{ text_disabled }}</option>';
+	html +='			</select>';
+	html +='		</div>';
+	html +='	</div>';
+	
+	html +='<div class="form-group">';
+	html +='	<label class="col-sm-3 control-label">{{ ns_text_menu_link }}</label>';
+	html +='	<div class="col-sm-5">';
+	html +='		{% for language in languages %}';
+	html +='			<div class="input-group pull-left">';
+	html +='				<span class="input-group-addon"><img src="language/{{ language['code'] }}/{{ language['code'] }}.png" title="{{ language['name'] }}" /></span>';
+	html +='				<input class="form-control" type="text" name="config_menu_item['+ menu_item_row +'][link][{{ language['language_id'] }}]" value="" />';
+	html +='			</div>';
+	html +='		{% endfor %}';
+	html +='	</div>';
+	html +='</div>';
+	
+	html +='<div class="form-group required">';
+	html +='	<label class="col-sm-3 control-label">{{ ns_text_type }}</label>';
+	html +='	<div class="col-sm-5">';
+	html +='		<select onChange="sel_type_category('+menu_item_row+')" name="config_menu_item['+ menu_item_row +'][menu_type]" id="input-menu_type_'+ menu_item_row +'" class="form-control">';
+	html +='			<option value="category">{{ ns_text_type_category }}</option>';
+	html +='			<option value="html">{{ ns_text_type_html }}</option>';
+	html +='			<option value="manufacturer">{{ ns_text_type_manufacturer }}</option>';
+	html +='			<option value="information">{{ ns_text_type_information }}</option>';
+	html +='			<option value="product">{{ ns_text_type_product }}</option>';
+	html +='			<option value="freelink">{{ ns_text_type_freelink }}</option>';
+	html +='			<option value="link">{{ ns_text_type_link }}</option>';
+	html +='		</select>';
+	html +='	</div>';
+	html +='</div>';
+	html +='	<div class="form-group">';
+	html +='		<label class="col-sm-3 control-label" for="input-status">{{ ns_text_sticker_parent }}</label>';
+	html +='		<div class="col-sm-5">';
+	html +='			<select class="form-control" name="config_menu_item['+ menu_item_row +'][sticker_parent]">';
+	html +='				<option value="0">{{ ns_text_select_sticker }}</option>	';				
+	html +='				<option value="new">{{ "NEW" }}</option>';
+	html +='				<option value="top">{{ "TOP" }}</option>';
+	html +='				<option value="sale">{{ "SALE" }}</option>';
+	html +='			</select>';
+	html +='		</div>';
+	html +='	</div>';
+	html +='		<div class="form-group">';
+	html +='			<label class="col-sm-3 control-label" for="input-status">{{ ns_text_status }}</label>';
+	html +='			<div class="col-sm-5">';
+	html +='	 		 	<select name="config_menu_item['+ menu_item_row +'][status]" id="input-status" class="form-control">';	
+	html +='					<option value="1" selected="selected">{{ text_enabled }}</option>';
+	html +='					<option value="0">{{ text_disabled }}</option>';
+	html +='				 </select>';
+	html +='			</div>';
+	html +='		</div>';
+	html +='		<div class="form-group">';
+	html +='			<label class="col-sm-3 control-label">{{ ns_text_sort_menu }}</label>';
+	html +='			<div class="col-sm-5">';
+	html +='				<input class="form-control" type="text" name="config_menu_item['+ menu_item_row +'][sort_menu]" value="0" />';
+	html +='			</div>';
+	html +='		</div>';
+	html +='		<div class="form-group">';
+	html +='			<label class="col-sm-3 control-label" for="input-image">{{ ns_text_thumb }}</label>';
+	html +='			<div class="col-sm-5">';
+	html +='				<a href="" id="thumb-image'+ menu_item_row +'" data-toggle="image" class="img-thumbnail"><img src="{{ placeholder }}" alt="" title="" data-placeholder="{{ placeholder }}" /></a>';
+	html +='				<input type="hidden" name="config_menu_item['+ menu_item_row +'][image]" value="" id="input-image'+ menu_item_row +'" />';
+	html +='			</div>';							
+	html +='		</div>';
+	
+	html += '	</div>';
+	
+	html += '		<div class="tab-pane fade" id="tab-category-'+ menu_item_row+'_options">';	
+	html += '			<div class="form-group required">';
+	html += '				<label class="col-sm-4 control-label" for="input_variant_category_'+ menu_item_row +'">{{ ns_type_dropdown_list }}</label>';
+	html += '				<div class="col-sm-6">';
+	html += '					<select onChange="sel_type_category('+menu_item_row+')" name="config_menu_item['+ menu_item_row +'][variant_category]" id="input_variant_category_'+ menu_item_row +'" class="form-control">';				
+	html += '						<option value="simple">{{ ns_type_dropdown_simple }}</option>';
+	html += '						<option value="full">{{ ns_type_dropdown_full }}</option>';
+	html += '						<option value="full_image">{{ ns_type_dropdown_full_image }}</option>';
+	html += '					</select>';
+	html += '				</div>';
+	html += '			</div>';
+	html += '			<div class="form-group">';
+	html += '				<label class="col-sm-4 control-label" for="input-category_show_subcategory">{{ ns_show_sub_categories }}</label>';
+	html += '				<div class="col-sm-6">';
+	html += '					<select id="input-category_show_subcategory" name="config_menu_item['+ menu_item_row +'][show_sub_category]" class="form-control">';						
+	html += '						<option value="1">{{ text_enabled }}</option>';
+	html += '						<option value="0" selected="selected">{{ text_disabled }}</option>';									
+	html += '					</select>';	
+	html += '				</div>';
+	html += '			</div>';
+	html += '			<div class="form-group">';
+	html += '				<label class="col-sm-4 control-label">{{ ns_text_product_width }}</label>';
+	html += '				<div class="col-sm-6">';
+	html += '					<input type="text" name="config_menu_item['+ menu_item_row +'][category_img_width]" value="50" placeholder="{{ ns_text_product_width }}" class="form-control" />';						 
+	html += '				</div>';
+	html += '			</div>';		
+	html += '			<div class="form-group">';
+	html += '				<label class="col-sm-4 control-label">{{ ns_text_product_height }}</label>';
+	html += '				<div class="col-sm-6">';
+	html += '					<input type="text" name="config_menu_item['+ menu_item_row +'][category_img_height]" value="50" placeholder="{{ ns_text_product_height }}" class="form-control" />';								 
+	html += '				</div>';
+	html += '			</div>';
+	html += '			<div class="form-group">';
+	html += '				<label class="col-sm-2 control-label" for="input-category-'+menu_item_row+'">{{ ns_text_category }}</label>';
+	html += '				<div class="col-sm-10">';
+	html += '					<input type="text" name="category" value="" placeholder="{{ ns_text_category }}" id="input-category-'+menu_item_row+'" class="form-control" />';
+	html += '					<div id="category-category-'+menu_item_row+'" class="well well-sm" style="height: 150px; overflow: auto;">';											
+	html += '					</div>';
+	html += '				</div>';
+	html += '			</div>';
+	html += '	</div>';
+	
+	html += '		<div class="tab-pane fade" id="tab-manufacturer-'+menu_item_row+'_options">';
+	html += '			<div class="form-group required">';
+	html += '				<label class="col-sm-4 control-label">{{ ns_type_dropdown_list }}</label>';
+	html += '				<div class="col-sm-6">';
+	html += '					<select name="config_menu_item[{{ menu_item_row }}][type_manuf]" class="form-control">';
+	html += '						<option value="type_image">{{ ns_type_manuf_image }}</option>';
+	html += '						<option value="type_alphabet">{{ ns_type_manuf_alphabet_image }}</option>';
+	html += '					</select>';
+	html += '				</div>';
+	html += '			</div>';
+	html += '			<div class="form-group">';
+	html += '				<label class="col-sm-2 control-label">{{ ns_text_manufacturer }}</label>';
+	html += '				<div class="col-sm-10">';
+	html += '					<div class="well well-sm">';
+	html += '						{% for manufacturer in manufacturers_list %}';
+	html += '							<div class="checkbox">';
+	html += '								<label>';
+	html += '									<input type="checkbox" name="config_menu_item['+ menu_item_row +'][manufacturers_list][]"  value="{{ manufacturer['manufacturer_id']}}"/> {{ manufacturer.name|escape }}'; 
+	html += '								</label>';
+	html += '							</div>';
+	html += '						{% endfor %}';
+	html += '					</div>';
+	html += '				</div>';
+	html += '			</div>';
+	html += '		</div>';
+	html += '		<div class="tab-pane fade" id="tab-information-'+ menu_item_row +'_options">';
+	html += '			<div class="form-group">';
+	html += '				<label class="col-sm-2 control-label">{{ ns_text_information }}</label>';
+	html += '				<div class="col-sm-10">';
+	html += '					<div class="well well-sm">';
+	html += '						{% for information in informations_list %}';
+	html += '							<div class="checkbox">';
+	html += '								<label>';
+	html += '									<input type="checkbox" name="config_menu_item['+ menu_item_row +'][informations_list][]"  value="{{ information['information_id']}}"/> {{ information.title|escape }}'; 
+	html += '								</label>';
+	html += '							</div>';
+	html += '						{% endfor %}';                
+	html += '					</div>';
+	html += '				</div>';
+	html += '			</div>';
+	html += '		</div>';
+	
+	
+	html += '		<div class="tab-pane fade" id="tab-freelink-'+ menu_item_row +'_options">';
+	html += '			<div class="form-group required">';
+	html += '				<label class="col-sm-4 control-label" for="input_variant_category_'+ menu_item_row +'">{{ ns_type_dropdown_list }}</label>';
+	html += '				<div class="col-sm-6">';
+	html += '					<select onChange="sel_type_category('+ menu_item_row +')" name="config_menu_item['+ menu_item_row +'][sfl][variant_category]" class="form-control">';
+	html += '						<option value="simple">{{ ns_type_dropdown_simple }}</option>';
+	html += '						<option value="full">{{ ns_type_dropdown_full }}</option>';
+	html += '						<option value="full_image">{{ ns_type_dropdown_full_image }}</option>';
+	html += '					</select>';
+	html += '				</div>';
+	html += '			</div>';
+	html += '			<div class="form-group">';
+	html += '				<label class="col-sm-4 control-label">{{ ns_text_product_width }}</label>';
+	html += '				<div class="col-sm-6">';
+	html += '					<input type="text" name="config_menu_item['+ menu_item_row +'][sfl][freelink_img_width]" value="50" placeholder="{{ ns_text_product_width }}" class="form-control" />';									 
+	html += '				</div>';
+	html += '			</div>';		
+	html += '			<div class="form-group">';
+	html += '				<label class="col-sm-4 control-label">{{ ns_text_product_height }}</label>';
+	html += '				<div class="col-sm-6">';
+	html += '					<input type="text" name="config_menu_item['+ menu_item_row +'][sfl][freelink_img_height]" value="50" placeholder="{{ ns_text_product_height }}" class="form-control" />';									 
+	html += '				</div>';
+	html += '			</div>';
+						
+	html += '			<ul class="nav nav-tabs" id="language-freelink-'+ menu_item_row +'">';
+	html += '				{% for language in languages %}';
+	html += '					<li><a href="#language-freelink-'+ menu_item_row +'-{{ language['language_id'] }}" data-toggle="tab"><img src="language/{{ language['code'] }}/{{ language['code'] }}.png" title="{{ language['name'] }}" /> {{ language['name'] }}</a></li>';
+	html += '				{% endfor %}';
+	html += '			</ul>';
+	html += '				{% for language in languages %}';
+	html += '				<div class="tab-pane" id="language-freelink-'+ menu_item_row +'-{{language.language_id }}">';	
+	html += '					<table id="freelinkitems'+ menu_item_row +'" class="table table-bordered table-hover">';
+	html += '						<thead>';
+	html += '							<tr>';
+	html += '								<td>{{ ns_text_thumb }}</td>';
+	html += '								<td>{{ ns_text_menu_name }}</td>';
+	html += '								<td>{{ ns_text_type_link }}</td>';
+	html += '								<td>{{ column_3level }}</td>';
+	html += '								<td>{{ ns_text_sort_menu }}</td>';
+	html += '								<td></td>';
+	html += '							</tr>';
+	html += '						</thead>';
+	html += '						<tbody>';
+	html += '							<input type="hidden" id="freelink-row-number-'+ menu_item_row +'" value="0">';					
+	html += '						</tbody>';
+	html += '						<tfoot>';
+	html += '							<tr>';
+	html += '								<td colspan="4"></td>';
+	html += '								<td class="text-right"><a onclick="addFreelinkItem('+ menu_item_row +',\'{{ language.language_id }}\')" class="btn btn-primary">{{ text_add }}</a></td>';
+	html += '							</tr>';
+	html += '						</tfoot>';
+	html += '					</table>';
+	html += '				</div>';
+	html += '			{% endfor %}';
+	html += '		</div>';
+	
+	html += '		<div class="tab-pane fade" id="tab-product-'+ menu_item_row +'_options">';
+	html += '						<div class="form-group">';
+	html += '							<label class="col-sm-2 control-label" for="input-product_width">{{ ns_text_product_width }}</label>';
+	html += '							<div class="col-sm-10">';
+	html += '								<input type="text" name="config_menu_item['+ menu_item_row +'][product_width]" value="50" placeholder="{{ ns_text_product_width }}" id="input-product_width" class="form-control" />	';								 
+	html += '							</div>';
+	html += '						</div>';		
+	html += '						<div class="form-group">';
+	html += '							<label class="col-sm-2 control-label" for="input-product_height">{{ ns_text_product_height }}</label>';
+	html += '							<div class="col-sm-10">';
+	html += '								<input type="text" name="config_menu_item['+ menu_item_row +'][product_height]" value="50" placeholder="{{ ns_text_product_height }}" id="input-product_height" class="form-control" />	';								 
+	html += '							</div>';
+	html += '						</div>';		
+	html += '						<div class="form-group">';
+	html += '							<label class="col-sm-2 control-label" for="input-product-'+ menu_item_row +'">{{ ns_text_product }}</label>';
+	html += '							<div class="col-sm-10">';
+	html += '								<input type="text" name="product" value="" placeholder="{{ ns_text_product }}" id="input-product-'+ menu_item_row +'" class="form-control" />';
+	html += '									<div id="product-product-'+ menu_item_row +'" class="well well-sm" style="height: 150px; overflow: auto;">';																					
+	html += '									</div>';
+	html += '							</div>';
+	html += '						</div>';
+	html += '		</div>';
+	
+	html += '		<div class="tab-pane fade" id="tab-link-'+ menu_item_row +'_options">';
+	html += '			<div class="tab-content">';
+	html += '				<div class="col-sm-3">{{ ns_text_link_options }}</div>';
+	html += '				<div class="col-sm-9">';
+	html += '					<select id="input-new_blank" name="config_menu_item['+ menu_item_row +'][new_blank]" class="form-control">';								
+	html += '						<option value="1">{{ text_enabled }}</option>';
+	html += '						<option value="0" selected="selected">{{ text_disabled }}</option>';
+	html += '					</select>';
+	html += '				</div>';
+	html += '			</div>';
+	html += '		</div>';
+	
+	html += '		<div class="tab-pane fade" id="tab-html-'+ menu_item_row +'_options">';
+	html += '			<ul class="nav nav-tabs" id="language_html_'+ menu_item_row +'">';
+	html += '							{% for language in languages %}';
+	html += '								<li><a href="#language_html_'+ menu_item_row +'_{{ language['language_id'] }}" data-toggle="tab"><img src="language/{{ language['code'] }}/{{ language['code'] }}.png" title="{{ language['name'] }}" /> {{ language['name'] }}</a></li>';
+	html += '							{% endfor %}';
+	html += '						</ul>';
+	html += '						<div class="tab-content">';
+	html += '							{% for language in languages %}';
+	html += '							<div class="tab-pane" id="language_html_'+ menu_item_row +'_{{ language['language_id'] }}">';
+	html += '								<div class="form-group required">';
+	html += '									<label class="col-sm-2 control-label" for="html_description_'+ menu_item_row +'_{{ language['language_id'] }}">{{ ns_text_html_description }}</label>';
+	html += '									<div class="col-sm-10">';
+	html += '										<textarea class="form-control summernote_menu" name="config_menu_item['+ menu_item_row +'][html_block][{{ language['language_id'] }}]" id="html_description_'+ menu_item_row +'_{{ language['language_id'] }}"></textarea>';
+	html += '									</div>';
+	html += '								</div>';
+	html += '							</div>';
+	html += '							{% endfor %}';
+	html += '						</div>';
+	html += '		</div>';
+	
+	html += '		<div class="tab-pane fade" id="tab-add-'+ menu_item_row +'-html">';
+	html += '			<div class="form-group">';
+	html += '				<label class="col-sm-4 control-label" for="input_use_html_category">{{ ns_text_add_html }}</label>';
+	html += '				<div class="col-sm-8">';
+	html += '					<select id="input_use_html_category" name="config_menu_item['+ menu_item_row +'][use_add_html]" class="form-control">';
+	html += '						<option value="1">{{ text_enabled }}</option>';
+	html += '						<option value="0" selected="selected">{{ text_disabled }}</option>';
+	html += '					</select>';
+	html += '				</div>';
+	html += '			</div>';
+	html += '			<ul class="nav nav-tabs" id="language_add_html_'+ menu_item_row +'">';
+	html += '				{% for language in languages %}';
+	html += '					<li><a href="#language_add_html_'+ menu_item_row +'_{{ language['language_id'] }}" data-toggle="tab"><img src="language/{{ language['code'] }}/{{ language['code'] }}.png" title="{{ language['name'] }}" /> {{ language['name'] }}</a></li>';
+	html += '				{% endfor %}';
+	html += '			</ul>';
+	html += '			<div class="tab-content">';					
+	html += '				{% for language in languages %}';
+	html += '					<div class="tab-pane" id="language_add_html_'+ menu_item_row +'_{{ language['language_id'] }}">';
+	html += '						<div class="form-group required">';
+	html += '							<label class="col-sm-2 control-label" for="input_add_html_description_'+ menu_item_row +'_{{ language['language_id'] }}">{{ ns_text_html_description }}</label>';
+	html += '								<div class="col-sm-10">';
+	html += '									<textarea class="form-control summernote_menu" name="config_menu_item['+ menu_item_row +'][add_html][{{ language['language_id'] }}]" id="input_add_html_description_'+ menu_item_row +'_{{ language['language_id'] }}"></textarea>';
+	html += '								</div>';
+	html += '						</div>';
+	html += '					</div>';
+	html += '				{% endfor %}';
+	html += '			</div>';
+	html += '		</div>';
+	html +='</div>';
+	html +='</div>';
+	$('.banner-category').append(html);
+	
+	$('#addMenuItem').before('<li id="menu-item-' + menu_item_row + '" ><a data-toggle="tab" class="btn btn-primary menu-tab-link" href="#tab-menu-item-' + menu_item_row + '" > {{ ns_text_menu_name }} <i onclick="$(\'#menu-item-' + menu_item_row + '\').remove(); $(\'#tab-menu-item-' + menu_item_row + '\').remove(); $(\'a[href=#tab-menu-item-0]\').trigger(\'click\'); return false;" class="fa fa-minus-circle remove_menu_item"></i></a></li>');
+	
+	$('.summernote_menu').each(function() {
+		var element = this;
+		var lang = $(element).data('lang');
+		
+		if (typeof(lang) == 'undefined') {
+			lang = 'en-US';
+		}
+		
+		$(element).summernote({
+			disableDragAndDrop: true,
+			height: 300,
+			lang: lang,
+			emptyPara: '',
+			toolbar: [
+				['style', ['style']],
+				['font', ['bold', 'underline', 'clear']],
+				['fontname', ['fontname']],
+				['color', ['color']],
+				['para', ['ul', 'ol', 'paragraph']],
+				['table', ['table']],
+				['insert', ['link', 'image', 'video']],
+				['view', ['fullscreen', 'codeview', 'help']]
+			],
+			buttons: {
+    			image: function() {
+					var ui = $.summernote.ui;
+
+					
+					var button = ui.button({
+						contents: '<i class="note-icon-picture" />',
+						tooltip: $.summernote.lang[$.summernote.options.lang].image.image,
+						click: function () {
+							$('#modal-image').remove();
+						
+							$.ajax({
+								url: 'index.php?route=common/filemanager&user_token=' + getURLVar('user_token'),
+								dataType: 'html',
+								beforeSend: function() {
+									$('#button-image i').replaceWith('<i class="fa fa-circle-o-notch fa-spin"></i>');
+									$('#button-image').prop('disabled', true);
+								},
+								complete: function() {
+									$('#button-image i').replaceWith('<i class="fa fa-upload"></i>');
+									$('#button-image').prop('disabled', false);
+								},
+								success: function(html) {
+									$('body').append('<div id="modal-image" class="modal">' + html + '</div>');
+									
+									$('#modal-image').modal('show');
+									
+									$('#modal-image').delegate('a.thumbnail', 'click', function(e) {
+										e.preventDefault();
+										
+										$(element).summernote('insertImage', $(this).attr('href'));
+																	
+										$('#modal-image').modal('hide');
+									});
+								}
+							});						
+						}
+					});
+				
+					return button.render();
+				}
+  			}
+		});
+	});	
+			
+	$('button[data-event=\'showImageDialog\']').attr('data-toggle', 'image').removeAttr('data-event');
+	
+	var newtab = $('li#menu-item-' + menu_item_row);
+
+	$('a[href=\'#tab-menu-item-'+ menu_item_row +'\']').trigger('click');
+	$('a[href=\'#tab-menu-setting-'+ menu_item_row +'\']').trigger('click');
+	
+	$('#language_add_html_'+ menu_item_row +' a:first').tab('show');
+	$('#language_html_'+ menu_item_row +' a:first').tab('show');
+	$('#language-freelink-'+ menu_item_row +' a:first').tab('show');
+	var category_row_menu_item = menu_item_row;
+	$('#input-category-'+category_row_menu_item).autocomplete({
+	'source': function(request, response) {
+		$.ajax({
+			url: 'index.php?route=catalog/category/autocomplete&user_token={{ user_token }}&filter_name=' +  encodeURIComponent(request),
+			dataType: 'json',
+			success: function(json) {				
+				response($.map(json, function(item) {
+					return {
+						label: item['name'],
+						value: item['category_id']
+					}
+				}));
+			}
+		});
+	},
+	'select': function(item) {
+		$('#input-category-'+category_row_menu_item).val('');		
+		$('#category-item-'+ category_row_menu_item +'' + item['value']).remove();
+		
+		cathtml  = '<div class="row-category-menu" id="category-item-'+ category_row_menu_item +'' + item['value'] + '">';
+		cathtml += '<i class="btn btn-danger fa fa-minus-circle"></i> ';
+		cathtml += '<input class="form-control input-sort-category" size="3" type="text" name="config_menu_item['+ category_row_menu_item +'][sort_category][' + item['value'] + ']" value="0"/>';
+		cathtml += '<select class="input-sticker-category" name="config_menu_item['+ category_row_menu_item +'][sticker][' + item['value'] + ']">';
+		cathtml += '	<option value="0">{{ ns_text_select_sticker }}</option>';					
+		cathtml += '	<option value="new">{{ "NEW" }}</option>';
+		cathtml += '	<option value="top">{{ "TOP" }}</option>';
+		cathtml += '	<option value="sale">{{ "SALE" }}</option>';
+		cathtml += '</select>';
+		cathtml += '<span>'+item['label']+'</span>';
+		cathtml += '<input type="hidden" name="config_menu_item['+ category_row_menu_item +'][category_list][]" value="' + item['value'] + '" /></div>';
+		$('#category-category-'+ category_row_menu_item+'').append(cathtml);		
+	}
+});	
+	$('#category-category-'+ category_row_menu_item).delegate('.fa-minus-circle', 'click', function() {
+		$(this).parent().remove();
+	});	
+	
+	var product_row_menu_item = menu_item_row;
+	$('#input-product-'+ product_row_menu_item).autocomplete({
+		'source': function(request, response) {
+			$.ajax({
+				url: 'index.php?route=catalog/product/autocomplete&user_token={{ user_token }}&filter_name=' +  encodeURIComponent(request),
+				dataType: 'json',
+				success: function(json) {
+					response($.map(json, function(item) {
+						return {
+							label: item['name'],
+							value: item['product_id']
+						}
+					}));
+				}
+			});
+		},
+		'select': function(item) {
+			$('#input-product-'+ product_row_menu_item).val('');	
+			$('#product-item-'+ product_row_menu_item +'' + item['value']).remove();		
+			$('#product-product-'+ product_row_menu_item+'').append('<div id="product-item-'+ product_row_menu_item +'' + item['value'] + '"><i class="fa fa-minus-circle"></i> ' + item['label'] + '<input type="hidden" name="config_menu_item['+ product_row_menu_item +'][products_list][]" value="' + item['value'] + '" /></div>');	
+		}
+	});
+	$('#product-product-'+ product_row_menu_item).delegate('.fa-minus-circle', 'click', function() {
+		$(this).parent().remove();
+	});
+				
+	
+	$(".show_elements_"+menu_item_row).hide();
+	sel_menu_type=$("#input-menu_type_"+ menu_item_row +" :selected").val();
+	sel_category_type=$("#input_variant_category_"+ menu_item_row +" :selected").val();
+	$(".show_elements_"+sel_menu_type+'_'+menu_item_row).show();
+	if((sel_menu_type=="category" && (sel_category_type=="simple" || sel_category_type=="0")) || sel_menu_type=="0" || sel_menu_type=="auth" || sel_menu_type=="link" || sel_menu_type=="html")
+	  {
+		$(".show_elements_add_html_"+menu_item_row).hide();
+	  }
+	else
+	  {
+		$(".show_elements_add_html_"+menu_item_row).show();
+	  }
+	  
+	  
+	var config_main_menu_selection = $('#input-menu-selection option:selected').val();	
+	change_menu_theme(config_main_menu_selection);
+	
+	menu_item_row++;
+}
+
+function change_name_menu(menu_item_row, lang_id){
+	namemenu=$('#namemenu_'+ menu_item_row+'_'+lang_id+'').val();
+	$('li#menu-item-' + menu_item_row+' a').html(namemenu +' <i onclick="$(\'#menu-item-' + menu_item_row + '\').remove(); $(\'#tab-menu-item-' + menu_item_row + '\').remove(); return false;" class="fa fa-minus-circle remove_menu_item"></i></a></li>');
+}
+function sel_type_category(menu_item_row){
+	$(".show_elements_"+menu_item_row).hide();	
+		sel_menu_type=$("#input-menu_type_"+ menu_item_row +" :selected").val();		
+		sel_category_type=$("#input_variant_category_"+ menu_item_row +" :selected").val();
+	$(".show_elements_"+sel_menu_type+'_'+menu_item_row).show();
+	if((sel_menu_type=="category" && (sel_category_type=="simple" || sel_category_type=="0")) || sel_menu_type=="0" || sel_menu_type=="auth" || sel_menu_type=="link" || sel_menu_type=="html")
+	  {
+		$(".show_elements_add_html_"+menu_item_row).hide();
+	  }
+	else
+	  {
+		$(".show_elements_add_html_"+menu_item_row).show();
+	  }	
+}
+</script>
+<script type="text/javascript">
+$(window).load(function(){ 
+	var config_main_menu_selection = $('#input-menu-selection option:selected').val();							
+	if (config_main_menu_selection =='1') {
+		$('.menu_always_open').toggleClass('active');
+		$('.additional_menu').toggleClass('active');
+		$('.horizontal_menu').removeClass('active');
+	} else if (config_main_menu_selection =='0') {
+		$('.menu_always_open').removeClass('active');
+		$('.additional_menu').removeClass('active');
+		$('.horizontal_menu').toggleClass('active');
+	}
+})
+function change_menu_theme(config_main_menu_selection){						
+	if (config_main_menu_selection =='1') {
+		$('.menu_always_open').addClass('active');
+		$('.additional_menu').addClass('active');
+		$('.horizontal_menu').removeClass('active');
+	} else if (config_main_menu_selection =='0') {
+		$('.menu_always_open').removeClass('active');
+		$('.additional_menu').removeClass('active');
+		$('.horizontal_menu').toggleClass('active');
+	}
+}
+
+
+function addFreelinkItem(menu_item_row,language_id) {
+	var freelinkitem_row = $('#freelink-row-number-'+ menu_item_row).val();
+	$('#freelink-row-number-'+ menu_item_row).val(parseInt(freelinkitem_row) + 1);
+	html  = '<tr id="freelinkitem-row'+ menu_item_row +''+ freelinkitem_row +'">';
+	html += '<td class="text-center"><a href="" id="thumb-image-freelink-'+ menu_item_row +''+ freelinkitem_row +'" data-toggle="image" class="img-thumbnail"><img src="{{ placeholder }}"  /></a><input type="hidden" name="config_menu_item['+ menu_item_row +'][banner_item]['+ language_id +']['+ freelinkitem_row +'][image]" value="" id="input-image-freelink-'+ menu_item_row +''+ freelinkitem_row +'" /></td>';
+	html += '<td class="text-left">';
+	html += '<input class="form-control" type="text" name="config_menu_item['+ menu_item_row +'][banner_item]['+ language_id +']['+ freelinkitem_row +'][title]" value="" />';
+	html += '</td>';
+	html += '<td class="text-left">';
+	html += '<input class="form-control"  type="text" name="config_menu_item['+ menu_item_row +'][banner_item]['+ language_id +']['+ freelinkitem_row +'][link]" value="" />';
+	html += '<td class="text-left ns-input-group" style="min-width:250px;">';
+	html += '	<div id="subcatfreelink'+ menu_item_row + freelinkitem_row +'">';
+	html += '		<input type="hidden" id="subcatfreelink-row-number-'+ menu_item_row + freelinkitem_row +'" value="0">';	
+	html += '	</div>';
+	html += '	<a class="btn btn-success" onclick="addFreelinkItem3level('+ menu_item_row +','+ freelinkitem_row +',\''+ language_id +'\');">{{ text_add }}</a>';
+	html += '</td>';
+	html += '</td>';
+	html += '<td class="text-left"><input class="form-control" type="text" name="config_menu_item['+ menu_item_row +'][banner_item]['+ language_id +']['+ freelinkitem_row +'][sort]" size="1" value="" /></td>';
+	html += '<td class="text-right"><a class="btn btn-danger" onclick="$(\'#freelinkitem-row'+ menu_item_row +''+ freelinkitem_row +'\').remove();" data-toggle="tooltip" title="{{ text_delete }}"><i class="fa fa-trash-o"></i></a></td>';
+	html += '</tr>'; 
+	
+	$('#language-freelink-'+ menu_item_row +'-'+ language_id +' #freelinkitems'+ menu_item_row +' tbody').append(html);
+
+	freelinkitem_row++;
+}
+			
+
+function addFreelinkItem3level(menu_item_row,freelinkitem_row,language_id) {
+	var freelinkitem_row3level = $('#subcatfreelink-row-number-'+ menu_item_row + freelinkitem_row).val();
+	$('#subcatfreelink-row-number-'+ menu_item_row + freelinkitem_row).val(parseInt(freelinkitem_row3level) + 1);
+	html  = '<div id="subcatfreelink-row-'+ menu_item_row + freelinkitem_row + freelinkitem_row3level+'">';
+	html += '<div class="input-group">';
+	html += '<input class="form-control" type="text" name="config_menu_item['+ menu_item_row +'][banner_item]['+ language_id +']['+ freelinkitem_row +'][subcat]['+ freelinkitem_row3level +'][title]" value="" />';				
+	html += '<input class="form-control" type="text" name="config_menu_item['+ menu_item_row +'][banner_item]['+ language_id +']['+ freelinkitem_row +'][subcat]['+ freelinkitem_row3level +'][link]" value="" />';
+	html += '<span class="input-group-addon"><a class="text-danger" onclick="$(\'#language-freelink-'+ menu_item_row +'-'+ language_id +' #subcatfreelink-row-'+ menu_item_row + freelinkitem_row + freelinkitem_row3level+'\').remove();" data-toggle="tooltip" title="{{ text_delete }}"><i class="fa fa-trash-o"></i></a></span>';
+	html += '</div><hr>';
+	html += '</div>';
+	$('#language-freelink-'+ menu_item_row +'-'+ language_id +' #subcatfreelink'+ menu_item_row +freelinkitem_row).append(html);
+
+	freelinkitem_row3level++;
+}	
+</script>					
+<style>	
+.ns-input-group .input-group .form-control {
+  height: 35px;
+  padding: 4px 10px;
+  width: 45%
+}
+.ns-input-group .input-group .form-control + .form-control {
+  height: 35px;
+  padding: 4px 10px;
+  margin-left:-1px;
+   width: 45%
+}
+.ns-input-group hr {
+	margin-top:5px;
+	margin-bottom:5px;
+}
+
+.ns-input-group span.input-group-addon {
+padding:3px 4px;
+line-height:25px;
+}
+</style>	
+		</div>
+	</div>
+
+
+
+</div>

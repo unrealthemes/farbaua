@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<modification>
+  <code>NS->Question Answer</code>
+  <name>NS->Question Answer</name>
+  <version>2.6.1</version>
+  <author>Alex.Konushin(29aleksey)</author>
+  <file path="admin/view/template/common/header.twig">
+		<operation>
+			<search><![CDATA[<ul class="nav navbar-nav navbar-right">]]></search>
+			<add position="after"><![CDATA[
+			 {% if question_answer.status is defined and question_answer.status %} 
+				<li class="dropdown">
+				<a data-placement="bottom" data-toggle="tooltip" title="{{ title_icon_header_qa }}" class="dropdown-toggle" href="{{ question_answer_url }}"><span class="label label-danger pull-left">{{ countquestion_answer }}</span> <i class="fa fa-question-circle fa-lg" aria-hidden="true"></i></a></li>
+			{% endif %}
+			]]></add>
+		</operation>
+	</file>	
+	<file path="admin/controller/common/column_left.php">	
+		<operation>
+		<search><![CDATA[if ($this->user->hasPermission('access', 'catalog/category')) {]]></search>
+		<add position="after"><![CDATA[	
+			$this->load->language('extension/module/question_answer');      
+			$question_answer = (array)$this->config->get('qadata');
+			if (isset($question_answer['status']) && $question_answer['status']) {
+			$newstore_left_menu[] = array(
+				'name'	   => $this->language->get('title_icon_header_qa'),
+				'href'     => $this->url->link('extension/module/question_answer', 'tablist=1&user_token=' . $this->session->data['user_token'], 'SSL'),
+				'children' => array()		
+			);
+			}
+		]]></add>
+		</operation>
+	</file>
+  <file path="admin/controller/common/header.php">		
+		<operation>
+			<search><![CDATA[$data['logged'] = true;]]></search>
+			<add position="after"><![CDATA[	
+				$this->load->model('extension/module/question_answer');
+				  
+				$question_answer = (array)$this->config->get('qadata');
+				$data['question_answer'] = (array)$this->config->get('qadata'); 
+				if (isset($question_answer['status']) && $question_answer['status']) {
+					$data['title_icon_header_qa'] = $this->language->get('title_icon_header_qa');
+					$data['countquestion_answer'] = $this->model_extension_module_question_answer->getTotalNewQuestionAnswer();
+					$data['question_answer_url'] = $this->url->link('extension/module/question_answer', 'tablist=1&user_token=' . $this->session->data['user_token'], 'SSL');
+				}									
+			]]></add>
+		</operation>
+	</file>
+	<file path="admin/language/en-gb/common/header.php">
+		<operation>
+			<search><![CDATA[// Text]]></search>
+			<add position="after"><![CDATA[
+	$_['title_icon_header_qa'] = 'Question - answer';
+			]]></add>
+		</operation>
+	</file>
+	<file path="admin/language/ru-ru/common/header.php">
+		<operation>
+			<search><![CDATA[// Text]]></search>
+			<add position="after"><![CDATA[
+	$_['title_icon_header_qa'] = 'Вопрос - ответ';
+			]]></add>
+		</operation>
+	</file>
+  <file path="catalog/controller/common/header.php">
+     <operation error="skip">
+      <search><![CDATA[public function index() {]]></search>
+      <add position="after"><![CDATA[        
+        $data['qadata'] = $this->config->get('qadata');
+      ]]></add>
+    </operation>
+  </file>
+  <file path="catalog/controller/product/product.php">
+     <operation error="skip">
+      <search><![CDATA[public function index() {]]></search>
+      <add position="after"><![CDATA[      
+		$this->load->language('extension/module/question_answer');	
+        $data['qadata'] = $this->config->get('qadata');
+		if(isset($data['qadata']['status'])){
+		$this->document->addStyle('catalog/view/theme/newstore/stylesheet/popup-question-answer/stylefcp.css');
+		$this->document->addScript('catalog/view/theme/newstore/js/maskedinput.js');
+		$this->load->model('extension/module/question_answer');
+		$info_question_answer = $this->model_extension_module_question_answer->getTotalQuestionAnswer($this->request->get['product_id']);
+		$data['tab_question_answer'] = sprintf($this->language->get('tab_question_answer'), $info_question_answer);
+		}
+      ]]></add>
+    </operation>
+  </file>
+</modification>

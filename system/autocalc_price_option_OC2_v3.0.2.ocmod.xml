@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<modification>
+  <code>autocalc_price_option</code>
+  <name>Обновление цены при выборе опций OC2 (без AJAX)</name>
+  <version>3.0.2</version>
+  <author>Sergey Sinicin</author>
+  
+  <file path="catalog/view/theme/newstore/template/product/product.twig">
+    <operation>
+      <search><![CDATA[value="{{ option_value.product_option_value_id }}"]]></search>
+      <add position="replace"><![CDATA[value="{{ option_value.product_option_value_id }}" data-points="{{ option_value.points_value is defined ? option_value.points_value : 0 }}" data-prefix="{{ option_value.price_prefix }}" data-price="{{ option_value.price_value }}"]]></add>
+    </operation>
+    <operation>
+      <search><![CDATA[{{ footer }}]]></search>
+      <add position="before"><![CDATA[
+<script><!--
+function price_format_autocalc(n)
+{ 
+    c = {{ currency_autocalc.decimals is empty ? "0" : currency_autocalc.decimals }};
+    d = '{{ currency_autocalc.decimal_point }}'; 
+    t = '{{ currency_autocalc.thousand_point }}'; 
+    s_left = '{{ currency_autocalc.symbol_left }}';
+    s_right = '{{ currency_autocalc.symbol_right }}';
+     
+    n = n * {{ currency_autocalc.value }};
+    i = parseInt(n = Math.abs(n).toFixed(c)) + ''; 
+
+    j = ((j = i.length) > 3) ? j % 3 : 0; 
+    return s_left + (j ? i.substr(0, j) + t : '') + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : '') + s_right; 
+}
+
+function calculate_tax_autocalc(price)
+{
+    {# Process Tax Rates #}
+ {% if (tax_rates is defined and tax) %}
+ {% for tax_rate in tax_rates %} 
+ {% if (tax_rate.type == 'F') %}
+ {{ 'price += '~tax_rate.rate~';' }}
+ {% elseif (tax_rate.type == 'P') %}
+ {{ 'price += (price * '~tax_rate.rate~') / 100.0;' }}
+ {% endif %}
+ {% endfor %}
+ {% endif %}
+ 
+    return price;
+}
+
+function process_discounts_autocalc(price, quantity)
+{
+     {% for discount in dicounts_unf_autocalc %} 
+ {{ 'if ((quantity >= '~discount.quantity~') && ('~discount.price~' < price)) price = '~discount.price~';'~"\n" }}
+ {% endfor %}
+ 
+    return price;
+}
+
+
+animate_delay = 10;
+
+main_price_autocalc_final = calculate_tax_autocalc({{ price_value }});
+main_price_autocalc_start = calculate_tax_autocalc({{ price_value }});
+main_step = 0;
+main_timeout_id = 0;
+
+function animateMainPrice_callback() {
+    main_price_autocalc_start += main_step;
+    
+    if ((main_step > 0) && (main_price_autocalc_start > main_price_autocalc_final)){
+        main_price_autocalc_start = main_price_autocalc_final;
+    } else if ((main_step < 0) && (main_price_autocalc_start < main_price_autocalc_final)) {
+        main_price_autocalc_start = main_price_autocalc_final;
+    } else if (main_step == 0) {
+        main_price_autocalc_start = main_price_autocalc_final;
+    }
+    
+    $('.autocalc-product-price').html( price_format_autocalc(main_price_autocalc_start) );
+    
+    if (main_price_autocalc_start != main_price_autocalc_final) {
+        main_timeout_id = setTimeout(animateMainPrice_callback, animate_delay);
+    }
+}
+
+function animateMainPriceAutocalc(price) {
+    main_price_autocalc_start = main_price_autocalc_final;
+    main_price_autocalc_final = price;
+    main_step = (main_price_autocalc_final - main_price_autocalc_start) / 10;
+    
+    clearTimeout(main_timeout_id);
+    main_timeout_id = setTimeout(animateMainPrice_callback, animate_delay);
+}
+
+
+{% if (special) %} 
+special_autocalc_price_final = calculate_tax_autocalc({{ special_value }});
+special_autocalc_price_start = calculate_tax_autocalc({{ special_value }});
+special_autocalc_step = 0;
+special_autocalc_timeout_id = 0;
+
+function animateSpecialPrice_autocalc_callback_autocalc() {
+    special_autocalc_price_start += special_autocalc_step;
+    
+    if ((special_autocalc_step > 0) && (special_autocalc_price_start > special_autocalc_price_final)){
+        special_autocalc_price_start = special_autocalc_price_final;
+    } else if ((special_autocalc_step < 0) && (special_autocalc_price_start < special_autocalc_price_final)) {
+        special_autocalc_price_start = special_autocalc_price_final;
+    } else if (special_autocalc_step == 0) {
+        special_autocalc_price_start = special_autocalc_price_final;
+    }
+    
+    $('.autocalc-product-special').html( price_format_autocalc(special_autocalc_price_start) );
+    
+    if (special_autocalc_price_start != special_autocalc_price_final) {
+        special_autocalc_timeout_id = setTimeout(animateSpecialPrice_autocalc_callback_autocalc, animate_delay);
+    }
+}
+
+function animateSpecialPrice_autocalc(price) {
+    special_autocalc_price_start = special_autocalc_price_final;
+    special_autocalc_price_final = price;
+    special_autocalc_step = (special_autocalc_price_final - special_autocalc_price_start) / 10;
+    
+    clearTimeout(special_autocalc_timeout_id);
+    special_autocalc_timeout_id = setTimeout(animateSpecialPrice_autocalc_callback_autocalc, animate_delay);
+}
+{% endif %} 
+
+
+function recalculateprice_autocalc()
+{
+    var main_price_autocalc = {{ price_value }};
+    var input_quantity = Number($('input[name="quantity"]').val());
+    {% if special %} 
+		var special_autocalc = {{ special_value }};
+	{% else %} 
+		var special_autocalc = 0;
+	{% endif %} 
+    var tax = 0;
+    
+    if (isNaN(input_quantity)) input_quantity = 0;
+    
+    {% if special %} 
+        special_coefficient = {{ price_value/special_value }};
+    {% endif %} 
+    main_price_autocalc = process_discounts_autocalc(main_price_autocalc, input_quantity);
+    tax = process_discounts_autocalc(tax, input_quantity);
+    
+    
+    var option_price = 0;
+    
+    {% if points %} 
+      var points = {{ points_value }};
+      $('input:checked,option:selected').each(function() {
+          if ($(this).data('points')) points += Number($(this).data('points'));
+      });
+      $('.autocalc-product-points').html(points);
+    {% endif %} 
+    
+    $('input:checked,option:selected').each(function() {
+      if ($(this).data('prefix') == '=') {
+        option_price += Number($(this).data('price'));
+        main_price_autocalc = 0;
+        special_autocalc = 0;
+      }
+    });
+    
+    $('input:checked,option:selected').each(function() {
+      if ($(this).data('prefix') == '+') {
+        option_price += Number($(this).data('price'));
+      }
+      if ($(this).data('prefix') == '-') {
+        option_price -= Number($(this).data('price'));
+      }
+      if ($(this).data('prefix') == 'u') {
+        pcnt = 1.0 + (Number($(this).data('price')) / 100.0);
+        option_price *= pcnt;
+        main_price_autocalc *= pcnt;
+        special_autocalc *= pcnt;
+      }
+      if ($(this).data('prefix') == 'd') {
+        pcnt = 1.0 - (Number($(this).data('price')) / 100.0);
+        option_price *= pcnt;
+        main_price_autocalc *= pcnt;
+        special_autocalc *= pcnt;
+      }
+      if ($(this).data('prefix') == '*') {
+        option_price *= Number($(this).data('price'));
+        main_price_autocalc *= Number($(this).data('price'));
+        special_autocalc *= Number($(this).data('price'));
+      }
+    });
+    
+    special_autocalc += option_price;
+    main_price_autocalc += option_price;
+
+    {% if special %} 
+      main_price_autocalc = special_autocalc * special_coefficient;
+      tax = special_autocalc;
+    {% else %} 
+      tax = main_price_autocalc;
+    {% endif %} 
+    
+    // Process TAX.
+    main_price_autocalc = calculate_tax_autocalc(main_price_autocalc);
+    special_autocalc = calculate_tax_autocalc(special_autocalc);
+    
+    // Раскомментировать, если нужен вывод цены с умножением на количество
+    main_price_autocalc *= input_quantity;
+    special_autocalc *= input_quantity;
+    tax *= input_quantity;
+
+    // Display Main Price
+    animateMainPriceAutocalc(main_price_autocalc);
+      
+    {% if special %} 
+      animateSpecialPrice_autocalc(special_autocalc);
+    {% endif %} 
+}
+
+$(document).ready(function() {
+    $('#product input[type="checkbox"]').bind('change', function() { recalculateprice_autocalc(); });
+    $('#product input[type="radio"]').bind('change', function() { recalculateprice_autocalc(); });
+    $('#product select').bind('change', function() { recalculateprice_autocalc(); });
+    
+    $quantity_autocalc = $('#product input[name="quantity"]');
+    $quantity_autocalc.data('val', $quantity_autocalc.val());
+    (function() {
+        if ($quantity_autocalc.val() != $quantity_autocalc.data('val')){
+            $quantity_autocalc.data('val',$quantity_autocalc.val());
+            recalculateprice_autocalc();
+        }
+        setTimeout(arguments.callee, 250);
+    })();    
+    
+    recalculateprice_autocalc();
+});
+
+//--></script>
+      ]]></add>
+    </operation>
+  </file>
+
+  <file path="catalog/model/catalog/product.php">
+    <operation>
+      <search><![CDATA['weight'                  => $product_option_value['weight'],]]></search>
+      <add position="before"><![CDATA[
+          'points'        => $product_option_value['points'],
+          'points_prefix' => $product_option_value['points_prefix'],
+      ]]></add>
+    </operation>
+  </file>
+  
+  <file path="catalog/controller/product/product.php">
+    <operation>
+      <search><![CDATA[$data['options'] = array();]]></search>
+      <add position="before"><![CDATA[
+          if ($data['price']) {
+              $data['price'] = '<span class=\'autocalc-product-price\'>' . $data['price'] . '</span>';
+          }
+          if ($data['special']) {
+              $data['special'] = '<span class=\'autocalc-product-special\'>' . $data['special'] . '</span>';
+          }
+          if ($data['points']) {
+              $data['points'] = '<span class=\'autocalc-product-points\'>' . $data['points'] . '</span>';
+          }
+          
+          $data['price_value'] = $product_info['price'];
+          $data['special_value'] = $product_info['special'];
+          $data['tax_value'] = (float)$product_info['special'] ? $product_info['special'] : $product_info['price'];
+          $data['points_value'] = $product_info['points'];
+          
+          $var_currency_autocalc = array();
+          $currency_code_autocalc = $this->session->data['currency'];
+          $var_currency_autocalc['value'] = $this->currency->getValue($currency_code_autocalc);
+          $var_currency_autocalc['symbol_left'] = $this->currency->getSymbolLeft($currency_code_autocalc);
+          $var_currency_autocalc['symbol_right'] = $this->currency->getSymbolRight($currency_code_autocalc);
+          $var_currency_autocalc['decimals'] = $this->currency->getDecimalPlace($currency_code_autocalc);
+          $var_currency_autocalc['decimal_point'] = $this->language->get('decimal_point');
+          $var_currency_autocalc['thousand_point'] = $this->language->get('thousand_point');
+          $data['currency_autocalc'] = $var_currency_autocalc;
+          
+          $data['dicounts_unf_autocalc'] = $discounts;
+
+          $data['tax_class_id'] = $product_info['tax_class_id'];
+          $data['tax_rates'] = $this->tax->getRates(0, $product_info['tax_class_id']);
+		  
+	
+      ]]></add>
+    </operation>
+    <operation>
+      <search><![CDATA[$product_option_value_data[] = array(]]></search>
+      <add position="after"><![CDATA[
+          'price_value'                   => $option_value['price'],
+          'points_value'                  => intval($option_value['points_prefix'].$option_value['points']),
+      ]]></add>
+    </operation>
+  </file>
+
+
+</modification>

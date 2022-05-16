@@ -1,0 +1,45 @@
+<div class="col-sm-4">
+    {{ text_category }}:<br/>
+    <div class="well well-sm" style="height: 100px; overflow: auto;">
+        {% for category in categories %}
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" name="filter_category_id[]" value="{{ category['category_id'] }}">
+                {{ category.name }}
+            </label>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="col-sm-4">
+    {{ text_manufacturer }}:<br/>
+    <div class="well well-sm" style="height: 100px; overflow: auto;">
+        {% for manufacturer in manufacturers %}
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" name="filter_manufacturer_id[]" value="{{ manufacturer['manufacturer_id'] }}">
+                {{ manufacturer.name }}
+            </label>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% if show_product_groups %}
+    <div class="col-sm-4">
+        {{ text_group }}:<br/>
+        <div class="well well-sm" style="height: 100px; overflow: auto;">
+            {% for group in groups %}
+                {% if group.status == 1 %}
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" name="filter_group_id[]" value="{{ group['group_id'] }}">
+                        {{ group.name }}
+                    </label>
+                </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+{% endif %}

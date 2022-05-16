@@ -1,0 +1,64 @@
+<div class="col-sm-12 text-center">
+	<table class="table table-bordered">
+		<thead>
+			<tr>
+				<td class="image">{{ text_column_photo_product }}</td>
+				<td class="name">{{ text_column_name_product }}</td>				
+				<td class="quantity">{{ text_column_quantity_product }}</td>
+				<td class="price">{{ text_column_price_product }}</td>
+				<td class="total">{{ text_column_total_product }}</td>
+			</tr>
+		</thead>
+		<tbody>
+			{% for product in products %} 
+					<tr>
+						<td class="image">{% if (product['thumb']) %} 
+							<a href="{{ product['href'] }}"><img src="{{ product['thumb'] }}" alt="{{ product['name'] }}" title="{{ product['name'] }}" /></a>
+							{% endif %} 
+						</td>
+						<td class="name"><a href="{{ product['href'] }}">{{ product['name'] }}</a>
+							<div>							
+							{% for option in product['option'] %} 
+							- <small>{{ option['name'] }} {{ option['value'] }}</small><br />																	
+							{% endfor %}							
+							</div>
+						</td>	
+						<td>
+						<div class="price-quantity-quickorder text-center">		
+							<div class="quantity_quickorder">
+								<input type="button" id="decrease_quickorder"  value="-" onclick="btnminus_{{ product['cart_id'] }}('1');updateQuantity('{{ product['cart_id'] }}');" />
+								<input size="2" name="quantity[{{ product['cart_id'] }}]" type="text" class="qty_fastorder" onchange="updateQuantity('{{ product['cart_id'] }}');" id="htop_fastorder{{ product['cart_id'] }}" value="{{ product['quantity'] }}" />		
+								<input type="button" id="increase_quickorder"  value="+" onclick="btnplus_{{ product['cart_id'] }}();updateQuantity('{{ product['cart_id'] }}');" />
+							</div>	
+						</div>	
+						<script>
+									function btnminus_{{ product['cart_id'] }}(a){									
+									document.getElementById("htop_fastorder{{ product['cart_id'] }}").value>a?document.getElementById("htop_fastorder{{ product['cart_id'] }}").value--:document.getElementById("htop_fastorder{{ product['cart_id'] }}").value=a;															
+									}									
+									function btnplus_{{ product['cart_id'] }}(){
+									document.getElementById("htop_fastorder{{ product['cart_id'] }}").value++;									
+									};							
+						</script>
+						</td>
+						<td class="price left">{{ product['price'] }}</td>
+						<td class="total">{{ product['total'] }}</td>
+					</tr>
+					
+			{% endfor %}	
+		</tbody>		
+	</table>
+</div>
+<div class="col-xs-12 col-sm-6 col-md-6"></div>
+<div class="col-xs-12 col-sm-6 col-md-6 form-group">	
+    <table class="table table-bordered">
+        {% for total in totals %} 
+            <tr>
+              <td class="text-right"><strong>{{ total['title'] }}:</strong></td>
+              <td class="text-right">{{ total['text'] }}</td>
+            </tr>
+        {% endfor %} 
+		<input type="hidden" value="{{ total_order }}" name="total_order" />
+		<input type="hidden" id="quickorder_url" value="" name="url_site"  />
+    </table>
+</div>
+

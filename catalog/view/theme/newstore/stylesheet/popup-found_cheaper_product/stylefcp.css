@@ -1,0 +1,109 @@
+#popup-found-cheaper {
+	background: #fff none repeat scroll 0 0;
+	margin: 0 auto;
+	max-width: 350px;
+	min-height: 100px;
+	position: relative;
+	width: 90%;
+}
+#popup-found-cheaper .popup-heading {
+	background-color: #ffffff;
+	border-bottom: 1px solid #dfe4eb;
+	color: #1c1c1c;
+	font-size: 20px;
+	line-height: 40px;
+	min-height: 40px;
+	overflow: hidden;
+	padding: 0 5px 0 19px;
+	position: relative;
+	text-align: left;
+	margin-bottom:5px;
+}
+#popup-found-cheaper .info-text-found-cheaper {
+    background: #fff;
+    padding: 0px 20px;
+    overflow: auto;
+	clear:both;
+	width: 100%;
+    display: inline-block;
+	margin-bottom:0px;
+}
+#popup-found-cheaper .mfp-close {
+	border: 0 none;
+	cursor: pointer !important;
+	height: 40px;
+	outline: medium none;
+	position: absolute;
+	right: 0;
+	top: 0;
+	width: 45px;
+	z-index: 2;
+}
+#popup-found-cheaper .popup-center {
+	background: #fff none repeat scroll 0 0;
+	overflow: auto;
+	padding: 10px 20px;
+}
+#popup-found-cheaper .popup-footer {
+	background-color: #f2f6f9;
+	border-top: 1px solid #dfe4eb;
+	display: block;
+	overflow: hidden;
+	padding: 17px 15px;
+	position: relative;
+	vertical-align: bottom;
+	text-align:center;
+}
+#popup-found-cheaper .popup-center .marb {
+    margin-bottom:10px;
+}
+#popup-found-cheaper .btn-found-cheaper {
+	background-color: #47c843;
+	border-color: #2cad28;
+	border-style: solid;
+	border-width: 1px 1px 2px;
+	color: #ffffff;
+	font-size: 13px;
+	font-weight: bold;
+	padding: 8px 20px;
+	text-transform: uppercase;	
+    display: inline-block;
+    outline: none;
+    text-align: center;
+}
+#popup-found-cheaper .btn-found-cheaper:hover {
+	border-color: #2cad28;
+	background-color: #2cad28;
+}
+#popup-found-cheaper .sections_block_rquaired .fa {
+	color:#fc5c3c !important;
+}
+#popup-found-cheaper .sections_block .fa {
+	color:#67ca67 !important;
+}
+#popup-found-cheaper .sections_block , .sections_block_rquaired{
+  overflow: hidden;
+  position: relative;
+}
+.btn-cheaper {
+	background-color: #47c843;
+	border-color: #2cad28;
+	border-style: solid;
+	border-width: 1px 1px 2px;
+	color: #ffffff;
+	font-size: 13px;
+	font-weight: bold;
+	padding: 3px 20px;
+	text-transform: uppercase;	
+    display: inline-block;
+    outline: none;
+    text-align: center;
+	border-radius:4px;
+	margin-bottom:10px;
+	width:100%;
+}
+.btn-cheaper:hover,.btn-cheaper:focus {
+	border-color: #2cad28;
+	background-color: #2cad28;
+	color: #ffffff;
+}

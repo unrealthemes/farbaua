@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<modification>
+    <name>Losted Cart</name>
+    <code>APlc</code>
+    <version>2.1.0</version>
+    <author>Artem Pitov</author>
+    <link>https://pitov.pro/</link>    
+               
+    <file path="system/library/{cart/cart,cart}.php">
+        <operation error="skip">
+            <search regex="true" limit="1"><![CDATA[
+                ~\$this\->db\->query\("\s?DELETE\s+FROM\s+"\s?\.\s?DB_PREFIX\s?\.\s?"cart\s+WHERE.+date_added\s{1,}<\s{1,}DATE_SUB.+"\);~
+            ]]></search>
+            <add position="replace"><![CDATA[
+        /* Losted Cart by Artem Pitov*/
+        $this->losted_cart = $registry->get('losted_cart');
+
+        if ($this->losted_cart && $this->losted_cart->isFront()) {
+            
+            $this->losted_session  = $this->losted_cart->customer->getLabel(); 
+            $this->current_session = $this->session->getId() . '.c' . (int)$this->customer->getId();
+            $this->use_token       = false;
+
+            /* not ajax */
+            if (empty($this->request->server['HTTP_X_REQUESTED_WITH']) 
+                || strtolower($this->request->server['HTTP_X_REQUESTED_WITH']) != 'xmlhttprequest'
+            ) { 
+                /* losted-collector.js */
+                $this->losted_cart->customer->initCollector();
+
+                /* if token return number, customer authorizaited, cart/losted customer session update */
+                $this->use_token = $this->losted_cart->customer->useToken();
+            
+                if ($this->losted_session && $this->losted_session != $this->current_session 
+                    && !$this->customer->getId() && !$this->use_token) 
+                {
+                    $losted_session = strstr($this->losted_session, '.c', true);
+
+                    $this->losted_cart->cart->updateSession($losted_session);
+                    $this->losted_cart->customer->updateSession($losted_session);
+                }
+            }
+        }
+
+        $losted_cart_settings = $this->config->get('losted_cart_settings');
+
+        if ($losted_cart_settings && (!empty($losted_cart_settings['cookie_life']) && $losted_cart_settings['cookie_life'] > 0) 
+            && $this->config->get('losted_cart_status'))
+        {
+            $losted_cart_interval = ((int)$losted_cart_settings['cookie_life']) . ' DAY';
+        } else {
+            $losted_cart_interval = '1 HOUR'; /* dafault value on OpenCart */
+        }
+        
+        if (version_compare(VERSION, '2.1.0', '>')) {
+            $this->db->query("DELETE FROM " . DB_PREFIX . "cart WHERE (api_id > '0' OR customer_id = '0') 
+                AND date_added < DATE_SUB(NOW(), INTERVAL {$losted_cart_interval})");
+        } else {
+            $this->db->query("DELETE FROM " . DB_PREFIX . "cart WHERE customer_id = '0' 
+                AND date_added < DATE_SUB(NOW(), INTERVAL {$losted_cart_interval})");
+        }
+        /* Losted Cart by Artem Pitov*/
+            ]]></add>
+        </operation>   
+        <operation error="skip">
+            <search trim="true" index="0"><![CDATA[return $product_data;]]></search>
+            <add position="before"><![CDATA[
+        /* Losted Cart by Artem Pitov */
+        if ($this->losted_cart && $this->losted_cart->isFront() && empty($this->losted_init)) {
+            $this->losted_init = true;
+
+            if ($cart_query->num_rows && (!$this->losted_session 
+                || $this->losted_session != $this->current_session)
+            ) {
+                $this->losted_cart->customer->createLabel();
+
+                /* create losted cart from registed customer */
+                $this->customer->getId() && $this->losted_cart->customer->createCustomer();
+
+            } elseif (!$cart_query->num_rows && $this->losted_session) {
+                $this->losted_cart->customer->removeCustomer();
+                $this->losted_cart->customer->removeLabel();
+            }
+        }
+        /* Losted Cart by Artem Pitov */            
+            ]]></add>
+        </operation>                        
+    </file>
+    <file path="catalog/controller/startup/startup.php">
+        <operation error="log">
+            <search trim="true" index="0"><![CDATA[$this->registry->set('length', new Cart\Length($this->registry));]]></search>
+            <add position="after"><![CDATA[
+        /* Losted Cart by Artem Pitov */
+        if ($this->registry->get('config')->get('losted_cart_status')) {
+            $this->registry->set('losted_cart', losted_cart\Core::getInstance($this->registry, true));
+        }
+        /* Losted Cart by Artem Pitov */
+            ]]></add>
+        </operation>
+    </file>    
+    <file path="admin/language/*/common/{menu,column_left}.php">
+        <operation error="log">
+            <search trim="true" index="0"><![CDATA[
+                <?php
+            ]]></search>
+            <add position="after"><![CDATA[
+            $_['text_losted_cart'] = 'Система управления забытыми товарами';
+            ]]></add>
+        </operation>
+    </file> 
+    <file path="admin/controller/common/{menu,column_left}.php">
+        <operation error="log">
+            <search trim="true" index="0"><![CDATA[return $this->load->view(]]></search>
+            <add position="before"><![CDATA[
+        /* Losted Cart by Artem Pitov */
+        if ($this->config->get('losted_cart_status')) {
+            
+            if (version_compare(VERSION, '3.0', '>=')) {
+                $losted_user_token = 'user_token=' . $this->session->data['user_token'];  
+            } else {
+                $losted_user_token = 'token=' . $this->session->data['token'];
+            }
+
+            if (version_compare(VERSION, '2.3', '<')) {
+                $data['losted_cart'] = array(
+                    'name' => $this->language->get('text_losted_cart'),
+                    'url'  => $this->url->link('module/losted_cart', $losted_user_token, true),
+                );
+            } else {
+                $data['menus'][] = array(
+                    'id'       => 'menu-losted-cart',
+                    'icon'     => 'fa fa-user-secret',
+                    'name'     => $this->language->get('text_losted_cart'),
+                    'href'     => $this->url->link('extension/module/losted_cart', $losted_user_token, true),
+                    'children' => array()
+                );
+            }
+        }
+        /* Losted Cart by Artem Pitov */
+            ]]></add>
+        </operation>
+    </file>                              
+</modification>

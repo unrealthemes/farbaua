@@ -1,0 +1,636 @@
+{{ header }} 
+<div class="container">
+	<ul class="breadcrumb {% if (menu_open_category is defined and ((menu_open_category == '1') and (main_menu == '1') and (column_left))) %}col-md-offset-3 col-lg-offset-3{% endif %}" itemscope itemtype="https://schema.org/BreadcrumbList">
+		{% for i,breadcrumb in breadcrumbs %} 
+			{% if (i+1 < breadcrumbs|length) %} 
+				<li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+					<a itemprop="item" href="{{ breadcrumb['href'] }}">
+						{% if (i == 0) %}
+						  <meta itemprop="name" content="{{ text_home_ns }}" />
+						  <span>{{ breadcrumb['text'] }}</span>
+						{% else %} 
+						  <span itemprop="name">{{ breadcrumb['text'] }}</span>
+						{% endif %} 
+					</a>
+					<meta itemprop="position" content="{{ i+1 }}" />
+				  </li>
+			{% else %} 
+				<li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+				<link itemprop="item" href="{{ breadcrumb['href'] }}">
+				{% if (i == 0) %}
+				  <meta itemprop="name" content="{{ text_home_ns }}" />
+				  <span>{{ breadcrumb['text'] }}</span>
+				{% else %} 
+				  <span itemprop="name">{{ breadcrumb['text'] }}</span>
+				{% endif %} 
+				<meta itemprop="position" content="{{ i+1 }}" />
+				</li>
+			{% endif %} 
+		{% endfor %}
+	</ul>
+  <div class="row">
+	{% if (menu_open_category is defined and ((menu_open_category == '1') and (main_menu == '1') and (column_left))) %} 
+		<script>
+		if(window.matchMedia("(min-width: 992px)").matches){
+			$('header #menu-list').addClass("nsmenu-block");
+			$(function(){$('#column-left').css({'margin-top': $('header #menu-list').outerHeight() - 54});});
+		}
+		$(window).resize(function() {
+			if ($(window).width() > 992) {
+				$('header #menu-list').addClass("nsmenu-block");
+				$(function(){$('#column-left').css({'margin-top': $('header #menu-list').outerHeight() - 54});});
+			} else {
+				$('header #menu-list').removeClass("nsmenu-block");
+			}
+		});
+		</script>
+	{% endif %} 
+	{{ column_left }} 
+    {% if (column_left and column_right) %} 
+    {% set class = 'col-sm-8 col-md-6' %} 
+	{% set cols_class = 'col-lg-6 col-md-6 col-sm-12 col-xs-12' %} 
+    {% elseif (column_left or column_right) %} 
+    {% set class = 'col-sm-8 col-md-9' %} 
+	{% set cols_class = 'col-lg-4 col-md-4 col-sm-6 col-xs-12' %} 
+    {% else %} 
+    {% set class = 'col-sm-12' %} 
+	{% set cols_class = 'col-lg-3 col-md-3 col-sm-6 col-xs-12' %} 
+    {% endif %} 
+    <div id="content" class="{{ class }}">
+  {{ content_top }} 
+	{% if (newstorecat_pos1 is defined) %} 
+		{{ newstorecat_pos1 }}
+{% endif %} 
+{% if (newstorecat_pos2 is defined or newstorecat_pos3 is defined) %} 
+<div class="row">
+	{% if (newstorecat_pos2 is defined) %} 
+		{{ newstorecat_pos2 }}
+	{% endif %} 
+	{% if (newstorecat_pos2 is defined) %} 
+		{{ newstorecat_pos3 }}	
+	{% endif %} 
+</div>
+{% endif %} 
+      <h1>{{ heading_title }}</h1>
+	  {% if (config_catalog_category_description_dropped != 1) %} 
+	   {% if (thumb or description) %} 
+		  <div class="category_description psbt">
+			{% if (thumb) %} 
+			<div class="psfl-l"><img src="{{ thumb }}" alt="{{ heading_title }}" title="{{ heading_title }}" class="img-thumbnail" /></div>
+			{% endif %} 
+			{% if (description) %} 
+				<div>{{ description }}</div>
+			{% endif %} 
+		  </div>
+		  {% endif %} 
+     {% endif %} 
+	  {% if (categories and show_subcategories is defined and (show_subcategories == 1) ) %}
+      <div class="text_refine">{{ text_refine }} <i class="fa fa-level-down"></i></div> 
+      <div class="row">
+          {% for category in categories %} 
+			<div class="col-sm-6 col-md-4 col-lg-3">  	
+				<div class="thumbnail subcategory">
+					<a href="{{ category['href'] }}">
+						<div>
+							<img alt="{{ category['name'] }}" src="{{ category['thumb'] }}"> 
+						</div>
+						<div class="name-wrapper">
+							<div class="display-table">
+								<div class="display-table-cell">
+									<h5>{{ category['name'] }}</h5>
+								</div>
+							</div>
+						</div>
+					</a>
+				</div>
+			</div>
+          {% endfor %}         
+      </div>
+      {% endif %} 
+      {% if (products) %} 
+	  <div class="row">
+		<div class="col-xs-12 col-sm-5 col-md-4 col-lg-3 hidden-xs">			
+			<div class="btn-group hidden-xs localstorage">
+				<button type="button" id="list-view" class="btn" data-toggle="tooltip" title="{{ button_list }}"><i class="fa fa-th-list"></i></button>
+				<button type="button" id="grid-view" class="btn" data-toggle="tooltip" title="{{ button_grid }}"><i class="fa fa-th-large"></i></button>
+				<button type="button" id="grid-view4" class="btn" data-toggle="tooltip" title="{{ button_grid }}"><i class="fa fa-th"></i></button>
+				{% if config_price_list_view_on_off == '1' %} 
+				<button type="button" id="price-view" class="btn" data-toggle="tooltip" title="{{ button_price }}"><i class="fa fa-align-justify"></i></button>
+				{% endif %} 
+			</div>
+		</div>
+		<div class="col-xs-6 col-sm-4 col-md-4 col-lg-4 col-md-offset-1 col-lg-offset-2 text-right">
+          <div class="form-group input-group">
+            <label class="input-group-addon" for="input-sort"><i class="fa fa-sort"></i> <span class="hidden-xs hidden-sm hidden-md">{{text_sort}}</span></label>
+            <select id="input-sort" class="form-control" onchange="location = this.value;">
+              
+              {% for sorts in sorts %}
+              {% if sorts.value == '%s-%s'|format(sort, order) %}
+              
+              <option value="{{ sorts.href }}" selected="selected">{{ sorts.text }}</option>
+              
+              {% else %}
+              
+              <option value="{{ sorts.href }}">{{ sorts.text }}</option>
+              
+              {% endif %}
+              {% endfor %}
+            
+            </select>
+          </div>
+        </div>
+        <div class="col-xs-6 col-sm-3 col-md-3 col-lg-3 text-right">
+          <div class="form-group input-group">
+            <label class="input-group-addon" for="input-limit"><i class="fa fa-eye"></i> <span class="hidden-xs hidden-sm hidden-md">{{ text_limit }}</span></label>
+            <select id="input-limit" class="form-control" onchange="location = this.value;">
+              
+              {% for limits in limits %}
+              {% if limits.value == limit %}
+              
+              <option value="{{ limits.href }}" selected="selected">{{ limits.text }}</option>
+              
+              {% else %}
+              
+              <option value="{{ limits.href }}">{{ limits.text }}</option>
+              
+              {% endif %}
+              {% endfor %}
+            
+            </select>
+          </div>
+        </div>
+	</div> 
+	<div>
+      <div class="row row-price category-page">
+        {% for product in products %} 
+         <div class="product-layout product-grid {{ cols_class }}">
+          <div class="product-thumb">
+				{% if (config_on_off_category_page_quickview == '1') %}
+					<div class="quickview"><a class="btn btn-quickview" onclick="quickview_open({{ product.product_id }},'{{ all_prod is defined ? all_prod : 0 }}');"><i class="fa fa-external-link fa-fw"></i>{{ config_quickview_btn_name[lang_id].config_quickview_btn_name }}</a></div>
+				{% endif %} 
+				<div class="image">					
+							<div class="stickers-ns">
+								{% if (product.special) %} 
+									<div class="sticker-ns procent-skidka"><i class="fa fa-tag"></i> {{ product.skidka }} %</div>
+								{% endif %} 
+								{% if ((on_off_sticker_special == '1') and product.special) %} 
+									<div class="sticker-ns special">
+										<i class="fa {{ config_change_icon_sticker_special }} "></i>					
+										<span>{{ text_sticker_special[lang_id].config_change_text_sticker_special }}</span>	
+									</div>
+								{% endif %} 
+								{% if ((on_off_sticker_topbestseller == '1') and (product.top_bestsellers >= config_limit_order_product_topbestseller)) %} 
+									<div class="sticker-ns bestseller">
+										<i class="fa {{ config_change_icon_sticker_topbestseller }} "></i>
+										<span>{{ text_sticker_topbestseller[lang_id].config_change_text_sticker_topbestseller }}</span>	
+									</div>
+								{% endif %} 
+								{% if ((on_off_sticker_popular == '1') and (product.viewed>=config_min_quantity_popular)) %} 
+									<div class="sticker-ns popular">
+										<i class="fa {{ config_change_icon_sticker_popular }} "></i>
+										<span>{{ text_sticker_popular[lang_id].config_change_text_sticker_popular }}</span>								
+									</div>
+								{% endif %} 
+								{% if ((on_off_sticker_newproduct == '1') and product.sticker_new_prod ) %} 
+									<div class="sticker-ns newproduct">
+										<i class="fa {{ config_change_icon_sticker_newproduct }}"></i>
+										{{ text_sticker_newproduct[lang_id].config_change_text_sticker_newproduct }}	
+									</div>
+								{% endif %} 
+							</div>
+				{% if (ns_on_off_category_page_slider_additional_image == '1') %}		
+				<div class="image-carousel-category">			
+					<a href="{{ product.href }}"><img {% if (product.product_quantity <= 0 and show_stock_status) %}data-status="{{ product.stock_status }}"{% endif %} {% if (lazyload_page) %}data-src="{{ product['thumb'] }}" src="{{ lazy_image }}" {% else %}src="{{ product['thumb'] }}"{% endif %} alt="{{ product.name }}" title="{{ product.name }}" class="img-responsive{% if lazyload_page %}lazyload{% endif %}" /></a>		
+				{% for img in product.additional_img %}			
+					<a class="hidden additional-image" href="{{ product.href }}"><img class="img-responsive {% if lazyload_page %}lazyload{% endif %}" {% if (lazyload_page) %}data-src="{{ img }}" src="{{ lazy_image }}" {% else %}src="{{ img }}"{% endif %} alt="" title="" /></a>			
+				{% endfor %} 
+				</div>
+				{% elseif (ns_on_off_category_page_slider_additional_image == '2') %} 
+					<a href="{{ product.href }}"><img {% if (product.product_quantity <= 0 and show_stock_status) %}data-status="{{ product.stock_status }}"{% endif %} {% if (product.additional_image_hover) %} data-additional-hover="{{ product.additional_image_hover }}"{% endif %} {% if (lazyload_page) %}data-src="{{ product['thumb'] }}" src="{{ lazy_image }}" {% else %}src="{{ product['thumb'] }}"{% endif %} alt="{{ product.name }}" title="{{ product.name }}" class="img-responsive {% if lazyload_page %}lazyload{% endif %}" /></a>	
+				{% else %}	
+					<a href="{{ product.href }}"><img {% if (product.product_quantity <= 0 and show_stock_status) %}data-status="{{ product.stock_status }}"{% endif %} {% if (lazyload_page) %}data-src="{{ product['thumb'] }}" src="{{ lazy_image }}" {% else %}src="{{ product['thumb'] }}"{% endif %} alt="{{ product.name }}" title="{{ product.name }}" class="img-responsive {% if lazyload_page %}lazyload{% endif %}" /></a>	
+				{% endif %} 
+				{% if (show_special_timer_page == '1' and product.special) %} 
+					<div class="action-timer">
+						<div id="countdown-category-{{ product.product_id }}"></div>		
+					</div>
+					<script>
+						$(function(){
+							var note = $('#note');
+							var parts_date ='{{ product.date_end }}'.split('-');
+							var ts = new Date(parts_date[0], parts_date[1] - 1, parts_date[2]); 
+							if((new Date()) > ts){
+								ts = (new Date()).getTime() + 10*24*60*60*1000;
+							}
+							$('#countdown-category-{{ product.product_id }}').countdown({
+								timestamp: ts,
+								callback: function(days, hours, minutes, seconds){						
+								var message = "";		
+								message += days;
+								message += hours;
+								message += minutes;
+								message += seconds;											
+								note.html(message);
+								}
+							});
+						});
+					</script>
+				{% endif %}				
+			</div>
+              <div class="caption">
+			   <div class="actions-quick-order grid-quick-order">
+				<div class="quick-order">
+					{% if (ns_on_off_module_quick_order == '1') %} 
+					{% if (ns_on_off_category_page_fastorder != '0') %} 
+					<button class="btn btn-fastorder {% if ((product.product_quantity <= 0) and disable_fastorder_button) %}hidden-quick-order{% endif %}" type="button" data-toggle="tooltip" onclick="fastorder_open({{ product.product_id}});" title="{{ config_text_open_form_send_order[lang_id].config_text_open_form_send_order }}">
+						{% if (icon_open_form_send_order != '') %} 
+							<i style="color:#{{ color_button_open_form_send_order }};" class="{{ icon_open_form_send_order }} fa-fw"></i>
+						{% else %} 
+							<i style="color:#{{ color_button_open_form_send_order }};" class="fa fa-shopping-bag fa-fw"></i>
+						{% endif %} 
+						{{ config_text_open_form_send_order[lang_id].config_text_open_form_send_order }} 
+					</button>
+					{% endif %} 
+					{% endif %} 
+				</div>
+			   </div>
+                <div class="product-name"><a href="{{ product.href }}">{{ product.name }}</a></div>
+                {% if (ns_on_off_category_page_model_product != '0') %} 
+					<div class="product-model">{{ product.model}}</div>
+				{% endif %} 
+				{% if (ns_on_off_category_page_description != '0') %} 
+					<div class="product-description">{{ product.description }}</div>
+				{% endif %} 
+				{% if (show_attr_cpage == 1) %} 
+					{% if (product['attribute_groups']) %} 
+					<div class="attribute-cat">
+						<div class="short-attributes-groups-category">
+							{% for key_attr_g,attribute_group in product['attribute_groups'] %} 
+							{% if (key_attr_g < cpage_attr_group_count) %} 
+								{% for key_attr_item,attribute in attribute_group['attribute'] %} 
+									{% if (key_attr_item < cpage_attr_group_item_count) %} 
+									<div class="short-attribute">
+										<span class="attr-name"><span>{{ attribute['name'] }} - </span></span>
+										<span class="attr-text"><span>{{ attribute['text'] }}</span></span>
+									</div>
+									{% endif %} 
+								{% endfor %} 
+							{% endif %} 
+							{% endfor %} 
+						</div>
+					</div>
+					{% endif %} 
+				 {% endif %}	
+						{% if (show_options) %} 
+						<div id="option_productpage_{{ product.product_id }}" class="option productpage-opt">
+							{% for key,option in product.options %} 
+								{% if (option.type == 'select') %} 
+									<div class="form-group">
+										<label class="control-label" for="input-option{{ option.product_option_id }}">
+											{% if (option.required) %}<i class="fa fa-exclamation-triangle required" data-toggle="tooltip" data-placement="left" title="{{ required_text_option }}"></i>{% endif %} 
+											{{ option.name }} 
+										</label>
+										<div id="input-option-productpage{{ option.product_option_id }}">
+											<select onchange="recalc_quantity({{ product.product_id }},{{ product.minimum }},{{ product.price_no_format }},'{{ product.special_no_format }}','.row-price','productpage');" name="option[{{ option.product_option_id }}]" id="input-value-{{ option.product_option_id }}_productpage" class="form-control">
+												<option value="">{{ text_select }}</option>
+												{% for option_value in option.product_option_value %} 
+												<option data-option-prefix="{{ option_value.price_prefix }}" data-option-price="{{ option_value.price_value }}" value="{{ option_value.product_option_value_id }}">{{ option_value.name }} 
+												{% if (option_value.price) %} 
+												({{ option_value.price_prefix }}{{ option_value.price }})
+												{% endif %} 
+												</option>
+												{% endfor %} 
+											</select>
+									  </div>
+									</div>
+								{% endif %} 
+								{% if (option.type == 'radio') %} 
+									<div class="form-group">
+										<label class="control-label" for="input-option{{ option.product_option_id }}">
+											{% if (option.required) %}<i class="fa fa-exclamation-triangle required" data-toggle="tooltip" data-placement="left" title="{{ required_text_option }}"></i>{% endif %} 
+											{{ option.name }} 
+										</label>
+									  <div id="input-option-productpage{{ option.product_option_id }}">
+										{% for option_value in option.product_option_value %} 
+											{% if (option_value.image or option_value.color) %} 
+												{% if (option.status_color_type == '1') %} 
+													<div class="image-radio">
+													  <label>
+														<input data-option-prefix="{{ option_value.price_prefix }}" data-option-price="{{ option_value.price_value }}" onchange="recalc_quantity({{ product.product_id }},{{ product.minimum }},{{ product.price_no_format }},'{{ product.special_no_format }}','.row-price','productpage');" type="radio" name="option[{{ option.product_option_id }}]" value="{{ option_value.product_option_value_id }}" id="input-value-{{ option.product_option_id }}_{{ option_value.product_option_value_id }}_productpage" />
+														<span for="input-value-{{ option.product_option_id }}_{{ option_value.product_option_value_id }}_productpage" class="color-option" data-toggle="tooltip" title="{{ option_value.name ~ option_value.price ? ' ' ~ option_value.price_prefix ~ option_value.price : '' }}" style="background-color:{{ option_value.color}}"></span>
+													  </label>
+													</div>
+												{% else %} 
+													<div class="image-radio">
+													  <label>
+														<input data-option-prefix="{{ option_value.price_prefix }}" data-option-price="{{ option_value.price_value }}" onchange="recalc_quantity({{ product.product_id }},{{ product.minimum }},{{ product.price_no_format }},'{{ product.special_no_format }}','.row-price','productpage');" type="radio" name="option[{{ option.product_option_id }}]" value="{{ option_value.product_option_value_id }}" id="input-value-{{ option.product_option_id }}_{{ option_value.product_option_value_id }}_productpage" />
+														<img for="input-value-{{ option.product_option_id }}_{{ option_value.product_option_value_id }}_productpage" src="{{ option_value.image }}" alt="{{ option_value.name ~ option_value.price ? ' ' ~ option_value.price_prefix ~ option_value.price : '' }}" class="img-thumbnail" data-toggle="tooltip" title="{{ option_value.name ~ option_value.price ? ' ' ~ option_value.price_prefix ~ option_value.price : '' }}" /> 
+													  </label>
+													</div>
+												{% endif %} 
+											{% else %} 
+												<div class="radio-checbox-options">
+													<input data-option-prefix="{{ option_value.price_prefix }}" data-option-price="{{ option_value.price_value }}" onchange="recalc_quantity({{ product.product_id }},{{ product.minimum }},{{ product.price_no_format }},'{{ product.special_no_format }}','.row-price','productpage');" type="radio" name="option[{{ option.product_option_id }}]" value="{{ option_value.product_option_value_id }}" id="input-value-{{ option.product_option_id }}_{{ option_value.product_option_value_id }}_productpage" />
+													<label for="input-value-{{ option.product_option_id }}_{{ option_value.product_option_value_id }}_productpage">
+														<span class="option-name">{{ option_value.name }}</span>
+														{% if (option_value.price) %} 
+														<span class="option-price">{{ option_value.price_prefix }}{{ option_value.price }}</span>
+														{% endif %} 
+													</label>
+												</div>
+											{% endif %} 
+										{% endfor %} 
+									  </div>
+									</div>
+									{% endif %} 
+									{% if (option.type == 'checkbox') %} 
+									<div class="form-group">
+									  <label class="control-label" for="input-option{{ option.product_option_id }}">
+											{% if (option.required) %}<i class="fa fa-exclamation-triangle required" data-toggle="tooltip" data-placement="left" title="{{ required_text_option }}"></i>{% endif %} 
+											{{ option.name }} 
+										</label>
+									  <div id="input-option-productpage{{ option.product_option_id }}">
+										{% for option_value in option.product_option_value %} 
+											{% if (option_value.image or option_value.color) %} 
+												{% if (option.status_color_type == '1') %} 
+													<div class="image-radio">
+													  <label>
+														<input data-option-prefix="{{ option_value.price_prefix }}" data-option-price="{{ option_value.price_value }}" onchange="recalc_quantity({{ product.product_id }},{{ product.minimum }},{{ product.price_no_format }},'{{ product.special_no_format }}','.row-price','productpage');" type="checkbox" name="option[{{ option.product_option_id }}][]" value="{{ option_value.product_option_value_id }}" id="input-value-{{ option.product_option_id }}_{{ option_value.product_option_value_id }}_productpage" />
+														<span for="input-value-{{ option.product_option_id }}_{{ option_value.product_option_value_id }}_productpage" class="color-option" data-toggle="tooltip" title="{{ option_value.name ~ option_value.price ? ' ' ~ option_value.price_prefix ~ option_value.price : '' }}" style="background-color:{{ option_value.color}}"></span>
+													  </label>
+													</div>
+												{% else %} 
+													<div class="image-radio">
+													  <label>
+														<input data-option-prefix="{{ option_value.price_prefix }}" data-option-price="{{ option_value.price_value }}" onchange="recalc_quantity({{ product.product_id }},{{ product.minimum }},{{ product.price_no_format }},'{{ product.special_no_format }}','.row-price','productpage');" type="checkbox" name="option[{{ option.product_option_id }}][]" value="{{ option_value.product_option_value_id }}" id="input-value-{{ option.product_option_id }}_{{ option_value.product_option_value_id }}_productpage" />
+														<img for="input-value-{{ option.product_option_id }}_{{ option_value.product_option_value_id }}_productpage" src="{{ option_value.image }}" alt="{{ option_value.name ~ option_value.price ? ' ' ~ option_value.price_prefix ~ option_value.price : '' }}" class="img-thumbnail" data-toggle="tooltip" title="{{ option_value.name ~ option_value.price ? ' ' ~ option_value.price_prefix ~ option_value.price : '' }}" /> 
+													  </label>
+													</div>
+												{% endif %} 
+											{% else %} 
+												<div class="radio-checbox-options">
+													<input data-option-prefix="{{ option_value.price_prefix }}" data-option-price="{{ option_value.price_value }}" onchange="recalc_quantity({{ product.product_id }},{{ product.minimum }},{{ product.price_no_format }},'{{ product.special_no_format }}','.row-price','productpage');" type="checkbox" name="option[{{ option.product_option_id }}][]" value="{{ option_value.product_option_value_id }}" id="input-value-{{ option.product_option_id }}_{{ option_value.product_option_value_id }}_productpage" />
+													<label for="input-value-{{ option.product_option_id }}_{{ option_value.product_option_value_id }}_productpage">
+														<span class="option-name">{{ option_value.name }}</span>
+														{% if (option_value.price) %} 
+														<span class="option-price">{{ option_value.price_prefix }}{{ option_value.price }}</span>
+														{% endif %} 
+													</label>
+												</div>
+											{% endif %}										
+										{% endfor %} 
+									  </div>
+									</div>
+									{% endif %} 
+								{% endfor %} 
+						</div>
+					{% endif %}		
+				{% if (ns_on_off_category_page_rating != '0') %} 
+					<div class="rating">
+						<span class="rating-box">
+							{% set i = 1 %}{% for i in i..5 %} 
+								{% if (product.rating < i) %} 
+									<span class="fa fa-stack"><i class="fa fa-star-o fa-stack-2x"></i></span>
+								{% else %} 
+									<span class="fa fa-stack"><i class="fa fa-star fa-stack-2x"></i><i class="fa fa-star-o fa-stack-2x"></i></span>
+								{% endif %} 
+							{% endfor %} 
+						{% if (ns_on_off_category_page_quantity_reviews != '0') %} 
+							<span class="quantity-reviews"><a data-placement="right"  data-toggle="tooltip" title="{{ text_reviews_title }}" href="{{ product.href }}/#tab-review">{{ product.reviews }}</a></span>
+						{% endif %} 
+						</span>
+					</div>
+				{% endif %} 
+				 {% if (product.price) %} 
+                <p class="price">
+                   {% if (not product.special) %} 
+					  <span class="price_no_format_{{ product.product_id }}">{{ product.price }}</span>
+					  {% else %} 
+					  <span class="price-old"><span class="price_no_format_{{ product.product_id }}">{{ product.price }}</span></span> <span class="price-new"><span class="special_no_format_{{ product.product_id }}">{{ product.special }}</span></span>
+					{% endif %} 
+                  {% if (product.tax) %} 
+                  <span class="price-tax">{{ text_tax }} {{ product.tax }}</span>
+                  {% endif %} 
+                </p>
+                {% endif %} 
+				{% if (config_additional_settings_newstore['quantity_btn_page'] is defined and (config_additional_settings_newstore['quantity_btn_page'] == '1')) %}
+					<div class="quantity_plus_minus">
+						<div class="quantity_cont">
+							<div class="input-group">
+								<span class="input-group-btn">
+									<button class="btn btn-quantity-minus" onclick="btnminus_cat_price_page{{ product['product_id'] }}('{% if (config_additional_settings_newstore['quantity_multiple'] is defined and (config_additional_settings_newstore['quantity_multiple'] == '1')) %}{{ product['minimum'] }}{% else %}1{% endif %}');" type="button">-</button>
+								</span>
+									<input <input {% if (config_additional_settings_newstore['quantity_multiple'] is defined and (config_additional_settings_newstore['quantity_multiple'] == '1') and product['minimum'] > 1) %}disabled{% endif %} id="input_quantity_page{{ product['product_id'] }}" class="form-control input-number-quantity{{ product['product_id'] }}" name="quantity" onkeyup="validate_quantity(this,'{{ product['minimum'] }}')" oninput="recalc_quantity({{ product['product_id'] }},{{ product['minimum'] }}, {{ product['price_no_format'] }},'{{ product['special_no_format'] }}','.row-price','productpage');" size="2" value="{{ product['minimum'] }}">
+								<span class="input-group-btn">
+									<button class="btn btn-quantity-plus" onclick="btnplus_cat_price_page{{ product['product_id'] }}('{% if (config_additional_settings_newstore['quantity_multiple'] is defined and (config_additional_settings_newstore['quantity_multiple'] == '1')) %}{{ product['minimum'] }}{% else %}1{% endif %}');" type="button" >+</button>
+								</span>
+							</div>	
+						</div>
+					</div>
+					<script>
+					{% if (config_additional_settings_newstore['price_recalc'] is defined and (config_additional_settings_newstore['price_recalc'] == '1')) %}
+					$(window).load(function() {
+						recalc_quantity({{ product['product_id'] }},{{ product['minimum'] }},{{ product['price_no_format'] }},'{{ product['special_no_format'] }}','.row-price','productpage');					
+					});
+					{% endif %} 
+					function btnminus_cat_price_page{{ product['product_id'] }}(minimum){
+						var $input = $('#input_quantity_page{{ product['product_id'] }}');
+						var count = parseInt($input.val()) - parseInt(minimum);
+						count = count < parseInt({{ product['minimum'] }}) ? parseInt({{ product['minimum'] }}) : count;
+						$input.val(count);
+						$input.change();										
+						recalc_quantity({{ product['product_id'] }},count,{{ product['price_no_format'] }},'{{ product['special_no_format'] }}','.row-price','productpage');						
+					}
+					function btnplus_cat_price_page{{ product['product_id'] }}(minimum){
+						var $input = $('#input_quantity_page{{ product['product_id'] }}');
+						var count = parseInt($input.val()) + parseInt(minimum);
+						$input.val(count);
+						$input.change();
+						recalc_quantity({{ product['product_id'] }},count,{{ product['price_no_format'] }},'{{ product['special_no_format'] }}','.row-price','productpage');					
+					};																				
+				</script>
+				{% endif %}
+				<div class="actions">
+					{% if (ns_on_off_category_page_wishlist != '0') %} 
+						<div class="wishlist"><button class="btn btn-wishlist" type="button" data-toggle="tooltip" title="{{ button_wishlist }}" onclick="wishlist.add('{{ product.product_id }}');"><i class="fa fa-heart"></i></button></div>
+					{% endif %} 
+					{% if ((product.product_quantity <= 0) and disable_cart_button) %} 
+						<div class="cart"><button class="btn btn-general" type="button" disabled>{% if (change_text_cart_button_out_of_stock == 1) %}<i class="fa fa-minus-square out_of_stock"></i> <span>{{ disable_cart_button_text }}</span>{% else %}<i class="fa fa-shopping-basket"></i> <span>{{ button_cart }}</span>{% endif %}</button></div>
+					{% else %} 
+						<div class="cart"><button class="btn btn-general" type="button" onclick="cart.add('{{ product.product_id }}','productpage', get_cart_quantity('{{ product.product_id }}','.row-price'));">{% if (change_text_cart_button_out_of_stock == 1 and product.product_quantity <= 0) %}<i class="fa fa-minus-square out_of_stock"></i> <span>{{ disable_cart_button_text }}</span>{% else %}<i class="fa fa-shopping-basket"></i> <span>{{ button_cart }}</span>{% endif %}</button></div>
+					{% endif %} 
+
+					{% if (ns_on_off_category_page_compare != '0') %} 
+					<div class="compare"><button class="btn btn-compare" type="button" data-toggle="tooltip" title="{{ button_compare }}" onclick="compare.add('{{ product.product_id }}');"><i class="fa fa-exchange"></i></button></div>
+					{% endif %} 
+					<div class="list-quick-order">	
+					{% if (ns_on_off_module_quick_order == '1') %} 
+					{% if (ns_on_off_category_page_fastorder != '0') %} 
+					<button class="btn btn-fastorder {% if ((product.product_quantity <= 0) and disable_fastorder_button) %}hidden-quick-order{% endif %}" type="button" data-toggle="tooltip" onclick="fastorder_open({{ product.product_id}});" title="{{ config_text_open_form_send_order[lang_id].config_text_open_form_send_order }}">
+						{% if (icon_open_form_send_order != '') %} 
+							<i style="color:#{{ color_button_open_form_send_order }};" class="{{ icon_open_form_send_order }} fa-fw"></i>
+						{% else %} 
+							<i style="color:#{{ color_button_open_form_send_order }};" class="fa fa-shopping-bag fa-fw"></i>
+						{% endif %} 
+						<span class="hidden-xs">{{ config_text_open_form_send_order[lang_id].config_text_open_form_send_order }}</span>
+					</button>
+					{% endif %} 
+					{% endif %} 
+					</div>
+				</div>
+            </div>
+          </div>
+		  
+		  {% if (show_attr_cpage == 1) %} 
+				{% if (product['attribute_groups']) %} 
+					<div class="catalogCard-extra">
+						<div class="short-attributes-groups-category">
+							{% for key_attr_g,attribute_group in product['attribute_groups'] %} 
+								{% if (key_attr_g < cpage_attr_group_count) %} 
+									{% for key_attr_item,attribute in attribute_group['attribute'] %} 
+										{% if (key_attr_item < cpage_attr_group_item_count) %} 
+										<div class="short-attribute">
+											<span class="attr-name"><span>{{ attribute['name'] }} - </span></span>
+											<span class="attr-text"><span>{{ attribute['text'] }}</span></span>
+										</div>
+										{% endif %} 
+									{% endfor %} 
+								{% endif %} 
+							{% endfor %} 
+						</div>
+					</div>
+				{% endif %} 
+			{% endif %} 
+		  
+        </div>
+        {% endfor %} 
+      </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-12 text-center">{{ pagination }}</div>
+        <div class="col-sm-12 text-right">{{ results }}</div>
+      </div>
+		<br />
+      {% endif %} 
+	  {% if (config_catalog_category_description_dropped == 1) %} 
+	   {% if (thumb or description) %} 
+		  <div class="category_description psbt">
+			{% if (thumb) %} 
+			<div class="psfl-l"><img src="{{ thumb }}" alt="{{ heading_title }}" title="{{ heading_title }}" class="img-thumbnail" /></div>
+			{% endif %} 
+			{% if (description) %} 
+				<div>{{ description }}</div>
+			{% endif %} 
+		  </div>
+		  {% endif %} 
+		 {% endif %} 
+      {% if (not categories and not products) %} 
+      <p>{{ text_empty }}</p>
+      <div class="buttons">
+        <div class="pull-right"><a href="{{ continue }}" class="btn btn-primary">{{ button_continue }}</a></div>
+      </div>
+      {% endif %} 
+      {{ content_bottom }}</div>
+    {{ column_right }}</div>
+		{% if (newstorecat_pos4 is defined or newstorecat_pos5 is defined) %} 
+		<div class="row">
+			{% if (newstorecat_pos4 is defined) %} 
+				{{ newstorecat_pos4 }}
+			{% endif %} 
+			{% if (newstorecat_pos5 is defined) %} 
+				{{ newstorecat_pos5 }}	
+			{% endif %} 
+		</div>
+		{% endif %} 
+		{% if (newstorecat_pos6 is defined or newstorecat_pos7 is defined or newstorecat_pos8 is defined or newstorecat_pos9 is defined) %} 
+			<div class="row">
+			{% if (newstorecat_pos6 is defined) %} 
+				{{ newstorecat_pos6 }}
+			{% endif %}	
+			{% if (newstorecat_pos7 is defined) %} 
+				{{ newstorecat_pos7 }}
+			{% endif %}	
+			{% if (newstorecat_pos8 is defined) %} 
+				{{ newstorecat_pos8 }}
+			{% endif %}	
+			{% if (newstorecat_pos9 is defined) %} 
+				{{ newstorecat_pos9 }}
+			{% endif %} 
+			</div>
+		{% endif %} 
+	{% if (newstorecat_pos10 is defined) %}		
+		{{ newstorecat_pos10 }}
+	{% endif %} 
+</div>
+{% if (newstorecat_pos11 is defined) %}{{ newstorecat_pos11 }}{% endif %} 
+{% if (ns_on_off_category_page_slider_additional_image_script == '1') %}	
+<script>
+$(window).load(function() {
+if (localStorage.getItem('display') != 'price'){
+	$(".additional-image").removeClass('hidden');
+		$(".image-carousel-category").owlCarousel({
+			singleItem:true,
+			navigation : true, 
+			pagination:false,
+			navigationText: ['<div class="btn btn-carousel-image-additional next-prod"><i class="fa fa-angle-left arrow"></i></div>', '<div class="btn btn-carousel-image-additional prev-prod"><i class="fa fa-angle-right arrow"></i></div>'],		
+			transitionStyle: '{{ ns_select_category_page_additional_animate_method }}'
+		});
+} 
+$('#list-view').click(function(e){
+$(".additional-image").addClass('hidden');
+        e.preventDefault();
+	setTimeout(function () {
+		$(".image-carousel-category").each(function() { 
+		 var items = $(this);
+			for (var i = 0; i < items.length; i++) {
+				if($(items).data('owlCarousel')){
+					$(items).data('owlCarousel').destroy();
+				}
+				$(".additional-image").removeClass('hidden');
+					$(items).owlCarousel({
+								navigation : true,
+								singleItem:true,
+								pagination:false,
+								navigationText: ['<div class="btn btn-carousel-image-additional list next-prod"><i class="fa fa-angle-left arrow"></i></div>', '<div class="btn btn-carousel-image-additional prev-prod"><i class="fa fa-angle-right arrow"></i></div>'],		
+								transitionStyle: '{{ ns_select_category_page_additional_animate_method }}'
+					});	
+			} 
+		}); 
+	}, 200);
+});	
+$('#grid-view').click(function(e){
+$(".additional-image").addClass('hidden');
+    e.preventDefault();
+	setTimeout(function () {
+		$(".image-carousel-category").each(function() { 
+		 var items = $(this);
+			for (var i = 0; i < items.length; i++) {
+				if($(items).data('owlCarousel')){
+					$(items).data('owlCarousel').destroy();
+				}
+				$(".additional-image").removeClass('hidden');
+					$(items).owlCarousel({
+								navigation : true, 								
+								pagination:false,
+								navigationText: ['<div class="btn btn-carousel-image-additional list next-prod"><i class="fa fa-angle-left arrow"></i></div>', '<div class="btn btn-carousel-image-additional prev-prod"><i class="fa fa-angle-right arrow"></i></div>'],		
+								singleItem:true,
+								transitionStyle: '{{ ns_select_category_page_additional_animate_method }}'
+					});	
+			} 
+		}); 
+	}, 200);	 
+});
+$('#price-view').click(function(e){	
+$(".additional-image").addClass('hidden');
+e.preventDefault(); 
+	$(".image-carousel-category").each(function() { 
+		var items = $(this);
+		for (var i = 0; i < items.length; i++) {
+			$(items).data('owlCarousel').destroy();
+		} 
+	}); 
+});
+});
+</script>
+{% endif %} 
+{{ footer }}

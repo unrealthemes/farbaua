@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<modification>
+  <name>NS > mob device</name>
+  <code>NS > mob device</code>
+  <version>2.6.1</version>
+  <author>Alex.Konushin(29aleksey)</author>
+	<file path="catalog/model/design/layout.php">
+		<operation>
+			<search><![CDATA[public function getLayoutModules($layout_id, $position) {]]></search>
+			<add position="after"><![CDATA[
+				$detect = new Mobile_Detect();
+				$deviceType = ($detect->isMobile() ? ($detect->isTablet() ? 'tablet' : 'phone') : 'computer');
+				if($deviceType == 'phone') {
+					$mob_device = "AND mob_device !='1'";
+				} else {
+					$mob_device = "";
+				}
+			]]></add>
+		</operation>
+		<operation>
+			<search><![CDATA['" . $this->db->escape($position) . "']]></search>
+			<add position="replace"><![CDATA['" . $this->db->escape($position) . "' ". $mob_device ." ]]></add>
+		</operation>
+	</file>
+	<file path="admin/controller/design/layout.php">
+		<operation>
+			<search><![CDATA[protected function getForm() {]]></search>
+			<add position="after"><![CDATA[
+			$this->document->addStyle('view/stylesheet/mob_d.css');
+			$data['help_mob_device'] = $this->language->get('help_mob_device');
+			$data['text_mob_device'] = $this->language->get('text_mob_device');
+			]]></add>
+		</operation>
+		<operation>
+			<search><![CDATA['position'   => $layout_module['position'],]]></search>
+			<add position="after"><![CDATA[
+			'mob_device'   => $layout_module['mob_device'],
+			]]></add>
+		</operation>
+	</file>
+	<file path="admin/language/ru-ru/design/layout.php">
+		<operation>
+			<search><![CDATA[// Text]]></search>
+			<add position="after"><![CDATA[
+			$_['help_mob_device']          	= 'Выключить модуль на мобильных устройствах';
+			$_['text_mob_device']          	= 'Моб.Уст';
+			]]></add>
+		</operation>
+	</file>
+	<file path="admin/language/en-gb/design/layout.php">
+		<operation>
+			<search><![CDATA[// Text]]></search>
+			<add position="after"><![CDATA[
+			$_['help_mob_device']          	= 'Turn off the module on mobile devices';
+			$_['text_mob_device']          	= 'Mob.Dev';
+			]]></add>
+		</operation>
+	</file>
+	<file path="admin/model/design/layout.php">
+		<operation>
+			<search><![CDATA[foreach ($data['layout_module'] as $layout_module) {]]></search>
+			<add position="after"><![CDATA[
+				if(!isset($layout_module['mob_device'])){
+					$layout_module['mob_device'] = 0;
+				}
+			]]></add>
+		</operation>
+		<operation>
+			<search><![CDATA[position = '" . $this->db->escape($layout_module['position']) . "',]]></search>
+			<add position="replace"><![CDATA[
+			position = '" . $this->db->escape($layout_module['position']) . "', mob_device = '" . (int)$layout_module['mob_device'] . "',
+			]]></add>
+		</operation>
+	</file>
+	<file path="admin/view/template/design/layout_form.twig">
+		<operation>
+			<search><![CDATA[<td class="text-center">{{ text_column_left }}</td>]]></search>
+			<add position="before"><![CDATA[
+			 <td class="text-center"><span data-toggle="tooltip" title="{{ help_mob_device }}">{{ text_mob_device }}</span></td>
+			]]></add>
+		</operation>
+		<operation>
+			<search><![CDATA[<td class="text-center">{{ text_content_top }}</td>]]></search>
+			<add position="before"><![CDATA[
+			 <td class="text-center"><span data-toggle="tooltip" title="{{ help_mob_device }}">{{ text_mob_device }}</span></td>
+			]]></add>
+		</operation>
+		<operation>
+			<search><![CDATA[<td class="text-center">{{ text_content_bottom }}</td>]]></search>
+			<add position="before"><![CDATA[
+			 <td class="text-center"><span data-toggle="tooltip" title="{{ help_mob_device }}">{{ text_mob_device }}</span></td>
+			]]></add>
+		</operation>
+		<operation>
+			<search><![CDATA[<td class="text-center">{{ text_column_right }}</td>]]></search>
+			<add position="before"><![CDATA[
+			 <td class="text-center"><span data-toggle="tooltip" title="{{ help_mob_device }}">{{ text_mob_device }}</span></td>
+			]]></add>
+		</operation>
+		<operation>
+			<search><![CDATA[<tr id="module-row{{ module_row }}">]]></search>
+			<add position="after"><![CDATA[
+			 <td class="text-center">
+				<div class="checkbox-group-pixelshop">
+					<label><input type="checkbox" name="layout_module[{{ module_row }}][mob_device]" value="1" {% if (layout_module['mob_device'] is defined and (layout_module['mob_device'] == 1)) %} checked="checked"{% endif %} /><span></span></label>						 
+				</div>
+			</td>
+			]]></add>
+		</operation>
+		<operation>
+			<search><![CDATA[html  = '<tr id="module-row' + module_row + '">';]]></search>
+			<add position="after"><![CDATA[html += '<td class="text-center"><div class="checkbox-group-pixelshop"><label><input type="checkbox" name="layout_module[' + module_row + '][mob_device]" value="1" /><span></span></label></div></td>';]]></add>
+		</operation>
+		<operation>
+			<search index="1,2,3,4"><![CDATA[<tfoot>]]></search>
+			<add position="replace" offset="2"><![CDATA[
+			<tfoot>
+                <tr>
+                   <td class="text-left" colspan="2"><div class="input-group">
+			]]></add>
+		</operation>
+	</file>
+</modification>

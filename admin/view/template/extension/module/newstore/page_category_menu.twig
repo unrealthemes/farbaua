@@ -1,0 +1,496 @@
+<div class="form-group">
+				<label class="col-sm-3 control-label">{{ text_scheme_category_page }}</label>
+				<div class="col-sm-9">
+					<a class="btn btn-info collapsed" data-toggle="collapse" href="#CategoryPageScheme">
+						<span class="ns_ch_visible"><i class="fa fa-eye fa-fw"></i>{{ text_show_scheme }}</span>
+						<span class="ns_ch_hidden"><i class="fa fa-eye-slash fa-fw"></i>{{ text_hidden_scheme }}</span>
+						<i class="fa fa-angle-up arr"></i>
+					</a>
+					
+					<div id="CategoryPageScheme" class="panel-collapse collapse">
+						<br>
+						<div class="well">
+								<div class="row">
+									<div class="col-xs-12 ns_block"><div class="thumbnail"><b></b><span>{{ text_scheme_position_header_site }}<br>(header)</span></div></div>
+								</div>
+								<div class="row">
+								<div class="col-xs-12 ns_block"><div class="thumbnail"><b></b><span>{{ text_scheme_position_menu }}</span></div></div>
+								</div>
+								<div class="row">
+									<div class="col-xs-12 ns_block position-ns"><div class="thumbnail"><b></b><span>{{ text_scheme_position_number }}1</span></div></div>															
+								</div>
+								<div class="row">
+									<div class="col-xs-6 ns_block position-ns"><div class="thumbnail"><b></b><span>{{ text_scheme_position_number }}2</span></div></div>
+									<div class="col-xs-6 ns_block position-ns"><div class="thumbnail"><b></b><span>{{ text_scheme_position_number }}3</span></div></div>
+								</div>
+								<div class="row">
+									<div class="col-xs-3 ns_block"><div class="thumbnail"><b></b><span>{{ text_scheme_position_menu }}</span></div></div>
+									<div class="col-xs-6 ns_block"><div class="thumbnail"><b></b><span>{{ text_scheme_position_content_top }}<br>(content_top)</span></div></div>
+									<div class="col-xs-3 ns_block"><div class="thumbnail"><b></b><span>{{ text_scheme_position_column_right }}<br>(column_right)</span></div></div>
+								</div>
+								<div class="row">
+									<div class="col-xs-3 ns_block"><div class="thumbnail"><b></b><span>{{ text_scheme_position_column_left }}<br>(column_left)</span></div></div>
+									<div class="col-xs-6 ns_block"><div class="thumbnail"><b></b><span>{{ text_scheme_position_content_bottom }}<br>(content_bottom)</span></div></div>
+									<div class="col-xs-3 ns_block"><div class="thumbnail"><b></b><span>{{ text_scheme_position_column_right }}<br>(column_right)</span></div></div>
+								</div>
+								<div class="row">
+									<div class="col-xs-6 ns_block position-ns"><div class="thumbnail"><b></b><span>{{ text_scheme_position_number }}4</span></div></div>															
+									<div class="col-xs-6 ns_block position-ns"><div class="thumbnail"><b></b><span>{{ text_scheme_position_number }}5</span></div></div>															
+								</div>
+								<div class="row">
+									<div class="col-xs-3 ns_block position-ns"><div class="thumbnail"><b></b><span>{{ text_scheme_position_number }}6</span></div></div>
+									<div class="col-xs-3 ns_block position-ns"><div class="thumbnail"><b></b><span>{{ text_scheme_position_number }}7</span></div></div>
+									<div class="col-xs-3 ns_block position-ns"><div class="thumbnail"><b></b><span>{{ text_scheme_position_number }}8</span></div></div>
+									<div class="col-xs-3 ns_block position-ns"><div class="thumbnail"><b></b><span>{{ text_scheme_position_number }}9</span></div></div>
+								</div>
+								<div class="row">
+									<div class="col-xs-12 ns_block position-ns"><div class="thumbnail"><b></b><span>{{ text_scheme_position_number }}10</span></div></div>
+								</div>
+								<div class="row">
+									<div class="ns_block position-ns"><div class="thumbnail"><b></b><span>{{ text_scheme_position_number }}11<br>{{ text_scheme_position_fluid }}</span></div></div>
+								</div>
+								<div class="row">
+									<div class="col-xs-12 ns_block"><div class="thumbnail" style="margin-bottom:0;"><b></b><span>{{ text_scheme_position_footer_site }}<br>(footer)</span></div></div>
+								</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">{{ text_additional_modules }}</label>
+				<div class="col-sm-9">
+					<table id="ns-new-category-module" class="table table-striped table-bordered table-hover">
+						<thead style="background:#eee;">
+							<tr>
+								<td class="nowrap"><i class="fa fa-puzzle-piece fa-fw"></i>{{ additional_column_modules }}</td>
+								<td class="nowrap"><i class="fa fa-crosshairs fa-fw"></i>{{ additional_column_position }}</td>
+								<td class="nowrap"><i class="fa fa-sort fa-fw"></i>{{ additional_column_sort }}</td>
+								<td></td>
+							</tr>
+						</thead>
+						<tbody>
+							{% set ns_new_category_module_row = 0 %} 
+							{% for ns_new_category_layout_module in ns_new_category_page_layout_modules %} 
+							<tr id="ns-new-category-module-row{{ ns_new_category_module_row }}">
+								<td>
+									<select name="ns_new_category_layout_module[{{ ns_new_category_module_row }}][code]" class="form-control">
+										{% for extension in ns_new_home_extensions %} 
+										{% if (not extension.module) %} 
+										{% if (extension.code == ns_new_category_layout_module.code) %} 
+										<option value="{{ extension.code }}" selected="selected">{{ extension.name }}</option>
+										{% else %} 
+										<option value="{{ extension.code }}">{{ extension.name }}</option>
+										{% endif %} 
+										{% else %} 
+										<optgroup label="{{ extension.name }}">
+										{% for module in extension.module %} 
+										{% if (module.code == ns_new_category_layout_module.code) %} 
+										<option value="{{ module.code }}" selected="selected">{{ module.name }}</option>
+										{% else %} 
+										<option value="{{ module.code }}">{{ module.name }}</option>
+										{% endif %} 
+										{% endfor %} 
+										</optgroup>
+										{% endif %} 
+										{% endfor %} 
+									</select>
+								</td>
+								<td>
+									<select name="ns_new_category_layout_module[{{ ns_new_category_module_row }}][position]" class="form-control">															
+										{% if (ns_new_category_layout_module.position == 'position_1') %} 
+										<option value="position_1" selected="selected">{{ text_scheme_position_number }}1</option>
+										{% else %} 
+										<option value="position_1">{{ text_scheme_position_number }}1</option>
+										{% endif %} 
+										{% if (ns_new_category_layout_module.position == 'position_2') %} 
+										<option value="position_2" selected="selected">{{ text_scheme_position_number }}2</option>
+										{% else %} 
+										<option value="position_2">{{ text_scheme_position_number }}2</option>
+										{% endif %} 
+										{% if (ns_new_category_layout_module.position == 'position_3') %} 
+										<option value="position_3" selected="selected">{{ text_scheme_position_number }}3</option>
+										{% else %} 
+										<option value="position_3">{{ text_scheme_position_number }}3</option>
+										{% endif %} 
+										{% if (ns_new_category_layout_module.position == 'position_4') %} 
+										<option value="position_4" selected="selected">{{ text_scheme_position_number }}4</option>
+										{% else %} 
+										<option value="position_4">{{ text_scheme_position_number }}4</option>
+										{% endif %} 
+										{% if (ns_new_category_layout_module.position == 'position_5') %} 
+										<option value="position_5" selected="selected">{{ text_scheme_position_number }}5</option>
+										{% else %} 
+										<option value="position_5">{{ text_scheme_position_number }}5</option>
+										{% endif %} 
+										{% if (ns_new_category_layout_module.position == 'position_6') %} 
+										<option value="position_6" selected="selected">{{ text_scheme_position_number }}6</option>
+										{% else %} 
+										<option value="position_6">{{ text_scheme_position_number }}6</option>
+										{% endif %} 
+										{% if (ns_new_category_layout_module.position == 'position_7') %} 
+										<option value="position_7" selected="selected">{{ text_scheme_position_number }}7</option>
+										{% else %} 
+										<option value="position_7">{{ text_scheme_position_number }}7</option>
+										{% endif %} 
+										{% if (ns_new_category_layout_module.position == 'position_8') %} 
+										<option value="position_8" selected="selected">{{ text_scheme_position_number }}8</option>
+										{% else %} 
+										<option value="position_8">{{ text_scheme_position_number }}8</option>
+										{% endif %} 
+										{% if (ns_new_category_layout_module.position == 'position_9') %} 
+										<option value="position_9" selected="selected">{{ text_scheme_position_number }}9</option>
+										{% else %} 
+										<option value="position_9">{{ text_scheme_position_number }}9</option>
+										{% endif %} 
+										{% if (ns_new_category_layout_module.position == 'position_10') %} 
+										<option value="position_10" selected="selected">{{ text_scheme_position_number }}10</option>
+										{% else %} 
+										<option value="position_10">{{ text_scheme_position_number }}10</option>
+										{% endif %} 
+										{% if (ns_new_category_layout_module.position == 'position_11') %} 
+										<option value="position_11" selected="selected">{{ text_scheme_position_number }}11</option>
+										{% else %} 
+										<option value="position_11">{{ text_scheme_position_number }}11</option>
+										{% endif %}																
+									</select>
+								</td>
+								<td>
+									<input type="text" name="ns_new_category_layout_module[{{ ns_new_category_module_row }}][sort_order]" value="{{ ns_new_category_layout_module.sort_order }}" placeholder="" class="form-control" />
+								</td>
+								<td>
+									<button type="button" onclick="$('#ns-new-category-module-row{{ ns_new_category_module_row }}').remove();" data-toggle="tooltip" title="{{ text_delete }}" class="btn btn-danger"><i class="fa fa-minus-circle"></i></button>
+								</td>
+							</tr>
+							{% set ns_new_category_module_row = ns_new_category_module_row + 1 %} 
+							{% endfor %} 
+						</tbody>
+						<tfoot>
+							<tr>
+								<td colspan="3"></td>
+								<td><button type="button" onclick="addNewCategoryPageModule();" data-toggle="tooltip" title="добавить" class="btn btn-primary"><i class="fa fa-plus-circle"></i></button></td>
+							</tr>
+						</tfoot>
+					</table>
+				</div>
+			</div>
+<script type="text/javascript">
+
+var ns_new_category_module_row = {{ ns_new_category_module_row }};
+
+function addNewCategoryPageModule() {
+html  = '<tr id="new-category-module-row' + ns_new_category_module_row + '">';
+html += '  <td><select name="ns_new_category_layout_module[' + ns_new_category_module_row + '][code]" class="form-control">';
+{% for extension in ns_new_home_extensions %}    
+{% if (not extension.module) %} 
+html += '    <option value="{{ extension.code }}">{{ extension.name }}</option>';
+{% else %} 
+html += '    <optgroup label="{{ extension.name }}">';
+{% for module in extension.module %} 
+html += '      <option value="{{ module.code }}">{{ module.name }}</option>';
+{% endfor %} 
+html += '    </optgroup>';
+{% endif %} 
+{% endfor %} 
+html += '  </select></td>'; 
+html += '  <td><select name="ns_new_category_layout_module[' + ns_new_category_module_row + '][position]" class="form-control">';
+html += '    <option value="position_1">{{ text_scheme_position_number }}1</option>';
+html += '    <option value="position_2">{{ text_scheme_position_number }}2</option>';
+html += '    <option value="position_3">{{ text_scheme_position_number }}3</option>';
+html += '    <option value="position_4">{{ text_scheme_position_number }}4</option>';
+html += '    <option value="position_5">{{ text_scheme_position_number }}5</option>';
+html += '    <option value="position_6">{{ text_scheme_position_number }}6</option>';
+html += '    <option value="position_7">{{ text_scheme_position_number }}7</option>';
+html += '    <option value="position_8">{{ text_scheme_position_number }}8</option>';
+html += '    <option value="position_9">{{ text_scheme_position_number }}9</option>';
+html += '    <option value="position_10">{{ text_scheme_position_number }}10</option>';
+html += '    <option value="position_11">{{ text_scheme_position_number }}11</option>';
+html += '  </select></td>';
+html += '  <td><input type="text" name="ns_new_category_layout_module[' + ns_new_category_module_row + '][sort_order]" value="" placeholder="" class="form-control" /></td>';
+html += '  <td><button type="button" onclick="$(\'#new-category-module-row' + ns_new_category_module_row + '\').remove();" data-toggle="tooltip" title="удалить" class="btn btn-danger"><i class="fa fa-minus-circle"></i></button></td>';
+html += '</tr>';
+
+$('#ns-new-category-module tbody').append(html);
+
+ns_new_category_module_row++;
+}
+
+</script>									
+			
+<div class="form-group">
+<div class="col-sm-12 title-setting">{{ text_setting_category_page }}</div>
+</div>
+<div class="form-group">
+					<label class="col-sm-3 control-label">{{ text_on_off_subcategory }}</label>
+					<div class="col-sm-9">
+						<div class="checkbox-group-pixelshop">
+							<label><input type="checkbox" name="show_subcategories" value="1" {{ show_subcategories is defined and show_subcategories == '1' ? 'checked="checked"' : '' }} /><span></span></label>						 
+						</div>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-3 control-label">{{ ns_text_subcat_width }}</label>
+					<div class="col-sm-9">
+						<input class="form-control" type="text" name="ns_subcat_width" value="{{ ns_subcat_width }}" />		 
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-3 control-label">{{ ns_text_subcat_height }}</label>
+					<div class="col-sm-9">
+						<input class="form-control" type="text" name="ns_subcat_height" value="{{ ns_subcat_height }}" />		 
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-3 control-label">{{ text_short_attribute_status }}</label>
+					<div class="col-sm-9">
+						<div class="checkbox-group-pixelshop">
+							<label><input type="checkbox" name="show_attr_cpage" value="1" {{ show_attr_cpage is defined and show_attr_cpage == '1' ? 'checked="checked"' : '' }} /><span></span></label>						 
+						</div>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-3 control-label">{{ text_short_attribute_group_product }}</label>
+					<div class="col-sm-9">
+						<input class="form-control" type="text" name="cpage_attr_group_count" value="{{ cpage_attr_group_count }}"/>			 
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-3 control-label">{{ text_short_attribute_group_product_item }}</label>
+					<div class="col-sm-9">
+						<input class="form-control" type="text" name="cpage_attr_group_item_count" value="{{ cpage_attr_group_item_count }}" />						 
+					</div>
+				</div>
+<div class="form-group">
+<label for="input-config_price_list_view_on_off" class="col-sm-3 control-label">{{ text_localstorege_pricelist }}</label>
+<div class="col-sm-9">
+<select class="form-control" id="input-config_price_list_view_on_off" name="config_price_list_view_on_off">
+{% if (config_price_list_view_on_off) %} 
+	<option value="1" selected="selected">{{ text_enabled }}</option>
+	<option value="0">{{ text_disabled }}</option>
+{% else %} 
+	<option value="1">{{ text_enabled }}</option>
+	<option value="0" selected="selected">{{ text_disabled }}</option>
+{% endif %} 
+</select>
+</div>
+</div>
+<div class="form-group">
+<label class="col-sm-3 control-label">{{ text_catalog_category_description_dropped }}</label>
+<div class="col-sm-5">
+<div class="radio-group-infinity">	
+	{% if (config_catalog_category_description_dropped) %} 
+	<input id="config_catalog_category_description_dropped_yes" class="hide-radio" type="radio" name="config_catalog_category_description_dropped" value="1" checked="checked" />
+	<label for="config_catalog_category_description_dropped_yes">{{ text_yes }}</label>
+	{% else %} 
+	<input id="config_catalog_category_description_dropped_yes" class="hide-radio" type="radio" name="config_catalog_category_description_dropped" value="1" />
+	<label for="config_catalog_category_description_dropped_yes">{{ text_yes }}</label>
+	{% endif %} 
+	{% if (not config_catalog_category_description_dropped) %} 
+	<input id="config_catalog_category_description_dropped_no" class="hide-radio" type="radio" name="config_catalog_category_description_dropped" value="0" checked="checked" />							
+	<label for="config_catalog_category_description_dropped_no">{{ text_no }}</label>
+	{% else %} 
+	<input id="config_catalog_category_description_dropped_no" class="hide-radio" type="radio" name="config_catalog_category_description_dropped" value="0" />							
+	<label for="config_catalog_category_description_dropped_no">{{ text_no }}</label>
+	{% endif %}						  
+</div>
+</div>
+</div>
+<div class="form-group">
+<label class="col-sm-3 control-label">{{ text_on_off_category_page_model_product }}</label>
+<div class="col-sm-5">
+<div class="radio-group-infinity">	
+	{% if (config_on_off_category_page_model_product) %} 
+	<input id="config_on_off_category_page_model_product_yes" class="hide-radio" type="radio" name="config_on_off_category_page_model_product" value="1" checked="checked" />
+	<label for="config_on_off_category_page_model_product_yes">{{ text_yes }}</label>
+	{% else %} 
+	<input id="config_on_off_category_page_model_product_yes" class="hide-radio" type="radio" name="config_on_off_category_page_model_product" value="1" />
+	<label for="config_on_off_category_page_model_product_yes">{{ text_yes }}</label>
+	{% endif %} 
+	{% if (not config_on_off_category_page_model_product) %} 
+	<input id="config_on_off_category_page_model_product_no" class="hide-radio" type="radio" name="config_on_off_category_page_model_product" value="0" checked="checked" />							
+	<label for="config_on_off_category_page_model_product_no">{{ text_no }}</label>
+	{% else %} 
+	<input id="config_on_off_category_page_model_product_no" class="hide-radio" type="radio" name="config_on_off_category_page_model_product" value="0" />							
+	<label for="config_on_off_category_page_model_product_no">{{ text_no }}</label>
+	{% endif %}						  
+</div>
+</div>
+</div>
+<div class="form-group">
+<label class="col-sm-3 control-label">{{ text_on_off_category_page_description }}</label>
+<div class="col-sm-5">
+<div class="radio-group-infinity">	
+	{% if (config_on_off_category_page_description) %} 
+	<input id="config_on_off_category_page_description_yes" class="hide-radio" type="radio" name="config_on_off_category_page_description" value="1" checked="checked" />
+	<label for="config_on_off_category_page_description_yes">{{ text_yes }}</label>
+	{% else %} 
+	<input id="config_on_off_category_page_description_yes" class="hide-radio" type="radio" name="config_on_off_category_page_description" value="1" />
+	<label for="config_on_off_category_page_description_yes">{{ text_yes }}</label>
+	{% endif %} 
+	{% if (not config_on_off_category_page_description) %} 
+	<input id="config_on_off_category_page_description_no" class="hide-radio" type="radio" name="config_on_off_category_page_description" value="0" checked="checked" />							
+	<label for="config_on_off_category_page_description_no">{{ text_no }}</label>
+	{% else %} 
+	<input id="config_on_off_category_page_description_no" class="hide-radio" type="radio" name="config_on_off_category_page_description" value="0" />							
+	<label for="config_on_off_category_page_description_no">{{ text_no }}</label>
+	{% endif %}						  
+</div>
+</div>
+</div>
+<div class="form-group">
+<label for="input-config_on_off_category_page_slider_additional_image" class="col-sm-3 control-label">{{ text_additional_image }}</label>
+<div class="col-sm-9">
+<select class="form-control" id="input-config_on_off_category_page_slider_additional_image" name="config_on_off_category_page_slider_additional_image">
+{% if (config_on_off_category_page_slider_additional_image == '1') %} 
+<option selected="selected" value="1">{{ text_additional_image_slider }}</option>
+{% else %} 
+<option value="1">{{ text_additional_image_slider }}</option>
+{% endif %} 
+{% if (config_on_off_category_page_slider_additional_image == '2') %} 
+<option selected="selected" value="2">{{ text_additional_image_hover }}</option>
+{% else %} 
+<option value="2">{{ text_additional_image_hover }}</option>
+{% endif %} 
+{% if (config_on_off_category_page_slider_additional_image == '0') %} 
+ <option selected="selected" value="0">{{ text_no }}</option>
+{% else %} 
+ <option value="0">{{ text_no }}</option>
+{% endif %}          
+</select>
+</div>
+</div>
+
+<div class="form-group">
+<label for="input-category_page_additional_animate" class="col-sm-3 control-label">{{ text_select_category_page_additional_animate_method }}</label>
+<div class="col-sm-9">
+<select class="form-control" id="input-special_additional_animate" name="config_select_category_page_additional_animate_method">
+{{ config_select_category_page_additional_animate_method }}
+{% if (config_select_category_page_additional_animate_method == 'fade') %} 
+<option selected="selected" value="fade">fade</option>
+{% else %} 
+<option value="fade">fade</option>
+{% endif %} 
+{% if (config_select_category_page_additional_animate_method == 'backSlide') %} 
+<option selected="selected" value="backSlide">backSlide</option>
+{% else %} 
+<option value="backSlide">backSlide</option>
+{% endif %} 
+{% if (config_select_category_page_additional_animate_method == 'goDown') %} 
+ <option selected="selected" value="goDown">goDown</option>
+{% else %} 
+ <option value="goDown">goDown</option>
+{% endif %} 
+{% if (config_select_category_page_additional_animate_method == 'fadeUp') %} 
+ <option selected="selected" value="fadeUp">fadeUp</option>
+{% else %} 
+ <option value="fadeUp">fadeUp</option>
+{% endif %} 
+
+</select>
+</div>
+</div>
+
+<div class="form-group">
+<label class="col-sm-3 control-label">{{ text_on_off_category_page_rating }}</label>
+<div class="col-sm-5">
+<div class="radio-group-infinity">	
+	{% if (config_on_off_category_page_rating) %} 
+	<input id="config_on_off_category_page_rating_yes" class="hide-radio" type="radio" name="config_on_off_category_page_rating" value="1" checked="checked" />
+	<label for="config_on_off_category_page_rating_yes">{{ text_yes }}</label>
+	{% else %} 
+	<input id="config_on_off_category_page_rating_yes" class="hide-radio" type="radio" name="config_on_off_category_page_rating" value="1" />
+	<label for="config_on_off_category_page_rating_yes">{{ text_yes }}</label>
+	{% endif %} 
+	{% if (not config_on_off_category_page_rating) %} 
+	<input id="config_on_off_category_page_rating_no" class="hide-radio" type="radio" name="config_on_off_category_page_rating" value="0" checked="checked" />							
+	<label for="config_on_off_category_page_rating_no">{{ text_no }}</label>
+	{% else %} 
+	<input id="config_on_off_category_page_rating_no" class="hide-radio" type="radio" name="config_on_off_category_page_rating" value="0" />							
+	<label for="config_on_off_category_page_rating_no">{{ text_no }}</label>
+	{% endif %}						  
+</div>
+</div>
+</div>
+<div class="form-group">
+<label class="col-sm-3 control-label">{{ text_on_off_category_page_quantity_reviews }}</label>
+<div class="col-sm-5">
+<div class="radio-group-infinity">	
+	{% if (config_on_off_category_page_quantity_reviews) %} 
+	<input id="config_on_off_category_page_quantity_reviews_yes" class="hide-radio" type="radio" name="config_on_off_category_page_quantity_reviews" value="1" checked="checked" />
+	<label for="config_on_off_category_page_quantity_reviews_yes">{{ text_yes }}</label>
+	{% else %} 
+	<input id="config_on_off_category_page_quantity_reviews_yes" class="hide-radio" type="radio" name="config_on_off_category_page_quantity_reviews" value="1" />
+	<label for="config_on_off_category_page_quantity_reviews_yes">{{ text_yes }}</label>
+	{% endif %} 
+	{% if (not config_on_off_category_page_quantity_reviews) %} 
+	<input id="config_on_off_category_page_quantity_reviews_no" class="hide-radio" type="radio" name="config_on_off_category_page_quantity_reviews" value="0" checked="checked" />							
+	<label for="config_on_off_category_page_quantity_reviews_no">{{ text_no }}</label>
+	{% else %} 
+	<input id="config_on_off_category_page_quantity_reviews_no" class="hide-radio" type="radio" name="config_on_off_category_page_quantity_reviews" value="0" />							
+	<label for="config_on_off_category_page_quantity_reviews_no">{{ text_no }}</label>
+	{% endif %}						  
+</div>
+</div>
+</div>
+<div class="form-group">
+<label class="col-sm-3 control-label">{{ text_on_off_category_page_fastorder }}</label>
+<div class="col-sm-5">
+<div class="radio-group-infinity">	
+	{% if (config_on_off_category_page_fastorder) %} 
+	<input id="config_on_off_category_page_fastorder_yes" class="hide-radio" type="radio" name="config_on_off_category_page_fastorder" value="1" checked="checked" />
+	<label for="config_on_off_category_page_fastorder_yes">{{ text_yes }}</label>
+	{% else %} 
+	<input id="config_on_off_category_page_fastorder_yes" class="hide-radio" type="radio" name="config_on_off_category_page_fastorder" value="1" />
+	<label for="config_on_off_category_page_fastorder_yes">{{ text_yes }}</label>
+	{% endif %} 
+	{% if (not config_on_off_category_page_fastorder) %} 
+	<input id="config_on_off_category_page_fastorder_no" class="hide-radio" type="radio" name="config_on_off_category_page_fastorder" value="0" checked="checked" />							
+	<label for="config_on_off_category_page_fastorder_no">{{ text_no }}</label>
+	{% else %} 
+	<input id="config_on_off_category_page_fastorder_no" class="hide-radio" type="radio" name="config_on_off_category_page_fastorder" value="0" />							
+	<label for="config_on_off_category_page_fastorder_no">{{ text_no }}</label>
+	{% endif %}						  
+</div>
+</div>
+</div>
+<div class="form-group">
+<label class="col-sm-3 control-label">{{ text_on_off_category_page_wishlist }}</label>
+<div class="col-sm-5">
+<div class="radio-group-infinity">	
+	{% if (config_on_off_category_page_wishlist) %} 
+	<input id="config_on_off_category_page_wishlist_yes" class="hide-radio" type="radio" name="config_on_off_category_page_wishlist" value="1" checked="checked" />
+	<label for="config_on_off_category_page_wishlist_yes">{{ text_yes }}</label>
+	{% else %} 
+	<input id="config_on_off_category_page_wishlist_yes" class="hide-radio" type="radio" name="config_on_off_category_page_wishlist" value="1" />
+	<label for="config_on_off_category_page_wishlist_yes">{{ text_yes }}</label>
+	{% endif %} 
+	{% if (not config_on_off_category_page_wishlist) %} 
+	<input id="config_on_off_category_page_wishlist_no" class="hide-radio" type="radio" name="config_on_off_category_page_wishlist" value="0" checked="checked" />							
+	<label for="config_on_off_category_page_wishlist_no">{{ text_no }}</label>
+	{% else %} 
+	<input id="config_on_off_category_page_wishlist_no" class="hide-radio" type="radio" name="config_on_off_category_page_wishlist" value="0" />							
+	<label for="config_on_off_category_page_wishlist_no">{{ text_no }}</label>
+	{% endif %}						  
+</div>
+</div>
+</div>
+<div class="form-group">
+<label class="col-sm-3 control-label">{{ text_on_off_category_page_compare }}</label>
+<div class="col-sm-5">
+<div class="radio-group-infinity">	
+	{% if (config_on_off_category_page_compare) %} 
+	<input id="config_on_off_category_page_compare_yes" class="hide-radio" type="radio" name="config_on_off_category_page_compare" value="1" checked="checked" />
+	<label for="config_on_off_category_page_compare_yes">{{ text_yes }}</label>
+	{% else %} 
+	<input id="config_on_off_category_page_compare_yes" class="hide-radio" type="radio" name="config_on_off_category_page_compare" value="1" />
+	<label for="config_on_off_category_page_compare_yes">{{ text_yes }}</label>
+	{% endif %} 
+	{% if (not config_on_off_category_page_compare) %} 
+	<input id="config_on_off_category_page_compare_no" class="hide-radio" type="radio" name="config_on_off_category_page_compare" value="0" checked="checked" />							
+	<label for="config_on_off_category_page_compare_no">{{ text_no }}</label>
+	{% else %} 
+	<input id="config_on_off_category_page_compare_no" class="hide-radio" type="radio" name="config_on_off_category_page_compare" value="0" />							
+	<label for="config_on_off_category_page_compare_no">{{ text_no }}</label>
+	{% endif %}						  
+</div>
+</div>
+</div>

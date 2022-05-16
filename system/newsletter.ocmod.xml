@@ -1,0 +1,396 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<modification>
+  <name>NS-NEWSLATTER</name>
+  <code>NS-NEWSLATTER</code>
+  <version>2.6.1</version>
+  <author>Alex.Konushin(29aleksey)</author>
+  <link></link>
+        <file path="catalog/controller/common/footer.php">
+            <operation>
+                <search><![CDATA[$data['text_newsletter'] = $this->language->get('text_newsletter');]]></search>
+                <add position="after">
+                <![CDATA[
+					$this->load->language('ns/newstorelang');
+                    $data['text_placeholder_subcribe'] = $this->language->get('text_placeholder_subcribe');
+                    $data['text_subcribe'] = $this->language->get('text_subcribe');
+                    $data['text_btn_subcribe'] = $this->language->get('text_btn_subcribe');
+                    $data['text_error_subcribe'] = $this->language->get('text_error_subcribe');
+                    $data['text_success_subcribe'] = $this->language->get('text_success_subcribe');
+                    $data['text_empty_email'] = $this->language->get('text_empty_email');
+                    $data['text_validate_email'] = $this->language->get('text_validate_email');
+                ]]>
+                </add>
+            </operation>
+        </file>
+        <file path="catalog/controller/common/footer.php">    
+            <operation>
+                <search><![CDATA[public function index() {]]></search>
+                <add position="before">
+                <![CDATA[
+                    public function addToNewsletter(){
+            
+                        $email = $this->request->post['email'];
+                        $this->load->language('ns/newstorelang');
+                        $this->load->language('common/footer');
+                        $this->load->model('account/customer');
+
+                        $this->createNewsletterTables();
+                        
+                        $count = $this->checkEmailSubscribe($email);
+                        
+                        if($count == 0){                          
+                            $newsletter_id = $this->model_account_customer->addToNewsletter($email);
+                            $json['success'] = $this->language->get('text_success_subcribe');                            
+                        } else {
+                            $json['warning'] = $this->language->get('text_error_subcribe');
+                        }
+                        
+                      return $this->response->setOutput(json_encode($json));
+                    }
+        
+                    public function createNewsletterTables() {
+
+                        $query = $this->db->query("CREATE TABLE IF NOT EXISTS " . DB_PREFIX . "newsletter (
+                        `id` INT( 11 ) NOT NULL AUTO_INCREMENT ,
+                        `email` VARCHAR( 255 ) NOT NULL ,
+                        `group` VARCHAR( 25 ) NOT NULL ,
+                        `date_added` DATETIME NOT NULL ,
+                        PRIMARY KEY ( `id` )
+                        )");
+                    } 
+        
+                    public function checkEmailSubscribe($email){
+
+                        $this->load->model('account/customer');
+
+                        $count = $this->model_account_customer->checkEmailSubscribe($email);
+
+                        return $count;
+
+                    }
+                ]]>
+                </add>
+            </operation>
+        </file>
+        
+        <file path="catalog/model/account/customer.php">
+            <operation>
+                <search><![CDATA[public function deleteLoginAttempts($email) {]]></search>
+                <add position="before">
+                <![CDATA[
+                    public function addToNewsletter($email) {
+		
+                        $this->db->query("INSERT INTO " . DB_PREFIX . "newsletter SET email = '" . $this->db->escape($email) . "', `group` = 'newsletter', date_added = NOW()");
+
+                        $newsletter_id = $this->db->getLastId();
+
+                        return $newsletter_id;
+                    }
+        
+                    public function checkEmailSubscribe($email) {
+
+                        $query = $this->db->query("SELECT COUNT(email) AS total FROM " . DB_PREFIX . "newsletter WHERE email = '" . $this->db->escape($email) . "'");
+
+                        return $query->row['total'];
+                    }
+                ]]>
+                </add>
+            </operation>
+        </file>
+        
+        <file path="catalog/view/theme/*/template/common/{footer,footer2}.twig">
+			 <operation>
+                <search><![CDATA[<div class="row banner-footer">]]></search>
+                <add position="before">
+                <![CDATA[
+	<div class="row">   
+		<div class="newsletter">   
+			<div class="col-xs-12 col-md-3 text-xs-center-newsletter text-newsletter text-md-right">
+				<span>{{ text_subcribe }}</span>		
+			</div>
+			<div class="col-xs-12 col-md-6 text-xs-center-newsletter">	
+				<input type="text" class="form-control" id="input-newsletter" placeholder="{{ text_placeholder_subcribe }}" value="" >		
+				<span id="error-msg"></span>
+			</div>
+			<div class="col-xs-12 col-md-3 text-xs-center-newsletter text-md-left">
+				<button type="button" id="subcribe" class="btn btn-newsletter" value="{{ text_btn_subcribe }}"><i class="fa fa-envelope fa-fw"></i>{{ text_btn_subcribe }}</button>
+			</div>			
+		</div>
+	</div>
+				]]>
+                </add>
+            </operation>
+            <operation error="log">
+            	<search><![CDATA[
+                   </footer>
+                ]]></search>
+                <add position="after">
+                <![CDATA[
+                <script>
+                    
+                     function validateEmail($email) {
+                        var emailReg = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;
+                        return emailReg.test( $email );
+                      }
+
+                    $(document).ready(function(){
+                        $('#subcribe').click(function(){
+                            var email = $('#input-newsletter').val();
+                            
+                            if(email == ''){
+                                var error = '{{ text_empty_email }}';
+                            }
+                            
+                            if( !validateEmail(email)) {
+                                var error = '{{ text_validate_email }}';
+                            }
+                            
+                            if(error != null){
+                                $('#error-msg').html('');
+                                $('#error-msg').append('<b style=\"color:red\">' + error + '</b>');
+                            } else {
+                              
+                                var dataString = 'email='+ email;
+                                $.ajax({
+                                    url: 'index.php?route=common/footer/addToNewsletter',
+                                    type: 'post',
+                                    data: dataString,
+									dataType: 'json',
+                                    success: function(json) {
+										if (json['warning']) {
+											$('#error-msg').empty('');
+											$('#input-newsletter').val('');	
+											$('#error-msg').append('<b style=\"color:green\">' + json['warning'] + '</b>');
+										}
+										if (json['success']) {
+											$('#error-msg').empty('');
+											$('#input-newsletter').val('');											
+											$('#error-msg').append('<b style=\"color:green\">' + json['success'] + '</b>');
+										}
+										
+                                    }
+                                    
+                                });
+                            }
+                            
+                        })
+                    });
+                </script>
+                ]]>
+                </add>
+            </operation>
+        </file>
+		
+        
+        <file path="admin/view/template/marketing/contact.twig">
+            <operation>
+                <search><![CDATA[<option value="product">{{ text_product }}</option>]]></search>
+                <add position="after">
+                <![CDATA[
+                    <option value="only_newsletter">{{ text_only_newsletter }}</option>
+                ]]>
+                </add>
+            </operation>
+        </file>
+        
+        <file path="admin/language/en-gb/marketing/contact.php">
+            <operation>
+                <search><![CDATA[$_['text_product']         = 'Products';]]></search>
+                <add position="after">
+                <![CDATA[
+                    $_['text_only_newsletter']      = 'Newsletter Subscribers';
+                ]]>
+                </add>
+            </operation>
+        </file>
+		<file path="admin/language/ru-ru/marketing/contact.php">
+            <operation>
+                <search><![CDATA[$_['text_product']]]></search>
+                <add position="after">
+                <![CDATA[
+                    $_['text_only_newsletter']      = 'Новостная рассылка';
+                ]]>
+                </add>
+            </operation>
+        </file>
+        
+        
+        <file path="admin/controller/marketing/contact.php">
+            <operation>
+                <search><![CDATA[$data['text_product'] = $this->language->get('text_product');]]></search>
+                <add position="after">
+                <![CDATA[
+                    $data['text_only_newsletter'] = $this->language->get('text_only_newsletter');
+                ]]>
+                </add>
+            </operation>
+        </file>
+        
+        <file path="admin/controller/marketing/contact.php">
+            <operation>
+                <search><![CDATA[$email_total = $this->model_customer_customer->getTotalCustomers($customer_data);]]></search>
+                <add position="replace">
+                <![CDATA[
+                    $email_total = $this->model_customer_customer->getTotalCustomersEmail($customer_data);
+                    
+                    $results_emails = $this->model_customer_customer->getCustomersEmail($customer_data);
+                                                
+                    foreach ($results_emails as $result) {
+			$emails[] = $result['email'];
+                    }
+                    
+                ]]>
+                </add>
+            </operation>
+        </file>
+        
+        <file path="admin/controller/marketing/contact.php">
+            <operation>
+                <search><![CDATA[case 'product':]]></search>
+                <add position="before">
+                <![CDATA[
+                    case 'only_newsletter':
+                            $customer_data = array(
+				'start' => ($page - 1) * 10,
+				'limit' => 10
+                            );
+                                                    
+                            $email_total = $this->model_customer_customer->getTotalCustomersEmail($customer_data);
+                    
+                            $results_emails = $this->model_customer_customer->getCustomersEmail($customer_data);
+
+                            foreach ($results_emails as $result) {
+                                $emails[] = $result['email'];
+                            }
+			
+			break;
+                    
+                ]]>
+                </add>
+            </operation>
+        </file>
+        
+        <file path="admin/model/customer/customer.php">
+            <operation>
+                <search><![CDATA[public function getTotalCustomers($data = array()) {]]></search>
+                <add position="before">
+                <![CDATA[
+                    public function getTotalCustomersEmail($data = array()) {
+                        $sql = "SELECT COUNT(*) AS total FROM " . DB_PREFIX . "customer";
+
+                        $implode = array();
+
+                        if (!empty($data['filter_name'])) {
+                                $implode[] = "CONCAT(firstname, ' ', lastname) LIKE '%" . $this->db->escape($data['filter_name']) . "%'";
+                        }
+
+                        if (!empty($data['filter_email'])) {
+                                $implode[] = "email LIKE '" . $this->db->escape($data['filter_email']) . "%'";
+                        }
+
+                        if (isset($data['filter_newsletter']) && !is_null($data['filter_newsletter'])) {
+                                $implode[] = "newsletter = '" . (int)$data['filter_newsletter'] . "'";
+                        }
+
+                        if (!empty($data['filter_customer_group_id'])) {
+                                $implode[] = "customer_group_id = '" . (int)$data['filter_customer_group_id'] . "'";
+                        }
+
+                        if (!empty($data['filter_ip'])) {
+                                $implode[] = "customer_id IN (SELECT customer_id FROM " . DB_PREFIX . "customer_ip WHERE ip = '" . $this->db->escape($data['filter_ip']) . "')";
+                        }
+
+                        if (isset($data['filter_status']) && !is_null($data['filter_status'])) {
+                                $implode[] = "status = '" . (int)$data['filter_status'] . "'";
+                        }
+
+                        if (isset($data['filter_approved']) && !is_null($data['filter_approved'])) {
+                                $implode[] = "approved = '" . (int)$data['filter_approved'] . "'";
+                        }
+
+                        if (!empty($data['filter_date_added'])) {
+                                $implode[] = "DATE(date_added) = DATE('" . $this->db->escape($data['filter_date_added']) . "')";
+                        }
+
+                        if ($implode) {
+                                $sql .= " WHERE " . implode(" AND ", $implode);
+                        }
+
+                        $query = $this->db->query($sql);
+
+                        $registerd_total = $query->row['total'];
+
+                        $sql_email = "SELECT COUNT(email) AS total FROM " . DB_PREFIX . "newsletter";
+
+                        $query_email = $this->db->query($sql_email);
+
+                        $subcribe_total = $query_email->row['total'];
+
+                        $final_count = $registerd_total + $subcribe_total;
+
+                        return $final_count;
+                    }
+                    
+                    public function getCustomersEmail($data = array()) {
+		
+                        $sql = "SELECT email FROM " . DB_PREFIX . "newsletter ";
+
+                        if (isset($data['start']) || isset($data['limit'])) {
+                                if ($data['start'] < 0) {
+                                        $data['start'] = 0;
+                                }
+
+                                if ($data['limit'] < 1) {
+                                        $data['limit'] = 20;
+                                }
+
+                                $sql .= " LIMIT " . (int)$data['start'] . "," . (int)$data['limit'];
+                        }
+
+                        $query = $this->db->query($sql);
+
+                        return $query->rows;
+                    }
+
+                ]]>
+                </add>
+            </operation>
+        </file>
+
+	<file path="admin/controller/common/column_left.php">
+     <operation error="skip">
+      <search><![CDATA[if ($this->user->hasPermission('access', 'catalog/category')) {]]></search>
+      <add position="before"><![CDATA[
+		if ($this->user->hasPermission('access', 'marketing/newsletter')) {
+			$newstore_left_menu[] = array(
+				'name'	   => $this->language->get('text_newsletter'),
+				'href'     => $this->url->link('marketing/newsletter', 'user_token=' . $this->session->data['user_token'], true),
+				'children' => array()		
+			);
+		}
+      ]]></add>
+    </operation>
+  </file>
+  <file path="admin/language/en-gb/common/column_left.php">
+     <operation error="skip">
+      <search><![CDATA[
+	  $_['text_catalog']
+	  ]]></search>
+      <add position="before"><![CDATA[
+        $_['text_newsletter'] = 'Newsletter';
+      ]]></add>
+    </operation>
+  </file>
+  <file path="admin/language/ru-ru/common/column_left.php">
+     <operation error="skip">
+      <search><![CDATA[
+	  $_['text_catalog']
+	  ]]></search>
+      <add position="before"><![CDATA[
+        $_['text_newsletter'] = 'Список Подписчиков';
+      ]]></add>
+    </operation>
+  </file>
+  
+  
+</modification>

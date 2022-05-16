@@ -1,0 +1,24 @@
+<div class="content-carousel-{{ module }} container-module carousel-mod">
+<div class="title-module"><span>{{ heading_title }}</span></div>
+<div id="carousel{{ module }}" class="owl-carousel">
+  {% for banner in banners %} 
+  <div class="item text-center">
+    {% if (banner.link) %} 
+    <a href="{{ banner.link }}"><img data-src="{{ banner.image }}" alt="{{ banner.title }}" class="img-responsive img-center lazyOwl" /></a>
+    {% else %} 
+    <img data-src="{{ banner.image }}" alt="{{ banner.title }}" class="img-responsive img-center lazyOwl" />
+    {% endif %} 
+  </div>
+  {% endfor %} 
+</div>
+</div>
+<script>
+$('#carousel{{ module }}').owlCarousel({
+	items: 6,
+	autoPlay: 7000,
+	lazyLoad: true,
+	navigation: true,
+	navigationText: ['<div class="btn btn-carousel-module next-prod"><i class="fa fa-angle-left arrow"></i></div>', '<div class="btn btn-carousel-module prev-prod"><i class="fa fa-angle-right arrow"></i></div>'],
+	pagination: false
+});
+</script>

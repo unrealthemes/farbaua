@@ -1,0 +1,3257 @@
+<?xml version="1.0" encoding="utf-8"?>
+<modification>
+  <name>NS-GENERAL</name>
+  <code>NS-GENERAL</code>
+  <version>2.6.1</version>
+  <author>Alex.Konushin(29aleksey)</author>
+  <link></link>
+	<file path="catalog/controller/common/home.php">
+		<operation>
+      <search><![CDATA[
+				$data['header'] = $this->load->controller('common/header');
+      ]]></search>
+      <add position="before"><![CDATA[
+		$data['general_menu_on_off'] = $this->config->get('config_menu_always_open_on_the_left');
+		$data['main_menu'] = $this->config->get('config_main_menu_selection');
+		$config_theme = $this->config->get('config_theme');
+		$theme_default_directory = $this->config->get('theme_default_directory');
+		if(($config_theme == 'newstore') || ($theme_default_directory =='newstore')){
+			$this->load->model('design/layout');
+			$this->load->model('ns/layout_home_page');
+			if (isset($this->request->get['route'])) {
+				$route = (string)$this->request->get['route'];
+			} else {
+				$route = 'common/home';
+			}
+
+			$layout_id = 0;
+
+			if (!$layout_id) {
+				$layout_id = $this->model_design_layout->getLayout($route);
+			}
+			$ns_theme_home_page_sheme = $this->config->get('ns_new_home_layout_module');
+			$modules_newstore = array();
+			if (isset($ns_theme_home_page_sheme)) {
+				$modules_newstore = $this->config->get('ns_new_home_layout_module');
+			} else {
+				$modules_newstore = array();
+			}	
+			if (!empty($modules_newstore)){
+				foreach ($modules_newstore as $key => $value) {
+					$sort_modules[$key] = $value['sort_order'];
+				} 
+				array_multisort($sort_modules, SORT_ASC, $modules_newstore);
+			}
+			$modules_default_layout = $this->model_ns_layout_home_page->getLayoutModulesHomePage($layout_id);
+			$hpmsheme = array();
+			if(!empty($modules_default_layout)){
+				foreach($modules_default_layout as $module_default_layout){
+					$pos = strpos($module_default_layout['position'], 'position_');
+					if ($pos !== false) {
+						$hpmsheme[] = $module_default_layout;
+					}
+				}
+			}
+			$result_layout = array_merge($modules_newstore, $hpmsheme);	
+			$detect = new Mobile_Detect();
+			$deviceType = ($detect->isMobile() ? ($detect->isTablet() ? 'tablet' : 'phone') : 'computer');
+			if(!empty($result_layout)){
+				$this->load->model('setting/module');
+				foreach ($result_layout as $key => $pos_mod) {
+					if($deviceType == 'phone') {
+					$mob_device = isset($pos_mod['mob_device']) ? $pos_mod['mob_device']: 0;
+						if($mob_device == 1){
+							continue;
+						} 
+					}
+					$part = explode('.', $pos_mod['code']);
+					
+					if (isset($part[0]) && $this->config->get($part[0] . '_status')) {
+						$data[$pos_mod['position']][] = $this->load->controller('extension/module/' . $part[0]);
+					}
+					
+					if (isset($part[1])) {
+						$setting_info = $this->model_setting_module->getModule($part[1]);
+
+						if ($setting_info && $setting_info['status']) {
+							$data[$pos_mod['position']][] = $this->load->controller('extension/module/' . $part[0], $setting_info);
+							
+						}
+					}
+				}
+			}
+							
+		}
+		if ($this->request->server['HTTPS']) {
+			$server = $this->config->get('config_ssl');
+		} else {
+			$server = $this->config->get('config_url');
+		}
+		$data['name'] = $this->config->get('config_name');
+		$data['logo'] = $this->config->get('config_image');
+		$data['url'] = $server;	
+		$this->load->model('localisation/country');
+		$country = $this->model_localisation_country->getCountry($this->config->get('config_country_id'));
+		$this->load->model('localisation/zone');
+		$zone = $this->model_localisation_zone->getZone($this->config->get('config_zone_id'));
+		if(!empty($zone)){
+			$data['addresslocality'] = $zone['name'];
+		} else {
+			$data['addresslocality'] = '';
+		}
+		$data['streetaddress'] = nl2br($this->config->get('config_address'));
+		if(!empty($country)){
+			$data['addresscountry'] = $country['name'];
+		} else {
+			$data['addresscountry'] = '';
+		}
+		$data['telephone'] = $this->config->get('config_telephone');
+		$data['email'] = $this->config->get('config_email');
+		$data['open'] = nl2br($this->config->get('config_open'));				
+      ]]></add>
+    </operation>
+  </file>
+  <file path="catalog/controller/information/information.php">
+	<operation>
+		<search><![CDATA[
+			$this->load->language('information/information');	
+		]]></search>
+		<add position="after"><![CDATA[			
+			$data['menu_open_information'] = $this->config->get('config_menu_open_information');
+			$data['main_menu'] = $this->config->get('config_main_menu_selection');
+			$this->load->language('ns/newstorelang');
+			$data['text_home_ns'] = $this->language->get('text_home_ns');
+      ]]></add>
+    </operation>
+  </file>
+  <file path="catalog/controller/product/compare.php">
+  	<operation>
+      <search>
+        <![CDATA[$json['total'] = sprintf($this->language->get('text_compare'), (isset($this->session->data['compare']) ? count($this->session->data['compare']) : 0));]]>
+      </search>
+      <add position="replace">
+        <![CDATA[$json['total'] = (isset($this->session->data['compare']) ? count($this->session->data['compare']) : 0);]]>
+      </add>
+    </operation>
+	</file>
+   <file path="catalog/controller/account/wishlist.php">
+  	<operation>
+      <search>
+        <![CDATA[$json['total'] = sprintf($this->language->get('text_wishlist'), (isset($this->session->data['wishlist']) ? count($this->session->data['wishlist']) : 0));]]>
+      </search>
+      <add position="replace">
+        <![CDATA[$json['total'] = (isset($this->session->data['wishlist']) ? count($this->session->data['wishlist']) : 0);]]>
+      </add>
+    </operation>
+	<operation>
+      <search>
+        <![CDATA[$json['total'] = sprintf($this->language->get('text_wishlist'), $this->model_account_wishlist->getTotalWishlist());]]>
+      </search>
+      <add position="replace">
+        <![CDATA[$json['total'] = $this->model_account_wishlist->getTotalWishlist();]]>
+      </add>
+    </operation>
+	</file>
+  <file path="catalog/controller/common/header.php">
+	<operation>
+      <search>
+        <![CDATA[$this->language->get('text_wishlist')]]>
+      </search>
+      <add position="replace">
+        <![CDATA[$this->language->get('text_wishlist_ns')]]>
+      </add>
+    </operation>
+	<operation>
+      <search>
+        <![CDATA[$this->load->language('common/header');]]>
+      </search>
+      <add position="before">
+        <![CDATA[
+		$data['on_off_search'] = $this->config->get('autosearch_on_off');
+		$data['text_autosearch_view_all'] = $this->language->get('text_autosearch_view_all');
+		$data['first_name'] = ($this->customer->isLogged()) ? $this->customer->getFirstName() : '';
+		$data['last_name'] = ($this->customer->isLogged()) ? $this->customer->getLastName() : '';
+		$data['nst_data'] = $this->config->get('nst_data');
+		$data['show_h_compare'] = $this->config->get('show_h_compare');
+		$data['show_h_wishlist'] = $this->config->get('show_h_wishlist');
+		$data['config_fixed_panel_top'] = $this->config->get('config_fixed_panel_top');
+		$data['config_fixed_panel_top'] = $this->config->get('config_fixed_panel_top');
+		$data['config_main_menu_selection'] = $this->config->get('config_main_menu_selection');		
+		$data['config_change_color_icon_sticker_popular'] = $this->config->get('config_change_color_icon_sticker_popular');
+		$data['config_change_background_sticker_popular'] = $this->config->get('config_change_background_sticker_popular');
+		$data['config_change_color_text_sticker_popular'] = $this->config->get('config_change_color_text_sticker_popular');
+		$data['config_change_color_icon_sticker_special'] = $this->config->get('config_change_color_icon_sticker_special');
+		$data['config_change_background_sticker_special'] = $this->config->get('config_change_background_sticker_special');
+		$data['config_change_color_text_sticker_special'] = $this->config->get('config_change_color_text_sticker_special');
+		$data['config_change_color_icon_sticker_topbestseller'] = $this->config->get('config_change_color_icon_sticker_topbestseller');
+		$data['config_change_background_sticker_topbestseller'] = $this->config->get('config_change_background_sticker_topbestseller');
+		$data['config_change_color_text_sticker_topbestseller'] = $this->config->get('config_change_color_text_sticker_topbestseller');
+		$data['config_change_color_icon_sticker_newproduct'] = $this->config->get('config_change_color_icon_sticker_newproduct');
+		$data['config_change_background_sticker_newproduct'] = $this->config->get('config_change_background_sticker_newproduct');
+		$data['config_change_color_text_sticker_newproduct'] = $this->config->get('config_change_color_text_sticker_newproduct');	
+		$data['config_ns_themes_custom_bg_mode'] = $this->config->get('config_ns_themes_custom_bg_mode');
+		$data['config_themes_custom_bg_img_preview'] = $this->config->get('config_themes_custom_bg_img_preview');
+		$data['config_themes_custom_bg_repeat'] = $this->config->get('config_themes_custom_bg_repeat');
+		$data['config_themes_custom_bg_attachment'] = $this->config->get('config_themes_custom_bg_attachment');
+		$data['config_ns_themes_custom_bg_mode_color'] = $this->config->get('config_ns_themes_custom_bg_mode_color');
+		$data['config_themes_custom_bg_attachment'] = $this->config->get('config_themes_custom_bg_attachment');
+		$data['config_themes_custom_bg_position'] = $this->config->get('config_themes_custom_bg_position');
+		$data['config_on_off_shopping_cart_hover'] = $this->config->get('config_on_off_shopping_cart_hover');
+		$data['custom_style'] = $this->config->get('config_custom_style_newstore');
+		$data['color_schem'] = $this->config->get('config_design_template_color_theme');
+		$design_fastorder = $this->config->get('config_select_design_fastorder');
+		$callbackpro = $this->config->get('callbackpro');
+		$design_callback = $callbackpro['select_design_theme_callback'];
+		$design_special_timer = $this->config->get('config_design_special_timer');
+		$data['main_menu_fix_mobile'] = $this->config->get('main_menu_fix_mobile');
+		$developer_mode = $this->config->get('config_developer_mode');
+		$minify_css = $this->config->get('config_minify_css');
+		$minify_js = $this->config->get('config_minify_js');
+		require_once(DIR_SYSTEM . 'minifyns/startup.php');
+		$newstore2 = new Newstore();
+		$this->registry->set('newstore', $newstore2);
+		$newstore2->utils = new NewstoreUtils($this->registry);
+		$newstore2->cache = new NewstoreCache($this->registry);
+		$newstore2->minifier = new NewstoreMinifier($newstore2->cache);
+		$newstore2->cache->setDeveloperMode($this->config->get('config_developer_mode'));
+		$newstore2->minifier->setMinifyCss($this->config->get('config_minify_css'));	
+		$newstore2->minifier->addStyle('catalog/view/theme/newstore/font-awesome/css/font-awesome.min.css');
+		$newstore2->minifier->addStyle('catalog/view/theme/newstore/stylesheet/stylesheet.css');
+		$newstore2->minifier->addStyle('catalog/view/javascript/jquery/magnific/magnific-popup.css');
+		$newstore2->minifier->addStyle('catalog/view/javascript/jquery/owl-carousel/owl.carousel.css');
+		$newstore2->minifier->addStyle('catalog/view/javascript/jquery/owl-carousel/owl.transitions.css');
+		$main_menu_animation = $this->config->get('main_menu_animation');
+		if(isset($main_menu_animation) && ($main_menu_animation == 1)) {
+			$newstore2->minifier->addStyle('catalog/view/theme/newstore/stylesheet/menu_a.css');
+		} else {
+			$newstore2->minifier->addStyle('catalog/view/theme/newstore/stylesheet/menu_b.css');
+		}
+		$newstore2->minifier->addStyle('catalog/view/theme/newstore/stylesheet/stickers.css');
+		$newstore2->minifier->addStyle('catalog/view/theme/newstore/stylesheet/tabs.css');
+		$newstore2->minifier->addStyle('catalog/view/theme/newstore/stylesheet/quickview.css');
+		if($data['color_schem'] !='1'){
+			$newstore2->minifier->addStyle('catalog/view/theme/newstore/stylesheet/theme_scheme/theme_'. $data['color_schem'] .'.css');
+		}
+		$newstore2->minifier->addStyle('catalog/view/theme/newstore/stylesheet/csseditor.css');
+		
+		if($design_special_timer){ 
+			$newstore2->minifier->addStyle('catalog/view/theme/newstore/js/productany/js/countdown/jquery.countdown_'. $design_special_timer .'.css');
+		} else { 
+			$newstore2->minifier->addStyle('catalog/view/theme/newstore/js/productany/js/countdown/jquery.countdown_1.css');
+		}
+		if($design_fastorder){ 
+			$newstore2->minifier->addStyle('catalog/view/theme/newstore/stylesheet/popup-fastorder/fastorder'. $design_fastorder .'.css');
+		} else { 
+			$newstore2->minifier->addStyle('catalog/view/theme/newstore/stylesheet/popup-fastorder/fastorder1.css');
+		}
+		if($design_callback=='1'){ 
+			$newstore2->minifier->addStyle('catalog/view/theme/newstore/stylesheet/popup-callback/callback.css');
+		} else { 
+			$newstore2->minifier->addStyle('catalog/view/theme/newstore/stylesheet/popup-callback/callback2.css');
+		}
+		$newstore2->minifier->addStyle('catalog/view/theme/newstore/stylesheet/csscallback.css');
+		if ($data['custom_style'] !='') { 
+			$newstore2->minifier->addStyle('catalog/view/theme/newstore/stylesheet/'. $data['custom_style'] .'.css');
+		}
+		$agreedata = $this->config->get('agreedata');
+		if (isset($agreedata) && $agreedata['status'] != 0) {
+			$newstore2->minifier->addStyle('catalog/view/theme/newstore/stylesheet/agree_popup/style_agree.css');
+		}
+		if(isset($developer_mode) && ($developer_mode == 0) && isset($minify_css) && ($minify_css == 1)){
+			$data['minifycss'] = false;
+			foreach ($data['styles'] as $style) {
+				$newstore2->minifier->addStyle($style['href']);
+			}
+		} else {
+			$data['minifycss'] = true;
+		}
+		$data['cssnewstore'] = $newstore2->minifier->css();
+		
+		$newstore2->minifier->setMinifyJs($this->config->get('config_minify_js'));
+		$newstore2->minifier->addScript('catalog/view/javascript/jquery/jquery-2.1.1.min.js', 'header'); 
+		$newstore2->minifier->addScript('catalog/view/javascript/jquery/magnific/jquery.magnific-popup.min.js', 'header'); 
+		$newstore2->minifier->addScript('catalog/view/javascript/jquery/owl-carousel/owl.carousel.min.js', 'header'); 
+		$newstore2->minifier->addScript('catalog/view/javascript/bootstrap/js/bootstrap.min.js', 'header');
+		$newstore2->minifier->addScript('catalog/view/theme/newstore/js/common.js', 'header'); 
+		$newstore2->minifier->addScript('catalog/view/theme/newstore/js/jquery.menu-aim.js', 'header'); 
+		$newstore2->minifier->addScript('catalog/view/theme/newstore/js/ajaxsearch.js', 'header'); 
+		$newstore2->minifier->addScript('catalog/view/theme/newstore/js/showmore.js', 'header'); 
+		$newstore2->minifier->addScript('catalog/view/theme/newstore/js/newfastorder.js', 'header'); 
+		$newstore2->minifier->addScript('catalog/view/theme/newstore/js/callback_send.js', 'header'); 
+		$newstore2->minifier->addScript('catalog/view/theme/newstore/js/popup.js', 'header'); 
+		$newstore2->minifier->addScript('catalog/view/theme/newstore/js/productany/js/countdown/jquery.countdown.js', 'header'); 
+		if(isset($data['nst_data']['lazyload_page'],$data['nst_data']['lazyload_module']) && (($data['nst_data']['lazyload_page'] =='1') || ($data['nst_data']['lazyload_module'] == '1'))){
+			$newstore2->minifier->addScript('catalog/view/theme/newstore/js/jquery_lazyload/lazyload.min.js', 'header'); 
+		}
+		if(isset($developer_mode) && ($developer_mode == 0) && isset($minify_js) && ($minify_js == 1)){
+			$data['minifyjs'] = false;
+			foreach ($data['scripts'] as $script) {
+				$newstore2->minifier->addScript($script, 'header'); 
+			}
+		} else {
+			$data['minifyjs'] = true;
+		}
+		$data['jsnewstore'] = $newstore2->minifier->js('header');
+		
+		
+		$header_nav_menu_link_array = $this->config->get('header_nav_menu_link');
+		if(isset($header_nav_menu_link_array)) {
+			$header_nav_menu_link = $this->config->get('header_nav_menu_link');
+		} else {
+			$header_nav_menu_link = array();
+		}
+		$data['header_nav_menu_links'] = array();
+		
+		foreach ($header_nav_menu_link as $result) {				
+			$data['header_nav_menu_links'][] = array(
+				'icon_image' 	=> $result['icon_image'],
+				'title' 		=> $result['title'],
+				'link'  		=> $result['link'][$this->config->get('config_language_id')],
+				'popup'  		=> $result['popup'],		
+			);	
+		}
+		$data['home_page'] = (isset($this->request->server['HTTPS']) ? HTTPS_SERVER : HTTP_SERVER) . substr($this->request->server['REQUEST_URI'], 1, (strlen($this->request->server['REQUEST_URI'])-1));
+			
+			$this->load->model('ns/moduleonoff');
+			$data['on_off_module_callback'] = $this->model_ns_moduleonoff->getCallbackModuleModification();
+			$this->load->language('ns/newstorelang');
+			$data['days'] = $this->language->get('days');	
+			$data['hours'] = $this->language->get('hours');	
+			$data['minutes'] = $this->language->get('minutes');	
+			$data['sec'] = $this->language->get('sec');	
+			$data['text_login'] = $this->language->get('text_login');
+			$data['button_login'] = $this->language->get('button_login');
+			$data['register'] = $this->url->link('account/register', '', true);
+			$data['forgotten'] = $this->url->link('account/forgotten', '', true);
+			$data['entry_email'] = $this->language->get('entry_email');
+			$data['entry_password'] = $this->language->get('entry_password');
+			$data['text_forgotten'] = $this->language->get('text_forgotten');
+			$data['text_register'] = $this->language->get('text_register');
+			$data['text_showmore'] = $this->language->get('text_showmore');
+			$data['text_callback_header'] = $this->language->get('text_callback_header');
+			$data['button_shopping'] = $this->language->get('button_shopping');
+			$data['button_checkout'] = $this->language->get('button_checkout');
+			$data['newstorecheckout'] = $this->url->link('checkout/newstorecheckout', '', true);
+			$data['general_menu_on_off'] = $this->config->get('config_menu_always_open_on_the_left');
+			$this->load->language('product/category');
+			$data['text_compare'] = sprintf($this->language->get('text_compare_ns'), (isset($this->session->data['compare']) ? count($this->session->data['compare']) : 0));
+			$data['compare'] = $this->url->link('product/compare');
+			$data['main_phone'] = $this->config->get('config_main_phone');
+			$data['header_phones'] = $this->config->get('config_phones_header');
+			$header_phones = $this->config->get('config_phones_header');
+			$data['lang_id'] = $this->config->get('config_language_id');
+			$data['config_schedule_header'] = $this->config->get('config_schedule_header');
+			$this->load->model('tool/image');
+			$data['email_header_contact'] = $this->config->get('config_email_header_contact');
+			$data['skype_header_contact'] = $this->config->get('config_skype_header_contact');		
+			$data['header_social'] = $this->config->get('config_social');
+			$header_social = $this->config->get('config_social');		
+			$data['arbitrary_text'] = $this->config->get('arbitrary_text');
+			$text_after_phone = $this->config->get('text_after_phone');
+			$data['text_after_phone'] = $text_after_phone[$data['lang_id']]['text'];
+			
+			if(!empty($header_social)){
+				$data['config_social_array'] = array();				
+				foreach ($header_social as $social_header) {
+					if (isset($social_header['image']) && is_file(DIR_IMAGE . $social_header['image'])) {
+						$data['icon_phone'] = $this->model_tool_image->resize($social_header['image'], 25, 25);
+					} else {
+						$data['icon_phone'] = '';
+					}					
+				$data['config_social_array'][] = array(
+						'icon_phone'      	=> $data['icon_phone'],
+						'social'      		=> $social_header['social'],
+						'icon'       => (isset($social_header['icon']) ? $social_header['icon'] : ''),
+						'sname'       => (isset($social_header['sname']) ? $social_header['sname'] : ''),
+					);	
+				}				
+			}
+			
+			$data['config_phones_array'] = array();
+			$data['header_phones_dropdown'] = array();
+			if(!empty($header_phones)){
+				foreach ($header_phones as $phone_header) {
+					foreach($phone_header['image'] as $language_id => $value_image){
+						if (isset($value_image) && is_file(DIR_IMAGE . $value_image)) {
+							$data['icon_phone'][$language_id] = $this->model_tool_image->resize($value_image, 20, 20);
+						} else {
+							$data['icon_phone'][$language_id] = '';
+						}
+					}
+					if($phone_header['dropdown'][$this->config->get('config_language_id')] == '1'){
+						$data['config_phones_array'][] = array(
+							'icon_phone' => $data['icon_phone'][$data['lang_id']],
+							'phone'      => $phone_header['phone'][$data['lang_id']],
+							'icon'       => (isset($phone_header['icon'][$data['lang_id']]) ? $phone_header['icon'][$data['lang_id']] : ''),
+							'type'      =>  (isset($phone_header['type'][$data['lang_id']]) ? $phone_header['type'][$data['lang_id']] : ''),
+						);
+					} else {
+						$data['header_phones_dropdown'][] = array(
+							'icon_phone' => $data['icon_phone'][$data['lang_id']],
+							'phone'      => $phone_header['phone'][$data['lang_id']],
+							'icon'       => (isset($phone_header['icon'][$data['lang_id']]) ? $phone_header['icon'][$data['lang_id']] : ''),
+							'type'      =>  (isset($phone_header['type'][$data['lang_id']]) ? $phone_header['type'][$data['lang_id']] : ''),
+						);
+					}
+				}
+			}
+			$data['swap_header_blocks'] = $this->config->get('swap_header_blocks');
+			$data['type_shop_cart'] = $this->config->get('type_shop_cart');
+			if (isset($data['nst_data']['hbannerpc'][$this->config->get('config_language_id')]['image']) && is_file(DIR_IMAGE . $data['nst_data']['hbannerpc'][$this->config->get('config_language_id')]['image'])) {
+				$data['hbannerpc'][$this->config->get('config_language_id')]['image'] = 'image/' . $data['nst_data']['hbannerpc'][$this->config->get('config_language_id')]['image'];
+			} else {
+				$data['hbannerpc'][$this->config->get('config_language_id')]['image'] = '';
+			}
+			if (isset($data['nst_data']['hbannermob'][$this->config->get('config_language_id')]['image']) && is_file(DIR_IMAGE . $data['nst_data']['hbannermob'][$this->config->get('config_language_id')]['image'])) {
+				$data['hbannermob'][$this->config->get('config_language_id')]['image'] = 'image/' . $data['nst_data']['hbannermob'][$this->config->get('config_language_id')]['image'];
+			} else {
+				$data['hbannermob'][$this->config->get('config_language_id')]['image'] = '';
+			}
+		]]>
+      </add>
+    </operation>
+	<operation>
+      <search>
+        <![CDATA[$data['menu'] = $this->load->controller('common/menu');]]>
+      </search>
+      <add position="replace">
+        <![CDATA[
+		$data['menuns'] = $this->load->controller('common/menuns');
+		]]>
+      </add>
+    </operation>
+	<operation>
+      <search>
+        <![CDATA[
+		function index() {
+		]]>
+      </search>
+      <add position="before">
+        <![CDATA[
+		public function login_validate($data = array()) {
+			$this->load->language('checkout/checkout');
+		
+			$json = array();
+			$this->load->model('account/customer');
+		
+			if ($this->customer->isLogged()) {
+				$json['islogged'] = true;
+			} elseif(isset($this->request->post)) {
+				if (!$this->customer->login($this->request->post['emailpopup'], $this->request->post['passwordpopup'])) {
+					$json['error'] = $this->language->get('error_login');
+				}
+				$customer_info = $this->model_account_customer->getCustomerByEmail($this->request->post['emailpopup']);
+				if ($customer_info && !$customer_info['status']) {
+					$json['error'] = $this->language->get('error_approved');
+				}
+			} else {
+				$json['error'] = $this->language->get('error_warning');
+			}
+		
+		if(!$json) {
+			$json['success'] = true;
+			unset($this->session->data['guest']);
+			$this->load->model('account/address');
+
+			if ($this->config->get('config_tax_customer') == 'payment') {
+				$this->session->data['payment_address'] = $this->model_account_address->getAddress($this->customer->getAddressId());
+			}
+
+			if ($this->config->get('config_tax_customer') == 'shipping') {
+				$this->session->data['shipping_address'] = $this->model_account_address->getAddress($this->customer->getAddressId());
+			}
+
+			$this->load->model('account/activity');
+
+			$activity_data = array(
+				'customer_id' => $this->customer->getId(),
+				'name'        => $this->customer->getFirstName() . ' ' . $this->customer->getLastName()
+			);
+
+			$this->model_account_activity->addActivity('login', $activity_data);
+		}
+
+		$this->response->addHeader('Content-Type: application/json');
+		$this->response->setOutput(json_encode($json));		
+	}
+		]]>
+      </add>
+    </operation>
+  </file>
+  <file path="catalog/controller/common/search.php">
+	<operation>
+      <search>
+        <![CDATA[
+		return $this->load->view('common/search', $data);
+		]]>
+      </search>
+      <add position="before">
+        <![CDATA[
+		$this->load->language('ns/newstorelang');
+		$data['text_search_word'] = $this->language->get('text_search_word');
+		$data['search_word_bd'] = $this->config->get('search_word');
+		if(!empty($data['search_word_bd'][$this->config->get('config_language_id')]['text'])) {
+			$search_word_explode = explode(",", $data['search_word_bd'][$this->config->get('config_language_id')]['text']);
+			if (count($search_word_explode) > 2) {
+				$random_word = array_rand($search_word_explode, 2);
+				$data['search_word'] = $search_word_explode[$random_word[0]];
+			} else {
+				$data['search_word'] = $data['search_word_bd'][$this->config->get('config_language_id')]['text'];
+			}
+		} else {
+		$data['search_word'] = '';
+		}
+		if (isset($this->request->get['filter_category_id'])) {
+			$data['filter_category_id'] = $this->request->get['filter_category_id'];
+		} else {
+			$data['filter_category_id'] = 0;
+		}
+		$data['text_search_everywhere'] = $this->language->get('text_search_everywhere');
+		$data['text_category'] = $this->language->get('text_category');
+		$data['show_hc_search'] = (!empty($this->config->get('show_hc_search')) ? 1 : 0);
+		$data['categories'] = array();
+		if($data['show_hc_search'] == 1){
+			$search_category = $this->cache->get('searchcategory.' . (int)$this->config->get('config_language_id').'.'. (int)$this->config->get('config_store_id'));
+			if (!empty($search_category)) {
+				$data['categories'] = $search_category;
+			} else {
+				$this->load->model('catalog/category');
+				$categories = $this->model_catalog_category->getCategories(0);
+				foreach ($categories as $category) {
+						$data['categories'][] = array(
+							'name'     => $category['name'],
+							'category_id'  => $category['category_id'],
+						);
+				}
+				$search_category = $data['categories'];
+				$this->cache->set('searchcategory.' . (int)$this->config->get('config_language_id') . '.'. (int)$this->config->get('config_store_id'), $search_category);
+			}
+		}
+		]]>
+      </add>
+    </operation>
+  </file>
+  <file path="catalog/controller/common/cart.php">
+		<operation>
+			<search><![CDATA[$this->load->language('common/cart');]]></search>
+			<add position="after" error="skip"><![CDATA[
+			$data['on_off_shopping_cart_click'] = $this->config->get('config_on_off_shopping_cart_click');
+			$data['type_shop_cart'] = $this->config->get('type_shop_cart');
+			$icon_shopcart = $this->config->get('icon_shopcart');
+			if (isset($icon_shopcart) && is_file(DIR_IMAGE . $icon_shopcart)) {
+				$data['icon_shopcart'] = $this->model_tool_image->resize($icon_shopcart, 35, 35);
+			} else {
+				$data['icon_shopcart'] = $icon_shopcart;
+			}
+			]]></add>
+		</operation>
+		<operation>
+			<search><![CDATA[$data['checkout'] = $this->url->link('checkout/checkout', '', true);]]></search>
+			<add position="replace" error="skip"><![CDATA[
+			$module_myonepagecheckout_status = $this->config->get('module_myonepagecheckout_status');
+			if ($module_myonepagecheckout_status == '1') {
+				$data['checkout'] = $this->url->link('checkout/newstorecheckout', '', true);
+			} else {
+				$data['checkout'] = $this->url->link('checkout/checkout', '', true);
+			}
+			]]></add>
+		</operation>
+        <operation>
+           <search><![CDATA[
+				$data['text_items'] = sprintf($this->language->get('text_items'), $this->cart->countProducts() + (isset($this->session->data['vouchers']) ? count($this->session->data['vouchers']) : 0), $this->currency->format($total, $this->session->data['currency']));
+      ]]></search>
+            <add position="after"><![CDATA[
+			$this->load->language('ns/newstorelang');
+			$data['text_items'] = sprintf($this->language->get('text_items_my'), $this->cart->countProducts() + (isset($this->session->data['vouchers']) ? count($this->session->data['vouchers']) : 0), $this->currency->format($total, $this->session->data['currency']));
+			]]></add>
+        </operation>
+	</file>
+	<file path="catalog/controller/common/footer.php">
+        <operation>
+            <search><![CDATA[$this->load->model('catalog/information');]]></search>
+            <add position="after"><![CDATA[
+				$var_currency = array();
+				$var_currency['value'] = $this->currency->getValue($this->session->data['currency']);
+				$var_currency['symbol_left'] = $this->currency->getSymbolLeft($this->session->data['currency']);
+				$var_currency['symbol_right'] = $this->currency->getSymbolRight($this->session->data['currency']);
+				$var_currency['currency_code'] = $this->session->data['currency'];
+				$var_currency['decimals'] = $this->currency->getDecimalPlace($this->session->data['currency']);
+				$var_currency['decimal_point'] = $this->language->get('decimal_point');
+				$var_currency['thousand_point'] = $this->language->get('thousand_point');
+				$data['currency'] = $var_currency;
+				$this->load->language('ns/newstorelang');
+				$data['footer_map_status'] = $this->config->get('footer_map_status');
+				$data['footer_desc_status'] = (!empty($this->config->get('footer_desc_status')) ? 1 : 0);
+				$data['code_map'] = $this->config->get('code_map');
+				$data['footer_map_status'] = $this->config->get('footer_map_status');
+				$data['google_api_map_key'] = $this->config->get('config_google_api_map_key');
+				$data['text_contact_footer'] = $this->language->get('text_contact_footer');
+				$data['text_social_link'] = $this->language->get('text_social_link');
+				$data['text_payments_footer'] = $this->language->get('text_payments_footer');
+				$data['config_ns_footer_counters'] = $this->config->get('config_ns_footer_counters');
+				$data['lang_id'] = $this->config->get('config_language_id');
+				$data['config_on_off_footer_ribbon'] = $this->config->get('config_on_off_footer_ribbon');
+				$data['config_footer_ribbon'] = $this->config->get('config_footer_ribbon');
+				$data['powered_new'] = sprintf('%s &copy; %s', $this->config->get('config_name'), date('Y', time()));
+				$this->load->model('tool/image');
+				$data['config_phones_footer'] = $this->config->get('config_phones_footer');
+				$footer_phones = $this->config->get('config_phones_footer');
+				$data['phones_footer'] = array();	
+				if(!empty($footer_phones)){
+					foreach ($footer_phones as $phone_footer) {						
+					$data['phones_footer'][] = array(
+							'phone_footer'			=> $phone_footer['phone_footer'][$data['lang_id']],
+							'icon_footer_phone'		=> $phone_footer['icon_footer_phone'][$data['lang_id']],
+							'type'					=> (isset($phone_footer['type']) ? $phone_footer['type'][$data['lang_id']] : ''),
+						);	
+					}					
+				}
+				$banner_items_footer_array = $this->config->get('banner_items_footer');
+				if(isset($banner_items_footer_array)) {
+					$banner_items_footer = $this->config->get('banner_items_footer');
+				} else {
+					$banner_items_footer = array();
+				}
+				$data['banner_items_footers'] = array();
+		
+				foreach ($banner_items_footer as $result) {	
+					if(isset($result['popup'])){
+						$result_popup = $result['popup'];
+					} else {
+						$result_popup = '0';
+					}				
+					$data['banner_items_footers'][] = array(
+						'icon_image' 	=> $result['icon_image'],
+						'title' 		=> $result['title'],
+						'description' 	=> $result['description'],
+						'link'  		=> $result['link'][$this->config->get('config_language_id')],
+						'popup'  		=> $result_popup,
+						
+					);	
+				}		
+				$data['config_social_footer'] = $this->config->get('config_social_footer');
+				$footer_social = $this->config->get('config_social_footer');
+				
+				if(!empty($footer_social)){
+				$data['config_social_array_footer'] = array();
+				
+				foreach ($footer_social as $social_footer) {
+					if (isset($social_footer['image_footer_social']) && is_file(DIR_IMAGE . $social_footer['image_footer_social'])) {
+						$data['icon_footer_social'] = $this->model_tool_image->resize($social_footer['image_footer_social'], 25, 25);
+					} else {
+						$data['icon_footer_social'] = $this->model_tool_image->resize('no_image.png', 25, 25);
+					}					
+				$data['config_social_array_footer'][] = array(
+						'image_footer_social'      		=> $social_footer['image_footer_social'],
+						'icon_footer_social'      		=> $data['icon_footer_social'],
+						'social_link_footer'      		=> $social_footer['social_link_footer'],
+					);	
+				}
+				
+				}
+				$data['config_payments_footer'] = $this->config->get('config_payments_footer');
+				$payments_social = $this->config->get('config_payments_footer');
+				if(!empty($payments_social)){
+					$data['config_payments_array_footer'] = array();
+					
+					foreach ($payments_social as $payments_footer) {
+						if (isset($payments_footer['image_footer_payments']) && is_file(DIR_IMAGE . $payments_footer['image_footer_payments'])) {
+							$data['icon_footer_payments'] = $this->model_tool_image->resize($payments_footer['image_footer_payments'], 35, 25);
+						} else {
+							$data['icon_footer_payments'] = $this->model_tool_image->resize('no_image.png', 35, 25);
+						}
+						
+					$data['config_payments_array_footer'][] = array(
+							'image_footer_payments'      		=> $payments_footer['image_footer_payments'],
+							'icon_footer_payments'      		=> $data['icon_footer_payments'],
+							'payments_link_footer'      		=> $payments_footer['payments_link_footer'],
+						);	
+					}
+					
+				}	
+				$data['about_us'] = $this->language->get('about_us');
+				$data['gmap_full_screen'] = $this->language->get('gmap_full_screen');
+				$data['gmap_normal_screen'] = $this->language->get('gmap_normal_screen');
+				
+				$data['description_store_footer'] = $this->config->get('config_description_store_footer');
+				$data['zoom_google_map'] = $this->config->get('config_zoom_google_map');		
+				$data['center_google_map'] = $this->config->get('config_center_google_map');		
+				$data['lang_id'] = $this->config->get('config_language_id');
+				$data['setting_google'] = $this->config->get('google_maps_module_map');
+				$data['gmap_setting'] = array();
+				if(!empty($data['setting_google'])){ 
+					foreach ($data['setting_google'] as $map_setting){
+						$data['gmap_setting'][] = array(
+							'latlong' => html_entity_decode($map_setting['latlong'], ENT_QUOTES, 'UTF-8'),
+							'maptext' => $map_setting['maptext'],
+							'onelinetext' => $map_setting['onelinetext'],
+						);
+					}
+				}		
+			$data['config_footer_design'] = $this->config->get('config_footer_design');
+			$data['fcols'] = $this->config->get('footer_column_setting_ns');	
+			$data['footer_links'] = array();
+			if (isset($data['fcols'][$data['lang_id']]['footer_links'])) {
+				$data['footer_links'] = $data['fcols'][$data['lang_id']]['footer_links'];
+			}	
+			]]></add>
+        </operation>
+		<operation>
+           <search><![CDATA[
+				return $this->load->view('common/footer', $data);
+      ]]></search>
+            <add position="replace"><![CDATA[
+			$config_footer_design = $this->config->get('config_footer_design');	
+			if($config_footer_design =='2') {
+				return $this->load->view('common/footer2', $data);
+			} else { 
+				return $this->load->view('common/footer', $data);
+			}
+			]]></add>
+        </operation>
+	</file>
+	<file path="catalog/controller/common/column_left.php">
+        <operation>
+            <search><![CDATA[
+           return $this->load->view('common/column_left', $data);
+            ]]></search>
+            <add position="before"><![CDATA[
+            /*CATEGORY LEFT*/	
+			$data['general_menu_on_off_category'] = $this->config->get('config_menu_always_open_on_the_category_page');
+            ]]></add>
+        </operation>
+	</file>
+	<file path="catalog/controller/extension/module/carousel.php">
+		<operation>
+      <search>
+        <![CDATA[$data['module'] = $module++;]]>
+      </search>
+      <add position="before">
+        <![CDATA[
+		$data['heading_title'] = $setting['name'];	
+		]]>
+      </add>
+    </operation>
+  </file>
+  <file path="catalog/controller/extension/module/{special,featured,latest,bestseller}.php">
+	<operation error="log">
+		<search><![CDATA[$this->load->model('tool/image');]]></search>
+		<add position="after"><![CDATA[
+			$data['nst_data'] = $this->config->get('nst_data');
+			if(isset($data['nst_data']['lazyload_module']) && ($data['nst_data']['lazyload_module'] == 1)){
+				$data['lazyload_module'] = true;
+				if (isset($data['nst_data']['lazyload_image']) && ($data['nst_data']['lazyload_image'] !='')) {
+					$data['lazy_image'] = 'image/' . $data['nst_data']['lazyload_image'];
+				} else {
+					$data['lazy_image'] = 'image/catalog/lazyload/lazyload.jpg';
+				}
+			} else {
+				$data['lazyload_module'] = false;
+			}
+			$data['text_select'] = $this->language->get('text_select');	
+			$data['config_additional_settings_newstore'] = $this->config->get('config_additional_settings_newstore');
+			$data['show_special_timer_module'] = $this->config->get('config_show_special_timer_module');
+			$data['on_off_sticker_special'] = $this->config->get('on_off_sticker_special');
+			$data['config_change_icon_sticker_special'] = $this->config->get('config_change_icon_sticker_special');
+			$data['on_off_sticker_topbestseller'] = $this->config->get('on_off_sticker_topbestseller');
+			$data['config_limit_order_product_topbestseller'] = $this->config->get('config_limit_order_product_topbestseller');
+			$data['config_change_icon_sticker_topbestseller'] = $this->config->get('config_change_icon_sticker_topbestseller');
+			$data['on_off_sticker_popular'] = $this->config->get('on_off_sticker_popular');
+			$data['config_min_quantity_popular'] = $this->config->get('config_min_quantity_popular');
+			$data['config_change_icon_sticker_popular'] = $this->config->get('config_change_icon_sticker_popular');
+			$data['on_off_sticker_newproduct'] = $this->config->get('on_off_sticker_newproduct');
+			$data['config_limit_day_newproduct'] = $this->config->get('config_limit_day_newproduct');
+			$data['config_change_icon_sticker_newproduct'] = $this->config->get('config_change_icon_sticker_newproduct');
+			
+			$data['lang_id'] = $this->config->get('config_language_id');
+			$data['required_text_option'] = $this->language->get('required_text_option');
+			$data['change_text_cart_button_out_of_stock'] = $this->config->get('config_change_text_cart_button_out_of_stock');	
+			$data['text_sticker_special'] = $this->config->get('config_change_text_sticker_special');
+			$data['text_sticker_newproduct'] = $this->config->get('config_change_text_sticker_newproduct');
+			$data['text_sticker_popular'] = $this->config->get('config_change_text_sticker_popular');
+			$data['text_sticker_topbestseller'] = $this->config->get('config_change_text_sticker_topbestseller');
+			$this->language->load('product/product');
+			$data['icon_open_form_send_order'] = $this->config->get('config_icon_open_form_send_order');
+			$data['color_button_open_form_send_order'] = $this->config->get('config_color_button_open_form_send_order');
+			$data['config_text_open_form_send_order'] = $this->config->get('config_text_open_form_send_order');
+			$data['text_reviews_title'] = $this->language->get('text_reviews_title');
+			$data['config_quickview_btn_name'] = $this->config->get('config_quickview_btn_name');
+			$data['show_stock_status'] = $this->config->get('config_show_stock_status');
+			$data['disable_cart_button'] = $this->config->get('config_disable_cart_button');
+			$data['disable_fastorder_button'] = $this->config->get('config_disable_fastorder_button');
+				$config_disable_cart_button_text = $this->config->get('config_disable_cart_button_text');
+				if(!empty($config_disable_cart_button_text[$this->config->get('config_language_id')]['disable_cart_button_text'])){
+					$data['disable_cart_button_text'] = $config_disable_cart_button_text[$this->config->get('config_language_id')]['disable_cart_button_text'];
+				} else {
+					$data['disable_cart_button_text'] = $this->language->get('disable_cart_button_text');
+				}
+		]]></add>
+	</operation>
+	<operation error="log">
+		<search><![CDATA[$data['products'][] = array(]]></search>
+		<add position="before"><![CDATA[
+					if (isset($product_info)) {
+						$result = $product_info;
+					} else {
+						$result = $result;
+					}
+					if((isset($result['date_available'])&&(round((strtotime(date("Y-m-d"))-strtotime($result['date_available']))/86400))<=$this->config->get('config_limit_day_newproduct'))) {
+						$sticker_new_prod = true;
+					} else {
+						$sticker_new_prod = false;
+					}
+					if (($this->config->get('config_customer_price') && $this->customer->isLogged()) || !$this->config->get('config_customer_price')) {
+						$price_no_format = $this->tax->calculate($result['price'], $result['tax_class_id'], $this->config->get('config_tax'));
+					} else {
+						$price_no_format = false;
+					}
+
+					if ((float)$result['special']) {
+						$special_no_format = $this->tax->calculate($result['special'], $result['tax_class_id'], $this->config->get('config_tax'));
+					} else {
+						$special_no_format = false;
+					}
+					
+					if (VERSION >= 2.2) {
+						$currency = $this->session->data['currency'];
+					} else {
+						$currency = '';
+					}
+					if ((float)$result['special']) {
+						$special_date_end = $this->model_catalog_product->getDateEnd($result['product_id']);
+					} else {
+						$special_date_end = false;
+					}
+					$options = array();
+					$data['show_options'] = $this->config->get('config_show_options_module');
+					$show_options_required_featured = $this->config->get('config_show_options_required_module');
+				if ($data['show_options']==1) {
+					foreach ($this->model_catalog_product->getProductOptions($result['product_id']) as $option) {
+						$product_option_value_data = array();
+
+						foreach ($option['product_option_value'] as $option_value) {
+							if (!$option_value['subtract'] || ($option_value['quantity'] > 0)) {
+								if ((($this->config->get('config_customer_price') && $this->customer->isLogged()) || !$this->config->get('config_customer_price')) && (float)$option_value['price']) {
+									$option_price = $this->currency->format($this->tax->calculate($option_value['price'], $result['tax_class_id'], $this->config->get('config_tax') ? 'P' : false), $currency);
+								} else {
+									$option_price = false;
+								}
+
+								$product_option_value_data[] = array(
+									'product_option_value_id' => $option_value['product_option_value_id'],
+									'option_value_id'         => $option_value['option_value_id'],
+									'name'                    => $option_value['name'],
+									'color'                   => $option_value['color'],
+									'image'                   => $option_value['image'] ? $this->model_tool_image->resize($option_value['image'], 50, 50) : '',
+									'price'                   => $option_price,
+									'price_value'             => $this->tax->calculate($option_value['price'], $result['tax_class_id'], $this->config->get('config_tax') ? 'P' : false),
+									'price_prefix'            => $option_value['price_prefix']
+								);
+							}
+						}
+						if($show_options_required_featured ==1) {
+							if($option['required']) {
+								$options[] = array(
+									'product_option_id'    => $option['product_option_id'],
+									'product_option_value' => $product_option_value_data,
+									'option_id'            => $option['option_id'],
+									'name'                 => $option['name'],
+									'type'                 => $option['type'],
+									'status_color_type'    => $option['status_color_type'],
+									'value'                => $option['value'],
+									'required'             => $option['required']
+								);
+							}
+						} else {
+							$options[] = array(
+								'product_option_id'    => $option['product_option_id'],
+								'product_option_value' => $product_option_value_data,
+								'option_id'            => $option['option_id'],
+								'name'                 => $option['name'],
+								'type'                 => $option['type'],
+								'status_color_type'    => $option['status_color_type'],
+								'value'                => $option['value'],
+								'required'             => $option['required']
+							);
+						}
+					}
+				}
+		]]></add>
+	</operation>
+	<operation error="log">
+		<search><![CDATA[$data['products'][] = array(]]></search>
+		<add position="after"><![CDATA[
+			'options'	  => $options,
+			'sticker_new_prod'  => $sticker_new_prod,
+			'date_end'			=> $special_date_end, 
+			'minimum'     => ($result['minimum'] > 0) ? $result['minimum'] : 1,
+			'price_no_format' 	=> $price_no_format,
+			'special_no_format' => $special_no_format,	
+		]]></add>
+	</operation>	
+	</file>
+  <file path="catalog/controller/extension/module/featured.php">
+	<operation>
+      <search>
+        <![CDATA[$this->load->language('extension/module/featured');]]>
+      </search>
+      <add position="after">
+        <![CDATA[
+			$this->load->model('ns/moduleonoff');
+			$data['ns_on_off_module_quick_order'] = $this->model_ns_moduleonoff->getQuickOrderModuleModification();
+			$this->load->language('ns/newstorelang');
+			$data['ns_on_off_featured_model_product'] = $this->config->get('config_on_off_featured_model_product'); 	
+			$data['ns_on_off_featured_description'] = $this->config->get('config_on_off_featured_description'); 	
+			$data['ns_on_off_featured_slider_additional_image'] = $this->config->get('config_on_off_featured_slider_additional_image');	
+			$data['ns_select_featured_additional_animate_method'] = $this->config->get('config_select_featured_additional_animate_method');	
+			$data['ns_on_off_featured_rating'] = $this->config->get('config_on_off_featured_rating');	
+			$data['ns_on_off_featured_quantity_reviews'] = $this->config->get('config_on_off_featured_quantity_reviews');	
+			$data['ns_on_off_featured_fastorder'] = $this->config->get('config_on_off_featured_fastorder');	
+			$data['ns_on_off_featured_wishlist'] = $this->config->get('config_on_off_featured_wishlist');	
+			$data['ns_on_off_featured_compare'] = $this->config->get('config_on_off_featured_compare');	
+			$data['config_on_off_featured_quickview'] = $this->config->get('config_on_off_featured_quickview');
+			
+		]]>
+      </add>
+    </operation>
+	<operation>
+      <search>
+        <![CDATA[$data['products'][] = array(]]>
+      </search>
+      <add position="before">
+        <![CDATA[
+			$results_img = $this->model_catalog_product->getProductImages($product_info['product_id']);
+			$additional_img = array();
+			if($data['ns_on_off_featured_slider_additional_image'] =='1'){
+				foreach ($results_img as $result_img) {
+					if ($result_img['image']) {	
+						$image_additional = $this->model_tool_image->resize($result_img['image'], $setting['width'], $setting['height']);
+					} else {
+						$image_additional = false;
+					}
+					$additional_img[] = $image_additional;
+				}
+			}
+			$additional_image_hover = '';
+			
+			if($data['ns_on_off_featured_slider_additional_image'] =='2'){
+				foreach ($results_img as $key => $result_img) {
+					if ($key < 1) {
+						$additional_image_hover = $this->model_tool_image->resize($result_img['image'], $setting['width'], $setting['height']);	
+					}
+				}
+			}
+			if ((float)$product_info['special']) {
+				$price2 = $this->tax->calculate($product_info['price'], $product_info['tax_class_id'], $this->config->get('config_tax'));
+				$special2 = $this->tax->calculate($product_info['special'], $product_info['tax_class_id'], $this->config->get('config_tax'));
+				$skidka = $special2/($price2/100)-100;
+			} else {
+				$skidka = "";
+			}
+			
+			$top_bestsellers = $this->model_catalog_product->getTopSeller($product_id);
+			$product_quantity = $product_info['quantity'];
+			$stock_status = $product_info['stock_status'];
+		]]>
+      </add>
+    </operation>
+	<operation>
+      <search>
+        <![CDATA[$data['products'][] = array(]]>
+      </search>
+      <add position="after">
+        <![CDATA[
+		'product_quantity' 		=> $product_quantity,
+		'stock_status' 			=> $stock_status,
+		'additional_img' 		=> $additional_img,
+		'additional_image_hover' => $additional_image_hover,
+		'reviews'    			=> sprintf((int)$product_info['reviews']),
+		'skidka'     			=> round($skidka),
+		'model'     			=> $product_info['model'],
+		'date_available'		=> $product_info['date_available'],
+		'viewed'	 			=> $product_info['viewed'],
+		'top_bestsellers'	 	=> $top_bestsellers['total'],
+		]]>
+      </add>
+    </operation>
+  </file>
+  <file path="catalog/controller/extension/module/latest.php">
+	<operation>
+      <search>
+        <![CDATA[$this->load->language('extension/module/latest');]]>
+      </search>
+      <add position="after">
+        <![CDATA[
+			$this->load->model('ns/moduleonoff');
+			$data['ns_on_off_module_quick_order'] = $this->model_ns_moduleonoff->getQuickOrderModuleModification();
+			$this->load->language('ns/newstorelang');
+			$data['heading_title_latest'] = $this->language->get('heading_title_latest'); 
+			$data['ns_on_off_latest_model_product'] = $this->config->get('config_on_off_latest_model_product'); 
+			$data['ns_on_off_latest_description'] = $this->config->get('config_on_off_latest_description'); 	
+			$data['ns_on_off_latest_slider_additional_image'] = $this->config->get('config_on_off_latest_slider_additional_image'); 
+			$data['ns_select_latest_additional_animate_method'] = $this->config->get('config_select_latest_additional_animate_method'); 
+			$data['ns_on_off_latest_rating'] = $this->config->get('config_on_off_latest_rating'); 
+			$data['ns_on_off_latest_quantity_reviews'] = $this->config->get('config_on_off_latest_quantity_reviews'); 
+			$data['ns_on_off_latest_fastorder'] = $this->config->get('config_on_off_latest_fastorder'); 
+			$data['ns_on_off_latest_wishlist'] = $this->config->get('config_on_off_latest_wishlist'); 
+			$data['ns_on_off_latest_compare'] = $this->config->get('config_on_off_latest_compare'); 
+			$data['config_on_off_latest_quickview'] = $this->config->get('config_on_off_latest_quickview');
+		]]>
+      </add>
+    </operation>
+	<operation>
+      <search>
+        <![CDATA[$data['products'][] = array(]]>
+      </search>
+      <add position="before">
+        <![CDATA[
+			$results_img = $this->model_catalog_product->getProductImages($result['product_id']);
+			$additional_img = array();
+			if($data['ns_on_off_latest_slider_additional_image'] =='2'){
+			foreach ($results_img as $result_img) {
+				if ($result_img['image']) {	
+					$image_additional = $this->model_tool_image->resize($result_img['image'], $setting['width'], $setting['height']);
+				} else {
+					$image_additional = false;
+				}
+			$additional_img[] = $image_additional;
+			}
+			}
+			$additional_image_hover = '';
+			
+			if($data['ns_on_off_latest_slider_additional_image'] =='2'){
+				foreach ($results_img as $key => $result_img) {
+					if ($key < 1) {
+						$additional_image_hover = $this->model_tool_image->resize($result_img['image'], $setting['width'], $setting['height']);	
+					}
+				}
+			}
+			if ((float)$result['special']) {
+				$price2 = $this->tax->calculate($result['price'], $result['tax_class_id'], $this->config->get('config_tax'));
+				$special2 = $this->tax->calculate($result['special'], $result['tax_class_id'], $this->config->get('config_tax'));
+				$skidka = $special2/($price2/100)-100;
+			} else {
+				$skidka = "";
+			}
+			$top_bestsellers = $this->model_catalog_product->getTopSeller($result['product_id']);
+			$product_quantity = $result['quantity'];
+			$stock_status = $result['stock_status'];
+		]]>
+      </add>
+    </operation>
+	<operation>
+      <search>
+        <![CDATA[$data['products'][] = array(]]>
+      </search>
+      <add position="after">
+        <![CDATA[
+		'product_quantity' 		=> $product_quantity,
+		'stock_status' 			=> $stock_status,
+		'additional_img' 		=> $additional_img,
+		'additional_image_hover' => $additional_image_hover,
+		'reviews'    			=> sprintf((int)$result['reviews']),
+		'skidka'     			=> round($skidka),
+		'model'     			=> $result['model'],
+		'date_available'		=> $result['date_available'],//added
+		'viewed'	 			=> $result['viewed'], //added
+		'top_bestsellers'	 	=> $top_bestsellers['total'], //added
+		]]>
+      </add>
+    </operation>
+  </file>
+  <file path="catalog/controller/extension/module/bestseller.php">
+	<operation>
+      <search>
+        <![CDATA[$this->load->language('extension/module/bestseller');]]>
+      </search>
+      <add position="after">
+        <![CDATA[
+			$this->load->model('ns/moduleonoff');
+			$data['ns_on_off_module_quick_order'] = $this->model_ns_moduleonoff->getQuickOrderModuleModification();
+			$this->load->language('ns/newstorelang');
+			$data['ns_on_off_bestseller_model_product'] = $this->config->get('config_on_off_bestseller_model_product'); 	
+			$data['ns_on_off_bestseller_description'] = $this->config->get('config_on_off_bestseller_description'); 
+			$data['ns_on_off_bestseller_slider_additional_image'] = $this->config->get('config_on_off_bestseller_slider_additional_image'); 
+			$data['ns_select_bestseller_additional_animate_method'] = $this->config->get('config_select_bestseller_additional_animate_method'); 	
+			$data['ns_on_off_bestseller_rating'] = $this->config->get('config_on_off_bestseller_rating');
+			$data['ns_on_off_bestseller_quantity_reviews'] = $this->config->get('config_on_off_bestseller_quantity_reviews');	
+			$data['ns_on_off_bestseller_fastorder'] = $this->config->get('config_on_off_bestseller_fastorder');
+			$data['ns_on_off_bestseller_wishlist'] = $this->config->get('config_on_off_bestseller_wishlist');
+			$data['ns_on_off_bestseller_compare'] = $this->config->get('config_on_off_bestseller_compare');				
+			$data['config_on_off_bestseller_quickview'] = $this->config->get('config_on_off_bestseller_quickview');
+		]]>
+      </add>
+    </operation>
+	<operation>
+      <search>
+        <![CDATA[$data['products'][] = array(]]>
+      </search>
+      <add position="before">
+        <![CDATA[
+			$results_img = $this->model_catalog_product->getProductImages($result['product_id']);
+			$additional_img = array();
+			if($data['ns_on_off_bestseller_slider_additional_image'] =='1'){
+			foreach ($results_img as $result_img) {
+				if ($result_img['image']) {	
+					$image_additional = $this->model_tool_image->resize($result_img['image'], $setting['width'], $setting['height']);
+				} else {
+					$image_additional = false;
+				}
+			$additional_img[] = $image_additional;
+			}
+			}
+			$additional_image_hover = '';
+			if($data['ns_on_off_bestseller_slider_additional_image'] =='2'){
+				foreach ($results_img as $key => $result_img) {
+					if ($key < 1) {
+						$additional_image_hover = $this->model_tool_image->resize($result_img['image'], $setting['width'], $setting['height']);	
+					}
+				}
+			}
+			
+			if ((float)$result['special']) {
+				$price2 = $this->tax->calculate($result['price'], $result['tax_class_id'], $this->config->get('config_tax'));
+				$special2 = $this->tax->calculate($result['special'], $result['tax_class_id'], $this->config->get('config_tax'));
+				$skidka = $special2/($price2/100)-100;
+			} else {
+				$skidka = "";
+			}
+			$top_bestsellers = $this->model_catalog_product->getTopSeller($result['product_id']);
+			$product_quantity = $result['quantity'];
+			$stock_status = $result['stock_status'];
+		]]>
+      </add>
+    </operation>
+	<operation>
+      <search>
+        <![CDATA[$data['products'][] = array(]]>
+      </search>
+      <add position="after">
+        <![CDATA[
+		'product_quantity' 		=> $product_quantity,
+		'stock_status' 			=> $stock_status,
+		'additional_img' 		=> $additional_img,
+		'additional_image_hover' => $additional_image_hover,
+		'reviews'    			=> sprintf((int)$result['reviews']),
+		'skidka'     			=> round($skidka),
+		'model'     			=> $result['model'],
+		'date_available'		=> $result['date_available'],
+		'viewed'	 			=> $result['viewed'],
+		'top_bestsellers'	 	=> $top_bestsellers['total'],
+		]]>
+      </add>
+    </operation>
+  </file>
+  
+  <file path="catalog/controller/extension/module/special.php">
+	<operation>
+      <search>
+        <![CDATA[$this->load->language('extension/module/special');]]>
+      </search>
+      <add position="after">
+        <![CDATA[
+			$this->load->model('ns/moduleonoff');
+			$data['ns_on_off_module_quick_order'] = $this->model_ns_moduleonoff->getQuickOrderModuleModification();
+			$this->load->language('ns/newstorelang');
+			$data['ns_on_off_special_model_product'] = $this->config->get('config_on_off_special_model_product'); 	
+			$data['ns_on_off_special_description'] = $this->config->get('config_on_off_special_description'); 	
+			$data['ns_on_off_special_slider_additional_image'] = $this->config->get('config_on_off_special_slider_additional_image'); 
+			$data['ns_select_special_additional_animate_method'] = $this->config->get('config_select_special_additional_animate_method'); 	
+			$data['ns_on_off_special_rating'] = $this->config->get('config_on_off_special_rating'); 
+			$data['ns_on_off_special_quantity_reviews'] = $this->config->get('config_on_off_special_quantity_reviews'); 
+			$data['ns_on_off_special_fastorder'] = $this->config->get('config_on_off_special_fastorder'); 
+			$data['ns_on_off_special_wishlist'] = $this->config->get('config_on_off_special_wishlist'); 
+			$data['ns_on_off_special_compare'] = $this->config->get('config_on_off_special_compare'); 
+			$data['config_on_off_special_quickview'] = $this->config->get('config_on_off_special_quickview');
+		]]>
+      </add>
+    </operation>
+	<operation>
+      <search>
+        <![CDATA[$data['products'][] = array(]]>
+      </search>
+      <add position="before">
+        <![CDATA[
+			$results_img = $this->model_catalog_product->getProductImages($result['product_id']);
+			$additional_img = array();
+			if($data['ns_on_off_special_slider_additional_image'] =='1'){
+			foreach ($results_img as $result_img) {
+				if ($result_img['image']) {	
+					$image_additional = $this->model_tool_image->resize($result_img['image'], $setting['width'], $setting['height']);
+				} else {
+					$image_additional = false;
+				}
+			$additional_img[] = $image_additional;
+			}
+			}
+			$additional_image_hover = '';
+			
+			if($data['ns_on_off_special_slider_additional_image'] =='2'){
+				foreach ($results_img as $key => $result_img) {
+					if ($key < 1) {
+						$additional_image_hover = $this->model_tool_image->resize($result_img['image'], $setting['width'], $setting['height']);	
+					}
+				}
+			}
+			if ((float)$result['special']) {
+				$price2 = $this->tax->calculate($result['price'], $result['tax_class_id'], $this->config->get('config_tax'));
+				$special2 = $this->tax->calculate($result['special'], $result['tax_class_id'], $this->config->get('config_tax'));
+				$skidka = $special2/($price2/100)-100;
+			} else {
+				$skidka = "";
+			}
+			$top_bestsellers = $this->model_catalog_product->getTopSeller($result['product_id']);
+			$product_quantity = $result['quantity'];
+			$stock_status = $result['stock_status'];
+		]]>
+      </add>
+    </operation>
+	<operation>
+      <search>
+        <![CDATA[$data['products'][] = array(]]>
+      </search>
+      <add position="after">
+        <![CDATA[
+		'product_quantity' 		=> $product_quantity,
+		'stock_status' 			=> $stock_status,
+		'additional_img' 		=> $additional_img,
+		'additional_image_hover' => $additional_image_hover,
+		'reviews'    			=> sprintf((int)$result['reviews']),
+		'skidka'     			=> round($skidka),
+		'model'     			=> $result['model'],
+		'date_available'		=> $result['date_available'],//added
+		'viewed'	 			=> $result['viewed'], //added
+		'top_bestsellers'		=> $top_bestsellers['total'], //added
+		]]>
+      </add>
+    </operation>
+  </file>
+  <file path="catalog/model/catalog/product.php">
+        <operation>
+            <search><![CDATA[AS reviews,]]></search>
+            <add position="replace"><![CDATA[AS reviews,(SELECT date_end  FROM " . DB_PREFIX . "product_special WHERE product_id = '" . (int)$product_id . "' AND ((date_start = '0000-00-00' OR date_start < NOW()) AND (date_end = '0000-00-00' OR date_end > NOW())) ORDER BY priority ASC, price ASC LIMIT 1) AS date_end,]]></add>
+        </operation>
+        <operation>
+            <search><![CDATA[
+            'product_id'       => $query->row['product_id'],
+            ]]></search>
+            <add position="after"><![CDATA[
+            'date_end'         => $query->row['date_end'],
+            ]]></add>
+        </operation>
+		<operation error="log">
+			<search ><![CDATA[getBestSellerProducts]]></search>
+			<add position="before"><![CDATA[
+		public function getTopSeller($product_id) {
+			$product_data = array();
+			$query = $this->db->query("SELECT SUM(quantity) AS total FROM " . DB_PREFIX . "order_product op 
+			WHERE op.product_id = '". (int)$product_id ."'");
+			
+			foreach ($query->rows as $result) { 		
+				$product_data = array(
+					'total' => $result['total']
+				);
+			}
+			return $product_data;
+		}
+		public function getDateEnd($product_id) {
+			$query = $this->db->query("SELECT date_end FROM " . DB_PREFIX . "product_special WHERE product_id = '" . (int)$product_id . "' AND ((date_start = '0000-00-00' OR date_start < NOW()) AND (date_end = '0000-00-00' OR date_end > NOW())) ORDER BY priority ASC, price ASC LIMIT 1");
+
+			if ($query->num_rows) {
+				return $query->row['date_end'];
+			} else {
+				return false;
+			}
+		}
+	]]></add>
+		</operation>
+		<operation>
+			<search><![CDATA[$product_option_value_data[] = array(]]></search>
+		  <add position="after">
+			<![CDATA[
+			'color'                   => $product_option_value['color'],
+			]]>
+		  </add>
+		</operation>
+		<operation>
+		<search><![CDATA[$product_option_data[] = array(]]></search>
+		  <add position="after">
+			<![CDATA[
+			'status_color_type'    => $product_option['status_color_type'],
+			]]>
+		  </add>
+		</operation>
+		<operation error="log">
+			<search ><![CDATA['p.model',]]></search>
+			<add position="after"><![CDATA['p.image',]]></add>
+		</operation>	
+		<operation error="log">
+			<search ><![CDATA[$sql .= " ORDER BY]]></search>
+			<add position="replace"><![CDATA[$sql .= " ORDER BY (p.price>0) DESC,(p.image>'') DESC,(p.quantity>0) DESC,]]></add>
+		</operation>
+		<operation error="log">
+			<search ><![CDATA[if (!empty($data['filter_name']) && !empty($data['filter_tag'])) {]]></search>
+			<add position="before"><![CDATA[
+			if (!empty($data['filter_model_ns']) && !empty($data['filter_name'])) {
+				$sql .= " OR p.model LIKE '%" . $this->db->escape($data['filter_name']) . "%'";
+			}
+			]]></add>
+		</operation>
+	</file>
+	<file path="catalog/model/catalog/review.php">
+		<operation >
+			<search><![CDATA[text = '" . $this->db->escape($data['text']) . "',]]></search>
+			<add position="replace"><![CDATA[text = '" . $this->db->escape($data['text']) . "', purchased = '', plus = '" . $this->db->escape($data['plus']) . "', minus = '" . $this->db->escape($data['minus']) . "', admin_reply = '',]]></add>
+		</operation>
+		<operation >
+			<search><![CDATA[r.author, r.rating, r.text,]]></search>
+			<add position="replace"><![CDATA[r.author, r.rating, r.text, r.plus, r.purchased, r.minus, r.admin_reply,]]></add>
+		</operation>
+	</file>
+	<file path="catalog/controller/product/product.php">
+		<operation >
+			<search><![CDATA[public function review() {]]></search>
+			<add position="after"><![CDATA[
+			$this->language->load('ns/newstorelang');	
+			$data['text_admin_reply'] = $this->language->get('text_admin_reply');
+			$data['text_plus'] = $this->language->get('text_plus');
+			$data['text_purchased'] = $this->language->get('text_purchased');
+			$data['text_minus'] = $this->language->get('text_minus');
+			$data['text_comment'] = $this->language->get('text_comment');
+			
+			$data['show_review_plus'] = $this->config->get('config_show_review_plus');
+			$data['show_review_plus_requared'] = $this->config->get('config_show_review_plus_requared');
+			$data['show_review_minus'] = $this->config->get('config_show_review_minus');
+			$data['show_review_minus_requared'] = $this->config->get('config_show_review_minus_requared');
+			]]></add>
+		</operation>
+		<operation >
+			<search><![CDATA['text'       => nl2br($result['text']),]]></search>
+			<add position="after"><![CDATA[
+			'purchased'     => nl2br($result['purchased']),
+			'plus'      	=> nl2br($result['plus']),
+			'minus'       	=> nl2br($result['minus']),
+			'admin_reply'	=> nl2br($result['admin_reply']),]]></add>
+		</operation>
+		<operation >
+			<search><![CDATA[if ((utf8_strlen($this->request->post['text']) < 25)]]></search>
+			<add position="before"><![CDATA[
+			$this->language->load('ns/newstorelang');		
+			$show_review_plus = $this->config->get('config_show_review_plus');
+			$show_review_plus_requared = $this->config->get('config_show_review_plus_requared');
+			$show_review_minus = $this->config->get('config_show_review_minus');
+			$show_review_minus_requared = $this->config->get('config_show_review_minus_requared');
+			
+			if(($show_review_plus =='1') && ($show_review_plus_requared =='1')){
+				if ((utf8_strlen($this->request->post['plus']) < 3) || (utf8_strlen($this->request->post['plus']) > 1000)) {
+					$json['error'] = $this->language->get('error_plus');
+				}
+			}
+			if(($show_review_minus =='1') && ($show_review_minus_requared =='1')){
+				if ((utf8_strlen($this->request->post['minus']) < 3) || (utf8_strlen($this->request->post['minus']) > 1000)) {
+					$json['error'] = $this->language->get('error_minus');
+				}
+			}
+			
+			]]></add>
+		</operation>
+	<operation>
+		<search><![CDATA[$product_option_value_data[] = array(]]></search>
+			<add position='after'><![CDATA[
+			'color'    => $option_value['color'],
+			'image_click' => $this->model_tool_image->resize($option_value['image'], $this->config->get('theme_' . $this->config->get('config_theme') . '_image_thumb_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_thumb_height')),
+			'image_zoom' => $this->model_tool_image->resize($option_value['image'], $this->config->get('theme_' . $this->config->get('config_theme') . '_image_popup_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_popup_height')),
+			'image_thumb' => $this->model_tool_image->resize($option_value['image'], $this->config->get('theme_' . $this->config->get('config_theme') . '_image_additional_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_additional_height')),
+			]]></add>
+	</operation>
+	<operation>
+		<search><![CDATA[$data['options'][] = array(]]></search>
+			<add position='after'><![CDATA[
+			'status_color_type'    => $option['status_color_type'],
+			]]></add>
+	</operation>
+	<operation>
+			<search><![CDATA[$this->response->setOutput($this->load->view('product/product', $data));]]></search>
+			<add position="before"><![CDATA[
+			if (isset($this->request->get['route']) && $this->request->get['route'] == 'product/product') {
+				if (!isset($this->session->data['productviewed'])) {
+					$this->session->data['productviewed'] = array();
+					$this->session->data['productviewed'][] = $this->request->get['product_id'];
+				} else {
+					$this->session->data['productviewed'][] = $this->request->get['product_id'];
+				}
+			}
+			$data['nextprevproduct'] = $this->load->controller('product/nextprev');	
+			/*QUICK VIEW*/
+			$data['config_additional_settings_newstore'] = $this->config->get('config_additional_settings_newstore');
+			if(isset($this->request->post['quickview29'])) {
+			
+			$this->load->model('ns/newstore');
+			$data['all_prod'] = $this->request->post['all_prod'];
+				if(isset($this->request->post['all_prod'])){
+					$data['next_prev_product'] = explode(",", $this->request->post['all_prod']);
+				} else {
+					$data['next_prev_product'] = array();
+				}
+				$this_item = $this->request->get['product_id'];
+				
+				$key_this = array_search($this_item, $data['next_prev_product']);
+			
+				
+					if(isset($data['next_prev_product'][$key_this + 1])) {
+						$nextprid = $data['next_prev_product'][$key_this + 1];
+					} else {
+						$nextprid = 0;
+					}
+					
+					if(isset($data['next_prev_product'][$key_this - 1])) {
+						$prevprid = $data['next_prev_product'][$key_this - 1];
+					} else {
+						$prevprid = 0;
+					}
+					$product_info_prev = $this->model_ns_newstore->getProduct($prevprid);
+					
+					if($product_info_prev){
+						$data['prev_product_id'] = $product_info_prev['product_id'];
+						$data['prev_name'] = $product_info_prev['name'];
+						if ($product_info_prev['image']) {
+							$data['prev_image'] = $this->model_tool_image->resize($product_info_prev['image'],110, 170);
+						} else {
+							$data['prev_image'] = $this->model_tool_image->resize('no_image.png', 110, 170);;
+						}
+						if (($this->config->get('config_customer_price') && $this->customer->isLogged()) || !$this->config->get('config_customer_price')) {
+							$data['prev_price'] = $this->currency->format($this->tax->calculate($product_info_prev['price'], $product_info_prev['tax_class_id'], $this->config->get('config_tax')), $this->session->data['currency']);
+						} else {
+							$data['prev_price'] = false;
+						}
+
+						if ((float)$product_info_prev['special']) {
+							$data['prev_special'] = $this->currency->format($this->tax->calculate($product_info_prev['special'], $product_info_prev['tax_class_id'], $this->config->get('config_tax')), $this->session->data['currency']);
+						} else {
+							$data['prev_special'] = false;
+						}
+					}
+
+					$product_info_next = $this->model_ns_newstore->getProduct($nextprid);
+					if($product_info_next){
+						$data['next_product_id'] = $product_info_next['product_id'];
+						$data['next_name'] = $product_info_next['name'];
+						if ($product_info_next['image']) {
+							$data['next_image'] = $this->model_tool_image->resize($product_info_next['image'],110, 170);
+						} else {
+							$data['next_image'] = $this->model_tool_image->resize('no_image.png', 110, 170);;
+						}
+						if (($this->config->get('config_customer_price') && $this->customer->isLogged()) || !$this->config->get('config_customer_price')) {
+							$data['next_price'] = $this->currency->format($this->tax->calculate($product_info_next['price'], $product_info_next['tax_class_id'], $this->config->get('config_tax')), $this->session->data['currency']);
+						} else {
+							$data['next_price'] = false;
+						}
+
+						if ((float)$product_info_next['special']) {
+							$data['next_special'] = $this->currency->format($this->tax->calculate($product_info_next['special'], $product_info_next['tax_class_id'], $this->config->get('config_tax')), $this->session->data['currency']);
+						} else {
+							$data['next_special'] = false;
+						}
+					}
+			
+			$this->model_catalog_product->updateViewed($this->request->post['quickview29']);
+			if (!isset($this->session->data['productviewed'])) {
+  				$this->session->data['productviewed'] = array();
+  			} else {
+  				$this->session->data['productviewed'][] = $this->request->post['quickview29'];
+  			}
+			$this->load->language('extension/module/quickviewpro');
+			$data['button_review'] = $this->language->get('button_review');
+			$data['tab_general_quickview'] = $this->language->get('tab_general_quickview');
+			$data['quantity_prod'] = $product_info['quantity'];
+			$data['on_off_quickview_additional_image'] = $this->config->get('config_quickview_additional_image');
+			$data['on_off_quickview_addtocart'] = $this->config->get('config_quickview_addtocart');
+			$data['on_off_quickview_wishlist'] = $this->config->get('config_quickview_wishlist');
+			$data['on_off_quickview_compare'] = $this->config->get('config_quickview_compare');
+			$data['on_off_quickview_tab_description'] = $this->config->get('config_quickview_tab_description');
+			$data['on_off_quickview_tab_specification'] = $this->config->get('config_quickview_tab_specification');
+			$data['on_off_quickview_tab_review_quickview'] = $this->config->get('config_quickview_tab_review_quickview');
+			$data['on_off_quickview_options_count'] = $this->config->get('config_quickview_options_count');
+			$data['on_off_quickview_manufacturer'] = $this->config->get('config_quickview_manufacturer');
+			$data['on_off_quickview_model'] = $this->config->get('config_quickview_model');
+			$data['on_off_quickview_quantity'] = $this->config->get('config_quickview_quantity');
+			$data['config_text_open_form_send_order'] = $this->config->get('config_text_open_form_send_order');
+			
+			$data['config_quickview_show_nextprev_product'] = $this->config->get('config_quickview_show_nextprev_product');
+			$data['config_quickview_background_btnaddtocart'] = $this->config->get('config_quickview_background_btnaddtocart');
+			$data['config_quickview_textcolor_btnaddtocart'] = $this->config->get('config_quickview_textcolor_btnaddtocart');
+			$data['config_quickview_background_btnwishlist'] = $this->config->get('config_quickview_background_btnwishlist');
+			$data['config_quickview_textcolor_btnwishlist'] = $this->config->get('config_quickview_textcolor_btnwishlist');
+			$data['config_quickview_background_btncompare'] = $this->config->get('config_quickview_background_btncompare');
+			$data['config_quickview_textcolor_btncompare'] = $this->config->get('config_quickview_textcolor_btncompare');
+			
+			$data['config_quickview_background_btnaddtocart_hover'] = $this->config->get('config_quickview_background_btnaddtocart_hover');
+			$data['config_quickview_textcolor_btnaddtocart_hover'] = $this->config->get('config_quickview_textcolor_btnaddtocart_hover');
+			$data['config_quickview_background_btnwishlist_hover'] = $this->config->get('config_quickview_background_btnwishlist_hover');
+			$data['config_quickview_textcolor_btnwishlist_hover'] = $this->config->get('config_quickview_textcolor_btnwishlist_hover');
+			$data['config_quickview_background_btncompare_hover'] = $this->config->get('config_quickview_background_btncompare_hover');
+			$data['config_quickview_textcolor_btncompare_hover'] = $this->config->get('config_quickview_textcolor_btncompare_hover');
+			}
+			if ($product_info['image']) {
+				$data['thumb_min'] = $this->model_tool_image->resize($product_info['image'], $this->config->get('theme_' . $this->config->get('config_theme') . '_image_additional_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_additional_height'));
+			} else {				
+				$data['thumb_min'] = '';
+			}
+			
+			if(isset($this->request->post['quickview29'])) {
+				$data['qucikviewmodule'] = $this->load->view('extension/module/quickviewpro', $data);
+			} else {
+				$data['qucikviewmodule'] = '';
+			}
+			
+			
+			]]></add>
+		</operation>
+		<operation>
+			<search><![CDATA[
+				$data['images'][] = array(
+			]]></search>
+			<add position='after'><![CDATA[
+			'thumb_hover' => $this->model_tool_image->resize($result['image'], $this->config->get('theme_' . $this->config->get('config_theme') . '_image_thumb_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_thumb_height')),
+			]]></add>
+		</operation>
+		<operation error="log">
+			<search ><![CDATA[$this->load->model('tool/image');]]></search>
+			<add position="after"><![CDATA[
+			if ((float)$product_info['special']) {
+				$data['special_date_end'] = $this->model_catalog_product->getDateEnd($product_id);
+			} else {
+				$data['special_date_end'] = false;
+			}
+			if((isset($product_info['date_available'])&&(round((strtotime(date("Y-m-d"))-strtotime($product_info['date_available']))/86400))<=$this->config->get('config_limit_day_newproduct'))) {
+				$data['sticker_new_prod'] = true;
+			} else {
+				$data['sticker_new_prod'] = false;
+			}
+			$data['show_special_timer_module'] = $this->config->get('config_show_special_timer_module');
+			$data['on_off_sticker_special'] = $this->config->get('on_off_sticker_special');
+			$data['config_change_icon_sticker_special'] = $this->config->get('config_change_icon_sticker_special');
+			$data['on_off_sticker_topbestseller'] = $this->config->get('on_off_sticker_topbestseller');
+			$data['config_limit_order_product_topbestseller'] = $this->config->get('config_limit_order_product_topbestseller');
+			$data['config_change_icon_sticker_topbestseller'] = $this->config->get('config_change_icon_sticker_topbestseller');
+			$data['on_off_sticker_popular'] = $this->config->get('on_off_sticker_popular');
+			$data['config_min_quantity_popular'] = $this->config->get('config_min_quantity_popular');
+			$data['config_change_icon_sticker_popular'] = $this->config->get('config_change_icon_sticker_popular');
+			$data['on_off_sticker_newproduct'] = $this->config->get('on_off_sticker_newproduct');
+			$data['config_limit_day_newproduct'] = $this->config->get('config_limit_day_newproduct');
+			$data['config_change_icon_sticker_newproduct'] = $this->config->get('config_change_icon_sticker_newproduct');
+			
+			$data['show_review_plus'] = $this->config->get('config_show_review_plus');
+			$data['show_review_plus_requared'] = $this->config->get('config_show_review_plus_requared');
+			$data['show_review_minus'] = $this->config->get('config_show_review_minus');
+			$data['show_review_minus_requared'] = $this->config->get('config_show_review_minus_requared');
+			$data['change_text_cart_button_out_of_stock'] = $this->config->get('config_change_text_cart_button_out_of_stock');	
+			$data['config_text_open_form_send_order'] = $this->config->get('config_text_open_form_send_order');	
+			$data['show_nsproduct_btn_fastorder'] = $this->config->get('config_show_nsproduct_btn_fastorder');	
+			$data['show_nsproduct_btn_wishlist'] = $this->config->get('config_show_nsproduct_btn_wishlist');	
+			$data['show_nsproduct_btn_compare'] = $this->config->get('config_show_nsproduct_btn_compare');	
+			$data['short_description_status'] = $this->config->get('config_short_description_status');	
+			$data['short_attribut_status'] = $this->config->get('config_short_attribut_status');	
+			$data['short_attribute_group_product'] = $this->config->get('config_short_attribute_group_product');	
+			$data['short_attribute_group_product_item'] = $this->config->get('config_short_attribute_group_product_item');	
+			$data['short_attribute_show_name'] = $this->config->get('config_short_attribute_show_name');	
+			$data['fix_left_block'] = $this->config->get('config_fix_left_block');	
+			$data['fix_right_block'] = $this->config->get('config_fix_right_block');
+			$this->load->model('ns/moduleonoff');
+			$data['ns_on_off_module_quick_order'] = $this->model_ns_moduleonoff->getQuickOrderModuleModification();
+			$this->load->language('ns/newstorelang');
+			$data['text_short_description'] = $this->language->get('text_short_description');
+			$data['text_readmore_desc'] = $this->language->get('text_readmore_desc');
+			$data['text_short_attribute'] = $this->language->get('text_short_attribute');
+			$data['text_see_all_attribute'] = $this->language->get('text_see_all_attribute');
+			$data['entry_plus'] = $this->language->get('entry_plus');
+			$data['entry_minus'] = $this->language->get('entry_minus');
+			$data['btn_add_new_review'] = $this->language->get('btn_add_new_review');
+			$data['currency_microdata'] = $this->session->data['currency'];
+			$data['availability'] = $product_info['quantity'] ? true : false;
+			$data['reviewCount'] = (int) $product_info['reviews'];
+			$data['ratingValue'] = $product_info['rating'];
+			$data['text_find_cheap'] = $this->language->get('text_find_cheap');	
+			$data['required_text_option'] = $this->language->get('required_text_option');
+			$data['days'] = $this->language->get('days');
+			$data['hours'] = $this->language->get('hours');
+			$data['minutes'] = $this->language->get('minutes');
+			$data['sec'] = $this->language->get('sec');
+			$data['ns_on_off_countdown_product'] = $this->config->get('config_on_off_countdown_product');
+			$data['ns_on_off_product_sharing_facebock'] = $this->config->get('config_on_off_product_sharing_facebock');
+			$data['ns_on_off_product_sharing_twitter'] = $this->config->get('config_on_off_product_sharing_twitter');
+			$data['ns_on_off_product_sharing_mailru'] = $this->config->get('config_on_off_product_sharing_mailru');
+			$data['ns_on_off_product_sharing_vk'] = $this->config->get('config_on_off_product_sharing_vk');
+			$data['ns_on_off_product_sharing_ok'] = $this->config->get('config_on_off_product_sharing_ok');
+			if(($data['ns_on_off_product_sharing_facebock'] == '1') || ($data['ns_on_off_product_sharing_twitter'] =='1') || ($data['ns_on_off_product_sharing_mailru'] =='1') || ($data['ns_on_off_product_sharing_vk'] =='1') || ($data['ns_on_off_product_sharing_ok'] =='1') ) {
+				$this->document->addScript('catalog/view/theme/newstore/js/social-likes/social-likes.min.js');
+				$this->document->addStyle('catalog/view/theme/newstore/js/social-likes/social-likes_birman.css');
+			}
+			$data['ns_options_hidden_count'] = $this->config->get('config_options_hidden_count');
+			$data['date_end'] = $product_info['date_end'];
+			$data['special_countdown_final'] = $this->language->get('special_countdown_final');
+			$data['text_special_hurry_quantity'] = $this->language->get('text_special_hurry_quantity');
+			$data['special_countdown_pcs'] = $this->language->get('special_countdown_pcs');
+			$data['text_facebook'] = $this->language->get('text_facebook');
+			$data['text_twitter'] = $this->language->get('text_twitter');
+			$data['text_facebook'] = $this->language->get('text_facebook');
+			$data['text_googleplus'] = $this->language->get('text_googleplus');
+			$data['text_mailru'] = $this->language->get('text_mailru');
+			$data['text_vk'] = $this->language->get('text_vk');
+			$data['text_ok'] = $this->language->get('text_ok');
+			$data['text_home_ns'] = $this->language->get('text_home_ns');
+			$data['lang_id'] = $this->config->get('config_language_id');
+			$data['text_sticker_special'] = $this->config->get('config_change_text_sticker_special'); //added
+			$data['text_sticker_newproduct'] = $this->config->get('config_change_text_sticker_newproduct'); //added
+			$data['text_sticker_popular'] = $this->config->get('config_change_text_sticker_popular'); //added
+			$data['text_sticker_topbestseller'] = $this->config->get('config_change_text_sticker_topbestseller'); //added
+			$top_best = $this->model_catalog_product->getTopSeller($this->request->get['product_id']);
+			$data['top_bestsellers'] = $top_best['total'];
+			$data['viewed'] = $product_info['viewed'];
+			$data['date_available'] = $product_info['date_available'];
+			if ((float)$product_info['special']) {
+				$price2 = $this->tax->calculate($product_info['price'], $product_info['tax_class_id'], $this->config->get('config_tax'));
+				$special2 = $this->tax->calculate($product_info['special'], $product_info['tax_class_id'], $this->config->get('config_tax'));
+				$skidka = $special2/($price2/100)-100;
+			} else {
+				$skidka = "";
+			}
+			$data['skidka'] = $skidka;
+			$data['stock_quantity_count'] = $product_info['quantity'];
+			if ($this->config->get('config_stock_display')) {
+				$data['stock_quantity'] = $product_info['quantity'];
+			} else {
+				$data['stock_quantity'] = 'not_display';
+			}
+			if ($product_info['quantity'] <= 0) {
+				$data['stock_status'] = $product_info['stock_status'];
+			} else {
+				$data['stock_status'] = $this->language->get('text_instock');
+			}
+			$data['disable_cart_button'] = $this->config->get('config_disable_cart_button');
+			$data['disable_fastorder_button'] = $this->config->get('config_disable_fastorder_button');
+			$data['product_quantity'] = $product_info['quantity'];
+			$data['config_status_zoom_image'] = $this->config->get('config_status_zoom_image');
+			if($data['config_status_zoom_image'] !='0') {
+				$this->document->addScript('catalog/view/theme/newstore/js/cloud-zoom/cloud-zoom.1.0.2.js');
+				$this->document->addStyle('catalog/view/theme/newstore/js/cloud-zoom/cloud-zoom.css');
+			}
+			$data['config_status_delivery_options'] = $this->config->get('config_status_delivery_options');
+			$data['config_delivery_options_title'] = $this->config->get('config_delivery_options_title');
+			$banner_delivery_option_items = $this->config->get('banner_delivery_option');
+			if(isset($banner_delivery_option_items)){
+				$banner_delivery_option = $this->config->get('banner_delivery_option');
+			} else {
+				$banner_delivery_option = array();
+			}
+			$data['banner_delivery_block'] = array();
+			foreach ($banner_delivery_option as $result) {
+				if(isset($result['popup'])){
+					$result_popup = $result['popup'];
+				} else {
+					$result_popup = '0';
+				}
+				$data['banner_delivery_block'][] = array(
+					'image' 		=> $this->model_tool_image->resize($result['image'], 50, 50),
+					'title' 		=> $result['title'],
+					'description' 	=> $result['description'],
+					'link'  		=> $result['link'],
+					'popup'  		=> $result_popup,
+					'sort'  		=> $result['sort']
+				);	
+			}
+			
+			if (!empty($data['banner_delivery_block'])){
+				foreach ($data['banner_delivery_block'] as $key => $value) {
+					$sort[$key] = $value['sort'];
+				} 
+				array_multisort($sort, SORT_ASC, $data['banner_delivery_block']);
+			}
+			$data['show_stock_status'] = $this->config->get('config_show_stock_status');
+				$config_disable_cart_button_text = $this->config->get('config_disable_cart_button_text');
+				if(!empty($config_disable_cart_button_text[$this->config->get('config_language_id')]['disable_cart_button_text'])){
+					$data['disable_cart_button_text'] = $config_disable_cart_button_text[$this->config->get('config_language_id')]['disable_cart_button_text'];
+				} else {
+					$data['disable_cart_button_text'] = $this->language->get('disable_cart_button_text');
+				}
+			]]></add>
+		</operation>
+		<operation>
+			<search><![CDATA[$data['products'][] = array(]]></search>
+			<add position="before"><![CDATA[			
+			$top_bestsellers = $this->model_catalog_product->getTopSeller($result['product_id']);
+			$results_img = $this->model_catalog_product->getProductImages($result['product_id']);
+			$additional_image_hover = '';
+			$additional_image_hover_on_off = $this->config->get('config_on_off_latest_slider_additional_image');
+			if($additional_image_hover_on_off =='2'){
+				foreach ($results_img as $key => $result_img) {
+					if ($key < 1) {
+						$additional_image_hover = $this->model_tool_image->resize($result_img['image'], $this->config->get('theme_' . $this->config->get('config_theme') . '_image_product_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_product_height'));		
+					}
+				}
+			}
+			if ((float)$result['special']) {
+				$price2 = $this->tax->calculate($result['price'], $result['tax_class_id'], $this->config->get('config_tax'));
+				$special2 = $this->tax->calculate($result['special'], $result['tax_class_id'], $this->config->get('config_tax'));
+				$skidka = $special2/($price2/100)-100;
+			} else {
+				$skidka = "";
+			}
+			$product_quantity = $result['quantity'];
+			$stock_status = $result['stock_status'];
+			if ((float)$result['special']) {
+				$special_date_end = $this->model_catalog_product->getDateEnd($result['product_id']);
+			} else {
+				$special_date_end = false;
+			}
+			]]></add>
+		</operation>
+		<operation>
+			<search><![CDATA['name'        => $result['name'],]]></search>
+			<add position="after"><![CDATA[
+			'reviews'    				=> sprintf((int)$result['reviews']),
+			'date_end'	 				=> $special_date_end,
+			'additional_image_hover' 	=> $additional_image_hover,
+			'product_quantity' 			=> $product_quantity,
+			'stock_status' 				=> $stock_status,
+			'skidka'     				=> $skidka,
+			'model'     				=> $result['model'],
+			'date_available'			=> $result['date_available'],
+			'viewed'	 				=> $result['viewed'],
+			'top_bestsellers'	 		=> $top_bestsellers['total'],
+			]]></add>
+		</operation>
+	</file>
+	<file path="catalog/controller/product/category.php">
+		<operation error="log">
+				<search ><![CDATA[$this->load->language('product/category');]]></search>
+				<add position="after"><![CDATA[
+				$data['show_attr_cpage'] = $this->config->get('show_attr_cpage');
+				$data['cpage_attr_group_count'] = $this->config->get('cpage_attr_group_count');
+				$data['cpage_attr_group_item_count'] = $this->config->get('cpage_attr_group_item_count');
+				$data['show_subcategories'] = $this->config->get('show_subcategories');
+				$data['menu_open_category'] = $this->config->get('config_menu_open_category');
+				$data['main_menu'] = $this->config->get('config_main_menu_selection');
+				$data['on_off_sticker_special'] = $this->config->get('on_off_sticker_special');
+				$data['config_change_icon_sticker_special'] = $this->config->get('config_change_icon_sticker_special');
+				$data['on_off_sticker_topbestseller'] = $this->config->get('on_off_sticker_topbestseller');
+				$data['config_limit_order_product_topbestseller'] = $this->config->get('config_limit_order_product_topbestseller');
+				$data['config_change_icon_sticker_topbestseller'] = $this->config->get('config_change_icon_sticker_topbestseller');
+				$data['on_off_sticker_popular'] = $this->config->get('on_off_sticker_popular');
+				$data['config_min_quantity_popular'] = $this->config->get('config_min_quantity_popular');
+				$data['config_change_icon_sticker_popular'] = $this->config->get('config_change_icon_sticker_popular');
+				$data['on_off_sticker_newproduct'] = $this->config->get('on_off_sticker_newproduct');
+				$data['config_limit_day_newproduct'] = $this->config->get('config_limit_day_newproduct');
+				$data['config_change_icon_sticker_newproduct'] = $this->config->get('config_change_icon_sticker_newproduct');
+				$data['ns_on_off_category_page_slider_additional_image_script'] = $this->config->get('config_on_off_category_page_slider_additional_image');
+				/*on_off*/
+				$this->load->model('ns/moduleonoff');
+				$data['ns_on_off_module_quick_order'] = $this->model_ns_moduleonoff->getQuickOrderModuleModification();
+				$this->load->language('ns/newstorelang');
+				$data['lang_id'] = $this->config->get('config_language_id');
+				$data['text_sticker_special'] = $this->config->get('config_change_text_sticker_special'); //added
+				$data['text_sticker_newproduct'] = $this->config->get('config_change_text_sticker_newproduct'); //added
+				$data['text_sticker_popular'] = $this->config->get('config_change_text_sticker_popular'); //added
+				$data['text_sticker_topbestseller'] = $this->config->get('config_change_text_sticker_topbestseller'); //added
+				$data['ns_on_off_category_page_model_product'] = $this->config->get('config_on_off_category_page_model_product'); //added	
+				$data['ns_on_off_category_page_description'] = $this->config->get('config_on_off_category_page_description'); //added	
+				$data['ns_on_off_category_page_slider_additional_image'] = $this->config->get('config_on_off_category_page_slider_additional_image'); //added	
+				$data['ns_select_category_page_additional_animate_method'] = $this->config->get('config_select_category_page_additional_animate_method'); //added	
+				$data['ns_on_off_category_page_rating'] = $this->config->get('config_on_off_category_page_rating'); //added	
+				$data['ns_on_off_category_page_quantity_reviews'] = $this->config->get('config_on_off_category_page_quantity_reviews'); //added	
+				$data['ns_on_off_category_page_fastorder'] = $this->config->get('config_on_off_category_page_fastorder'); //added	
+				$data['ns_on_off_category_page_wishlist'] = $this->config->get('config_on_off_category_page_wishlist'); //added	
+				$data['ns_on_off_category_page_compare'] = $this->config->get('config_on_off_category_page_compare'); //added
+				$this->language->load('product/product');
+				$data['icon_send_fastorder'] = $this->config->get('config_icon_send_fastorder');
+				$data['background_button_send_fastorder'] = $this->config->get('config_background_button_send_fastorder');
+				$data['background_button_open_form_send_order_hover'] = $this->config->get('config_background_button_open_form_send_order_hover');
+				$data['background_button_send_fastorder_hover'] = $this->config->get('config_background_button_send_fastorder_hover');
+				$data['background_button_open_form_send_order'] = $this->config->get('config_background_button_open_form_send_order');
+				$data['icon_open_form_send_order'] = $this->config->get('config_icon_open_form_send_order');
+				$data['icon_open_form_send_order_size'] = $this->config->get('config_icon_open_form_send_order_size');
+				$data['color_button_open_form_send_order'] = $this->config->get('config_color_button_open_form_send_order');
+				$data['config_text_open_form_send_order'] = $this->config->get('config_text_open_form_send_order');
+				$data['lang_id'] = $this->config->get('config_language_id');
+				$data['text_reviews_title'] = $this->language->get('text_reviews_title');//added
+				$data['button_price'] = $this->language->get('button_price');//added
+				$data['config_quickview_btn_name'] = $this->config->get('config_quickview_btn_name');
+				$data['config_price_list_view_on_off'] = $this->config->get('config_price_list_view_on_off');
+				$data['config_catalog_category_description_dropped'] = $this->config->get('config_catalog_category_description_dropped');
+				$data['config_on_off_category_page_quickview'] = $this->config->get('config_on_off_category_page_quickview');
+				$data['show_stock_status'] = $this->config->get('config_show_stock_status');
+				$config_disable_cart_button_text = $this->config->get('config_disable_cart_button_text');
+				if(!empty($config_disable_cart_button_text[$this->config->get('config_language_id')]['disable_cart_button_text'])){
+					$data['disable_cart_button_text'] = $config_disable_cart_button_text[$this->config->get('config_language_id')]['disable_cart_button_text'];
+				} else {
+					$data['disable_cart_button_text'] = $this->language->get('disable_cart_button_text');
+				}
+				$config_theme = $this->config->get('config_theme');
+				$theme_default_directory = $this->config->get('theme_default_directory');
+				$ns_theme_home_page_sheme = $this->config->get('ns_new_category_layout_module');
+				$modules_newstore = array();
+				if (isset($ns_theme_home_page_sheme)) {
+					$modules_newstore = $this->config->get('ns_new_category_layout_module');
+				} else {
+					$modules_newstore = array();
+				}
+				if(!empty($modules_newstore)){
+				if(($config_theme == 'newstore') || ($theme_default_directory =='newstore')){
+					foreach ($modules_newstore as $module) {
+						if($module['position'] == 'position_1') {
+							$data['newstorecat_pos1'] = $this->load->controller('common/catsheme/newstore_pos1');
+						}
+						if($module['position'] == 'position_2') {
+							$data['newstorecat_pos2'] = $this->load->controller('common/catsheme/newstore_pos2');
+						}
+						if($module['position'] == 'position_3') {
+							$data['newstorecat_pos3'] = $this->load->controller('common/catsheme/newstore_pos3');
+						}
+						if($module['position'] == 'position_4') {
+							$data['newstorecat_pos4'] = $this->load->controller('common/catsheme/newstore_pos4');
+						}
+						if($module['position'] == 'position_5') {
+							$data['newstorecat_pos5'] = $this->load->controller('common/catsheme/newstore_pos5');
+						}
+						if($module['position'] == 'position_6') {
+							$data['newstorecat_pos6'] = $this->load->controller('common/catsheme/newstore_pos6');
+						}
+						if($module['position'] == 'position_7') {
+							$data['newstorecat_pos7'] = $this->load->controller('common/catsheme/newstore_pos7');
+						}
+						if($module['position'] == 'position_8') {
+							$data['newstorecat_pos8'] = $this->load->controller('common/catsheme/newstore_pos8');
+						}
+						if($module['position'] == 'position_9') {
+							$data['newstorecat_pos9'] = $this->load->controller('common/catsheme/newstore_pos9');
+						}
+						if($module['position'] == 'position_10') {
+							$data['newstorecat_pos10'] = $this->load->controller('common/catsheme/newstore_pos10');
+						}
+						if($module['position'] == 'position_11') {
+							$data['newstorecat_pos11'] = $this->load->controller('common/catsheme/newstore_pos11');
+						}
+					}
+				}
+				}
+				]]></add>
+		</operation>	
+		<operation error="log">
+				<search ><![CDATA[$data['categories'][] = array(]]></search>
+				<add position="after"><![CDATA[
+				'thumb' => $this->model_tool_image->resize(($result['image']=='' ? 'no_image.png' : $result['image']), $this->config->get('ns_subcat_width') ? $this->config->get('ns_subcat_width') : 60 , $this->config->get('ns_subcat_height') ? $this->config->get('ns_subcat_height') : 60),
+				]]></add>
+		</operation>
+		<operation error="log">
+			<search ><![CDATA[$data['products'][] = array(]]></search>
+			<add position="before"><![CDATA[
+			$results_img = $this->model_catalog_product->getProductImages($result['product_id']);
+			$additional_img = array();
+			foreach ($results_img as $result_img) {
+				if ($result_img['image']) {	
+					$image_additional = $this->model_tool_image->resize($result_img['image'], $this->config->get('theme_' . $this->config->get('config_theme') . '_image_product_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_product_height'));
+				} else {
+					$image_additional = false;
+				}
+			$additional_img[] = $image_additional;
+			}
+			$additional_image_hover = '';
+			$additional_image_hover_on_off = $this->config->get('config_on_off_category_page_slider_additional_image');
+			if($additional_image_hover_on_off =='2'){
+				foreach ($results_img as $key => $result_img) {
+					if ($key < 1) {
+						$additional_image_hover = $this->model_tool_image->resize($result_img['image'], $this->config->get('theme_' . $this->config->get('config_theme') . '_image_product_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_product_height'));	
+					}
+				}
+			}
+			if ((float)$result['special']) {
+				$price2 = $this->tax->calculate($result['price'], $result['tax_class_id'], $this->config->get('config_tax'));
+				$special2 = $this->tax->calculate($result['special'], $result['tax_class_id'], $this->config->get('config_tax'));
+				$skidka = $special2/($price2/100)-100;
+			} else {
+				$skidka = "";
+			}
+			$top_bestsellers = $this->model_catalog_product->getTopSeller($result['product_id']);
+			
+			$data['disable_cart_button'] = $this->config->get('config_disable_cart_button'); //added
+			$data['disable_fastorder_button'] = $this->config->get('config_disable_fastorder_button'); //added
+			$product_quantity = $result['quantity'];
+			$stock_status = $result['stock_status'];
+			
+				if (($this->config->get('config_customer_price') && $this->customer->isLogged()) || !$this->config->get('config_customer_price')) {
+					$price_no_format = $this->tax->calculate($result['price'], $result['tax_class_id'], $this->config->get('config_tax'));
+				} else {
+					$price_no_format = false;
+				}
+
+				if ((float)$result['special']) {
+					$special_no_format = $this->tax->calculate($result['special'], $result['tax_class_id'], $this->config->get('config_tax'));
+				} else {
+					$special_no_format = false;
+				}
+				
+				$attribute_groups = $this->model_catalog_product->getProductAttributes($result['product_id']);
+	]]></add>
+		</operation>
+		<operation error="log">
+			<search ><![CDATA[$data['products'][] = array(]]></search>
+			<add position="after"><![CDATA[	
+			'attribute_groups' => $attribute_groups,
+			'price_no_format' 	=> $price_no_format,
+			'special_no_format' => $special_no_format,			
+			'product_quantity' 	=> $product_quantity,
+			'stock_status' 		=> $stock_status,
+			'additional_img' 	=> $additional_img,
+			'reviews'    		=> sprintf((int)$result['reviews']),
+			'skidka'     		=> round($skidka),
+			'model'     		=> $result['model'],
+			'date_available'	=> $result['date_available'],
+			'viewed'	 		=> $result['viewed'],
+			'top_bestsellers'	=> $top_bestsellers['total'], 
+			'additional_image_hover' 	=> $additional_image_hover,
+	]]></add>
+		</operation>	
+	</file>
+	<file path="catalog/controller/product/{category,special,search,manufacturer}.php">
+	<operation error="log">
+		<search><![CDATA[$data['breadcrumbs'] = array();]]></search>
+		<add position="before"><![CDATA[	
+			$data['nst_data'] = $this->config->get('nst_data');
+			if(isset($data['nst_data']['lazyload_page']) && ($data['nst_data']['lazyload_page'] == 1)){
+				$data['lazyload_page'] = true;
+				if (isset($data['nst_data']['lazyload_image']) && ($data['nst_data']['lazyload_image'] !='')) {
+					$data['lazy_image'] = 'image/' . $data['nst_data']['lazyload_image'];
+				} else {
+					$data['lazy_image'] = 'image/catalog/lazyload/lazyload.jpg';
+				}
+			} else {
+				$data['lazyload_page'] = false;
+			}
+			$data['text_home_ns'] = $this->language->get('text_home_ns');
+			$data['text_select'] = $this->language->get('text_select');	
+			$data['config_additional_settings_newstore'] = $this->config->get('config_additional_settings_newstore');
+			$data['required_text_option'] = $this->config->get('required_text_option');	
+			$data['change_text_cart_button_out_of_stock'] = $this->config->get('config_change_text_cart_button_out_of_stock');	
+			$data['show_special_timer_page'] = $this->config->get('config_show_special_timer_page');
+			$data['disable_cart_button'] = $this->config->get('config_disable_cart_button');
+			$data['disable_fastorder_button'] = $this->config->get('config_disable_fastorder_button');			
+		]]></add>
+	</operation>
+	<operation error="log">
+		<search><![CDATA[$data['products'][] = array(]]></search>
+		<add position="before"><![CDATA[
+			$this->load->model('tool/image');
+					if (VERSION >= 2.2) {
+						$currency = $this->session->data['currency'];
+					} else {
+						$currency = '';
+					}
+					if ((float)$result['special']) {
+						$special_date_end = $this->model_catalog_product->getDateEnd($result['product_id']);
+					} else {
+						$special_date_end = false;
+					}
+					if((isset($result['date_available'])&&(round((strtotime(date("Y-m-d"))-strtotime($result['date_available']))/86400))<=$this->config->get('config_limit_day_newproduct'))) {
+						$sticker_new_prod = true;
+					} else {
+						$sticker_new_prod = false;
+					}
+					
+					$options = array();
+					$data['show_options'] = $this->config->get('config_show_options_page');
+					$show_options_required_featured = $this->config->get('config_show_options_required_page');
+				if ($data['show_options']==1) {
+					foreach ($this->model_catalog_product->getProductOptions($result['product_id']) as $option) {
+						$product_option_value_data = array();
+
+						foreach ($option['product_option_value'] as $option_value) {
+							if (!$option_value['subtract'] || ($option_value['quantity'] > 0)) {
+								if ((($this->config->get('config_customer_price') && $this->customer->isLogged()) || !$this->config->get('config_customer_price')) && (float)$option_value['price']) {
+									$option_price = $this->currency->format($this->tax->calculate($option_value['price'], $result['tax_class_id'], $this->config->get('config_tax') ? 'P' : false), $currency);
+								} else {
+									$option_price = false;
+								}
+
+								$product_option_value_data[] = array(
+									'product_option_value_id' => $option_value['product_option_value_id'],
+									'option_value_id'         => $option_value['option_value_id'],
+									'name'                    => $option_value['name'],
+									'color'                   => $option_value['color'],
+									'image'                   => $option_value['image'] ? $this->model_tool_image->resize($option_value['image'], 50, 50) : '',
+									'price'                   => $option_price,
+									'price_value'             => $this->tax->calculate($option_value['price'], $result['tax_class_id'], $this->config->get('config_tax') ? 'P' : false),
+									'price_prefix'            => $option_value['price_prefix']
+								);
+							}
+						}
+						if($show_options_required_featured ==1) {
+							if($option['required']) {
+								$options[] = array(
+									'product_option_id'    => $option['product_option_id'],
+									'product_option_value' => $product_option_value_data,
+									'option_id'            => $option['option_id'],
+									'name'                 => $option['name'],
+									'type'                 => $option['type'],
+									'status_color_type'    => $option['status_color_type'],
+									'value'                => $option['value'],
+									'required'             => $option['required']
+								);
+							}
+						} else {
+							$options[] = array(
+								'product_option_id'    => $option['product_option_id'],
+								'product_option_value' => $product_option_value_data,
+								'option_id'            => $option['option_id'],
+								'name'                 => $option['name'],
+								'type'                 => $option['type'],
+								'status_color_type'    => $option['status_color_type'],
+								'value'                => $option['value'],
+								'required'             => $option['required']
+							);
+						}
+					}
+				}
+		]]></add>
+	</operation>
+	<operation error="log">
+		<search><![CDATA[$data['products'][] = array(]]></search>
+		<add position="after"><![CDATA[
+			'sticker_new_prod' => $sticker_new_prod,
+			'options'	  => $options,
+			'date_end'	  => $special_date_end,
+		]]></add>
+	</operation>	
+	</file>
+	<file path="catalog/controller/product/special.php">
+		<operation error="log">
+			<search ><![CDATA[$this->load->language('product/special');]]></search>
+			<add position="after"><![CDATA[
+			$data['menu_open_special'] = $this->config->get('config_menu_open_special');
+			$data['main_menu'] = $this->config->get('config_main_menu_selection');
+			$data['on_off_sticker_special'] = $this->config->get('on_off_sticker_special');
+			$data['config_change_icon_sticker_special'] = $this->config->get('config_change_icon_sticker_special');
+			$data['on_off_sticker_topbestseller'] = $this->config->get('on_off_sticker_topbestseller');
+			$data['config_limit_order_product_topbestseller'] = $this->config->get('config_limit_order_product_topbestseller');
+			$data['config_change_icon_sticker_topbestseller'] = $this->config->get('config_change_icon_sticker_topbestseller');
+			$data['on_off_sticker_popular'] = $this->config->get('on_off_sticker_popular');
+			$data['config_min_quantity_popular'] = $this->config->get('config_min_quantity_popular');
+			$data['config_change_icon_sticker_popular'] = $this->config->get('config_change_icon_sticker_popular');
+			$data['on_off_sticker_newproduct'] = $this->config->get('on_off_sticker_newproduct');
+			$data['config_limit_day_newproduct'] = $this->config->get('config_limit_day_newproduct');
+			$data['config_change_icon_sticker_newproduct'] = $this->config->get('config_change_icon_sticker_newproduct');
+			$data['config_ns_on_off_special_page_slider_additional_image'] = $this->config->get('config_ns_on_off_special_page_slider_additional_image');
+			$this->load->model('ns/moduleonoff');
+			$data['ns_on_off_module_quick_order'] = $this->model_ns_moduleonoff->getQuickOrderModuleModification();
+			$this->load->language('ns/newstorelang');
+			$data['lang_id'] = $this->config->get('config_language_id');
+			$data['text_sticker_special'] = $this->config->get('config_change_text_sticker_special'); 
+			$data['text_sticker_newproduct'] = $this->config->get('config_change_text_sticker_newproduct'); 
+			$data['text_sticker_popular'] = $this->config->get('config_change_text_sticker_popular');
+			$data['text_sticker_topbestseller'] = $this->config->get('config_change_text_sticker_topbestseller'); 
+			/*on_off*/
+			$data['ns_on_off_special_page_model_product'] = $this->config->get('config_on_off_special_page_model_product'); 	
+			$data['ns_on_off_special_page_description'] = $this->config->get('config_on_off_special_page_description'); 	
+			$data['ns_on_off_special_page_slider_additional_image'] = $this->config->get('config_on_off_special_page_slider_additional_image'); 	
+			$data['ns_select_special_page_additional_animate_method'] = $this->config->get('config_select_special_page_additional_animate_method'); 	
+			$data['ns_on_off_special_page_rating'] = $this->config->get('config_on_off_special_page_rating'); 	
+			$data['ns_on_off_special_page_quantity_reviews'] = $this->config->get('config_on_off_special_page_quantity_reviews');	
+			$data['ns_on_off_special_page_fastorder'] = $this->config->get('config_on_off_special_page_fastorder');	
+			$data['ns_on_off_special_page_wishlist'] = $this->config->get('config_on_off_special_page_wishlist');	
+			$data['ns_on_off_special_page_compare'] = $this->config->get('config_on_off_special_page_compare');	
+			/*-----*/
+			$this->language->load('product/product');
+			$data['icon_send_fastorder'] = $this->config->get('config_icon_send_fastorder');
+			$data['background_button_send_fastorder'] = $this->config->get('config_background_button_send_fastorder');
+			$data['background_button_open_form_send_order_hover'] = $this->config->get('config_background_button_open_form_send_order_hover');
+			$data['background_button_send_fastorder_hover'] = $this->config->get('config_background_button_send_fastorder_hover');
+			$data['background_button_open_form_send_order'] = $this->config->get('config_background_button_open_form_send_order');
+			$data['icon_open_form_send_order'] = $this->config->get('config_icon_open_form_send_order');
+			$data['icon_open_form_send_order_size'] = $this->config->get('config_icon_open_form_send_order_size');
+			$data['color_button_open_form_send_order'] = $this->config->get('config_color_button_open_form_send_order');
+			$data['config_text_open_form_send_order'] = $this->config->get('config_text_open_form_send_order');
+			$data['lang_id'] = $this->config->get('config_language_id');
+			$data['text_reviews_title'] = $this->language->get('text_reviews_title');//added
+			$data['config_quickview_btn_name'] = $this->config->get('config_quickview_btn_name');
+			$data['config_price_list_view_on_off'] = $this->config->get('config_price_list_view_on_off');
+			$data['button_price'] = $this->language->get('button_price');//added
+			$data['config_on_off_special_page_quickview'] = $this->config->get('config_on_off_special_page_quickview');
+			$data['config_price_list_view_on_off_search_page'] = $this->config->get('config_price_list_view_on_off_search_page');
+			$data['show_stock_status'] = $this->config->get('config_show_stock_status');
+			$data['config_price_list_view_on_off_special_page'] = $this->config->get('config_price_list_view_on_off_special_page');
+			$config_disable_cart_button_text = $this->config->get('config_disable_cart_button_text');
+				if(!empty($config_disable_cart_button_text[$this->config->get('config_language_id')]['disable_cart_button_text'])){
+					$data['disable_cart_button_text'] = $config_disable_cart_button_text[$this->config->get('config_language_id')]['disable_cart_button_text'];
+				} else {
+					$data['disable_cart_button_text'] = $this->language->get('disable_cart_button_text');
+				}
+		]]></add>
+		</operation>
+		<operation error="log">
+			<search ><![CDATA[$data['products'][] = array(]]></search>
+			<add position="before"><![CDATA[
+			$results_img = $this->model_catalog_product->getProductImages($result['product_id']);
+			$additional_img = array();
+			foreach ($results_img as $result_img) {
+				if ($result_img['image']) {	
+					$image_additional = $this->model_tool_image->resize($result_img['image'], $this->config->get('theme_' . $this->config->get('config_theme') . '_image_product_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_product_height'));
+				} else {
+					$image_additional = false;
+				}
+			$additional_img[] = $image_additional;
+			}
+			$additional_image_hover = '';
+			$additional_image_hover_on_off = $this->config->get('config_on_off_special_page_slider_additional_image');
+			if($additional_image_hover_on_off =='2'){
+				foreach ($results_img as $key => $result_img) {
+					if ($key < 1) {
+						$additional_image_hover = $this->model_tool_image->resize($result_img['image'], $this->config->get('theme_' . $this->config->get('config_theme') . '_image_product_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_product_height'));	
+					}
+				}
+			}
+			if ((float)$result['special']) {
+				$price2 = $this->tax->calculate($result['price'], $result['tax_class_id'], $this->config->get('config_tax'));
+				$special2 = $this->tax->calculate($result['special'], $result['tax_class_id'], $this->config->get('config_tax'));
+				$skidka = $special2/($price2/100)-100;
+			} else {
+				$skidka = "";
+			}
+			if (($this->config->get('config_customer_price') && $this->customer->isLogged()) || !$this->config->get('config_customer_price')) {
+					$price_no_format = $this->tax->calculate($result['price'], $result['tax_class_id'], $this->config->get('config_tax'));
+				} else {
+					$price_no_format = false;
+				}
+
+				if ((float)$result['special']) {
+					$special_no_format = $this->tax->calculate($result['special'], $result['tax_class_id'], $this->config->get('config_tax'));
+				} else {
+					$special_no_format = false;
+				}
+				
+				$var_currency = array();
+				$var_currency['value'] = $this->currency->getValue($this->session->data['currency']);
+				$var_currency['symbol_left'] = $this->currency->getSymbolLeft($this->session->data['currency']);
+				$var_currency['symbol_right'] = $this->currency->getSymbolRight($this->session->data['currency']);
+				$var_currency['currency_code'] = $this->session->data['currency'];
+				$var_currency['decimals'] = $this->currency->getDecimalPlace($this->session->data['currency']);
+				$var_currency['decimal_point'] = $this->language->get('decimal_point');
+				$var_currency['thousand_point'] = $this->language->get('thousand_point');
+				$data['currency'] = $var_currency;
+				$top_bestsellers = $this->model_catalog_product->getTopSeller($result['product_id']);
+				$product_quantity = $result['quantity'];
+				$stock_status = $result['stock_status'];
+	]]></add>
+		</operation>
+		<operation error="log">
+			<search ><![CDATA[$data['products'][] = array(]]></search>
+			<add position="after"><![CDATA[
+			'price_no_format' 		=> $price_no_format,
+			'special_no_format' 	=> $special_no_format,	
+			'product_quantity' 		=> $product_quantity,
+			'stock_status' 			=> $stock_status,
+			'additional_img' 		=> $additional_img,
+			'additional_image_hover' => $additional_image_hover,
+			'reviews'    			=> sprintf((int)$result['reviews']),
+			'skidka'     			=> round($skidka),
+			'model'     			=> $result['model'],
+			'date_available'		=> $result['date_available'],
+			'viewed'	 			=> $result['viewed'],
+			'top_bestsellers'	 	=> $top_bestsellers['total'],
+			
+	]]></add>
+		</operation>	
+	</file>
+	<file path="catalog/controller/product/manufacturer.php">
+		<operation error="log">
+            <search ><![CDATA[$data['categories'][$key]['manufacturer'][] = array(]]></search>
+            <add position="before"><![CDATA[
+            if ($result['image']) {
+                $image = $this->model_tool_image->resize($result['image'], 100, 100);
+            } else {
+                $image = '';
+            }
+		]]></add>
+        </operation>
+        <operation error="log">
+            <search ><![CDATA[$data['categories'][$key]['manufacturer'][] = array(]]></search>
+            <add position="after"><![CDATA[
+            'image' => $image,
+		]]></add>
+        </operation>
+		<operation>
+			<search index="0"><![CDATA[$this->load->language('product/manufacturer');]]></search>
+			<add position="before"><![CDATA[
+			$this->load->language('ns/newstorelang');
+			$data['text_home_ns'] = $this->language->get('text_home_ns');
+			$data['show_image_brand'] = (!empty($this->config->get('show_image_brand')) ? 1 : 0);
+		]]></add>
+		</operation>
+		<operation error="log">
+			<search index="1"><![CDATA[$this->load->language('product/manufacturer');]]></search>
+			<add position="after"><![CDATA[
+			$data['menu_open_manufacturer'] = $this->config->get('config_menu_open_manufacturer');
+			$data['main_menu'] = $this->config->get('config_main_menu_selection');
+			$data['on_off_sticker_special'] = $this->config->get('on_off_sticker_special');
+			$data['config_change_icon_sticker_special'] = $this->config->get('config_change_icon_sticker_special');
+			$data['on_off_sticker_topbestseller'] = $this->config->get('on_off_sticker_topbestseller');
+			$data['config_limit_order_product_topbestseller'] = $this->config->get('config_limit_order_product_topbestseller');
+			$data['config_change_icon_sticker_topbestseller'] = $this->config->get('config_change_icon_sticker_topbestseller');
+			$data['on_off_sticker_popular'] = $this->config->get('on_off_sticker_popular');
+			$data['config_min_quantity_popular'] = $this->config->get('config_min_quantity_popular');
+			$data['config_change_icon_sticker_popular'] = $this->config->get('config_change_icon_sticker_popular');
+			$data['on_off_sticker_newproduct'] = $this->config->get('on_off_sticker_newproduct');
+			$data['config_limit_day_newproduct'] = $this->config->get('config_limit_day_newproduct');
+			$data['config_change_icon_sticker_newproduct'] = $this->config->get('config_change_icon_sticker_newproduct');
+			$this->load->model('ns/moduleonoff');
+			$data['ns_on_off_module_quick_order'] = $this->model_ns_moduleonoff->getQuickOrderModuleModification();
+			$this->load->language('ns/newstorelang');
+			$data['lang_id'] = $this->config->get('config_language_id');
+			$data['text_sticker_special'] = $this->config->get('config_change_text_sticker_special');
+			$data['text_sticker_newproduct'] = $this->config->get('config_change_text_sticker_newproduct');
+			$data['text_sticker_popular'] = $this->config->get('config_change_text_sticker_popular');
+			$data['text_sticker_topbestseller'] = $this->config->get('config_change_text_sticker_topbestseller');
+			/*on_off*/
+			$data['ns_on_off_manufacturer_page_model_product'] = $this->config->get('config_on_off_manufacturer_page_model_product');	
+			$data['ns_on_off_manufacturer_page_description'] = $this->config->get('config_on_off_manufacturer_page_description');	
+			$data['ns_on_off_manufacturer_page_slider_additional_image'] = $this->config->get('config_on_off_manufacturer_page_slider_additional_image');	
+			$data['ns_select_manufacturer_page_additional_animate_method'] = $this->config->get('config_select_manufacturer_page_additional_animate_method');	
+			$data['ns_on_off_manufacturer_page_rating'] = $this->config->get('config_on_off_manufacturer_page_rating');	
+			$data['ns_on_off_manufacturer_page_quantity_reviews'] = $this->config->get('config_on_off_manufacturer_page_quantity_reviews');	
+			$data['ns_on_off_manufacturer_page_fastorder'] = $this->config->get('config_on_off_manufacturer_page_fastorder');	
+			$data['ns_on_off_manufacturer_page_wishlist'] = $this->config->get('config_on_off_manufacturer_page_wishlist');	
+			$data['ns_on_off_manufacturer_page_compare'] = $this->config->get('config_on_off_manufacturer_page_compare');	
+			/*-----*/
+			$this->language->load('product/product');
+			$data['icon_send_fastorder'] = $this->config->get('config_icon_send_fastorder');
+			$data['background_button_send_fastorder'] = $this->config->get('config_background_button_send_fastorder');
+			$data['background_button_open_form_send_order_hover'] = $this->config->get('config_background_button_open_form_send_order_hover');
+			$data['background_button_send_fastorder_hover'] = $this->config->get('config_background_button_send_fastorder_hover');
+			$data['background_button_open_form_send_order'] = $this->config->get('config_background_button_open_form_send_order');
+			$data['icon_open_form_send_order'] = $this->config->get('config_icon_open_form_send_order');
+			$data['icon_open_form_send_order_size'] = $this->config->get('config_icon_open_form_send_order_size');
+			$data['color_button_open_form_send_order'] = $this->config->get('config_color_button_open_form_send_order');
+			$data['config_text_open_form_send_order'] = $this->config->get('config_text_open_form_send_order');
+			$data['lang_id'] = $this->config->get('config_language_id');
+			$data['text_reviews_title'] = $this->language->get('text_reviews_title');
+			$data['config_quickview_btn_name'] = $this->config->get('config_quickview_btn_name');
+			$data['config_on_off_manufacturer_page_quickview'] = $this->config->get('config_on_off_manufacturer_page_quickview');
+			$data['button_price'] = $this->language->get('button_price');
+			$data['config_price_list_view_on_off'] = $this->config->get('config_price_list_view_on_off');
+			$data['config_price_list_view_on_off_manufacturer_page'] = $this->config->get('config_price_list_view_on_off_manufacturer_page');
+			$data['show_stock_status'] = $this->config->get('config_show_stock_status');
+				$config_disable_cart_button_text = $this->config->get('config_disable_cart_button_text');
+				if(!empty($config_disable_cart_button_text[$this->config->get('config_language_id')]['disable_cart_button_text'])){
+					$data['disable_cart_button_text'] = $config_disable_cart_button_text[$this->config->get('config_language_id')]['disable_cart_button_text'];
+				} else {
+					$data['disable_cart_button_text'] = $this->language->get('disable_cart_button_text');
+				}
+	]]></add>
+		</operation>
+		<operation error="log">
+			<search ><![CDATA[$data['products'][] = array(]]></search>
+			<add position="before"><![CDATA[			
+			$results_img = $this->model_catalog_product->getProductImages($result['product_id']);
+			$additional_img = array();
+			foreach ($results_img as $result_img) {
+				if ($result_img['image']) {	
+					$image_additional = $this->model_tool_image->resize($result_img['image'],$this->config->get('theme_' . $this->config->get('config_theme') . '_image_product_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_product_height'));
+				} else {
+					$image_additional = false;
+				}
+			$additional_img[] = $image_additional;
+			}
+			$additional_image_hover = '';
+			$additional_image_hover_on_off = $this->config->get('config_on_off_manufacturer_page_slider_additional_image');
+			if($additional_image_hover_on_off =='2'){
+				foreach ($results_img as $key => $result_img) {
+					if ($key < 1) {
+						$additional_image_hover = $this->model_tool_image->resize($result_img['image'], $this->config->get('theme_' . $this->config->get('config_theme') . '_image_product_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_product_height'));	
+					}
+				}
+			}
+			if ((float)$result['special']) {
+				$price2 = $this->tax->calculate($result['price'], $result['tax_class_id'], $this->config->get('config_tax'));
+				$special2 = $this->tax->calculate($result['special'], $result['tax_class_id'], $this->config->get('config_tax'));
+				$skidka = $special2/($price2/100)-100;
+			} else {
+				$skidka = "";
+			}
+			
+			if (($this->config->get('config_customer_price') && $this->customer->isLogged()) || !$this->config->get('config_customer_price')) {
+					$price_no_format = $this->tax->calculate($result['price'], $result['tax_class_id'], $this->config->get('config_tax'));
+				} else {
+					$price_no_format = false;
+				}
+
+				if ((float)$result['special']) {
+					$special_no_format = $this->tax->calculate($result['special'], $result['tax_class_id'], $this->config->get('config_tax'));
+				} else {
+					$special_no_format = false;
+				}
+				$var_currency = array();
+				$var_currency['value'] = $this->currency->getValue($this->session->data['currency']);
+				$var_currency['symbol_left'] = $this->currency->getSymbolLeft($this->session->data['currency']);
+				$var_currency['symbol_right'] = $this->currency->getSymbolRight($this->session->data['currency']);
+				$var_currency['currency_code'] = $this->session->data['currency'];
+				$var_currency['decimals'] = $this->currency->getDecimalPlace($this->session->data['currency']);
+				$var_currency['decimal_point'] = $this->language->get('decimal_point');
+				$var_currency['thousand_point'] = $this->language->get('thousand_point');
+				$data['currency'] = $var_currency;
+				$top_bestsellers = $this->model_catalog_product->getTopSeller($result['product_id']);
+				$product_quantity = $result['quantity'];
+				$stock_status = $result['stock_status'];
+	]]></add>
+		</operation>
+		<operation error="log">
+			<search ><![CDATA[$data['products'][] = array(]]></search>
+			<add position="after"><![CDATA[
+			'price_no_format' 		=> $price_no_format,
+			'special_no_format' 	=> $special_no_format,	
+			'product_quantity' 		=> $product_quantity,	
+			'stock_status' 			=> $stock_status,	
+			'additional_img' 		=> $additional_img,	
+			'additional_image_hover' => $additional_image_hover,
+			'reviews'    			=> sprintf((int)$result['reviews']),
+			'skidka'     			=> round($skidka),
+			'model'     			=> $result['model'],
+			'date_available'		=> $result['date_available'],
+			'viewed'	 			=> $result['viewed'],
+			'top_bestsellers'	 	=> $top_bestsellers['total'],
+	]]></add>
+		</operation>	
+	</file>
+	<file path="catalog/controller/product/search.php">
+		<operation error="log">
+			<search ><![CDATA[$this->load->language('product/search');]]></search>
+			<add position="after"><![CDATA[
+			$data['text_empty'] = $this->language->get('text_empty');
+			$data['menu_open_search'] = $this->config->get('config_menu_open_search');
+			$data['main_menu'] = $this->config->get('config_main_menu_selection');
+			$data['on_off_sticker_special'] = $this->config->get('on_off_sticker_special');
+			$data['config_change_icon_sticker_special'] = $this->config->get('config_change_icon_sticker_special');
+			$data['on_off_sticker_topbestseller'] = $this->config->get('on_off_sticker_topbestseller');
+			$data['config_limit_order_product_topbestseller'] = $this->config->get('config_limit_order_product_topbestseller');
+			$data['config_change_icon_sticker_topbestseller'] = $this->config->get('config_change_icon_sticker_topbestseller');
+			$data['on_off_sticker_popular'] = $this->config->get('on_off_sticker_popular');
+			$data['config_min_quantity_popular'] = $this->config->get('config_min_quantity_popular');
+			$data['config_change_icon_sticker_popular'] = $this->config->get('config_change_icon_sticker_popular');
+			$data['on_off_sticker_newproduct'] = $this->config->get('on_off_sticker_newproduct');
+			$data['config_limit_day_newproduct'] = $this->config->get('config_limit_day_newproduct');
+			$data['config_change_icon_sticker_newproduct'] = $this->config->get('config_change_icon_sticker_newproduct');
+			$data['config_on_off_search_page_slider_additional_image'] = $this->config->get('config_on_off_search_page_slider_additional_image');
+			$this->load->model('ns/moduleonoff');
+			$data['ns_on_off_module_quick_order'] = $this->model_ns_moduleonoff->getQuickOrderModuleModification();
+			$this->load->language('ns/newstorelang');
+			$data['lang_id'] = $this->config->get('config_language_id');
+			$data['text_sticker_special'] = $this->config->get('config_change_text_sticker_special');
+			$data['text_sticker_newproduct'] = $this->config->get('config_change_text_sticker_newproduct'); 
+			$data['text_sticker_popular'] = $this->config->get('config_change_text_sticker_popular');
+			$data['text_sticker_topbestseller'] = $this->config->get('config_change_text_sticker_topbestseller');
+			/*on_off*/
+			$data['ns_on_off_search_page_model_product'] = $this->config->get('config_on_off_search_page_model_product');	
+			$data['ns_on_off_search_page_description'] = $this->config->get('config_on_off_search_page_description');	
+			$data['ns_on_off_search_page_slider_additional_image'] = $this->config->get('config_on_off_search_page_slider_additional_image');	
+			$data['ns_select_search_page_additional_animate_method'] = $this->config->get('config_select_search_page_additional_animate_method');	
+			$data['ns_on_off_search_page_rating'] = $this->config->get('config_on_off_search_page_rating');	
+			$data['ns_on_off_search_page_quantity_reviews'] = $this->config->get('config_on_off_search_page_quantity_reviews');	
+			$data['ns_on_off_search_page_fastorder'] = $this->config->get('config_on_off_search_page_fastorder');	
+			$data['ns_on_off_search_page_wishlist'] = $this->config->get('config_on_off_search_page_wishlist');	
+			$data['ns_on_off_search_page_compare'] = $this->config->get('config_on_off_search_page_compare');	
+			/*-----*/
+			$this->language->load('product/product');
+			$data['icon_send_fastorder'] = $this->config->get('config_icon_send_fastorder');
+			$data['background_button_send_fastorder'] = $this->config->get('config_background_button_send_fastorder');
+			$data['background_button_open_form_send_order_hover'] = $this->config->get('config_background_button_open_form_send_order_hover');
+			$data['background_button_send_fastorder_hover'] = $this->config->get('config_background_button_send_fastorder_hover');
+			$data['background_button_open_form_send_order'] = $this->config->get('config_background_button_open_form_send_order');
+			$data['icon_open_form_send_order'] = $this->config->get('config_icon_open_form_send_order');
+			$data['icon_open_form_send_order_size'] = $this->config->get('config_icon_open_form_send_order_size');
+			$data['color_button_open_form_send_order'] = $this->config->get('config_color_button_open_form_send_order');
+			$data['config_text_open_form_send_order'] = $this->config->get('config_text_open_form_send_order');
+			$data['lang_id'] = $this->config->get('config_language_id');
+			$data['text_reviews_title'] = $this->language->get('text_reviews_title');
+			$data['config_quickview_btn_name'] = $this->config->get('config_quickview_btn_name');
+			$data['config_on_off_search_page_quickview'] = $this->config->get('config_on_off_search_page_quickview');
+			$data['button_price'] = $this->language->get('button_price');
+			$data['config_price_list_view_on_off'] = $this->config->get('config_price_list_view_on_off');
+			$data['config_price_list_view_on_off_search_page'] = $this->config->get('config_price_list_view_on_off_search_page');
+			$data['show_stock_status'] = $this->config->get('config_show_stock_status');
+				$config_disable_cart_button_text = $this->config->get('config_disable_cart_button_text');
+				if(!empty($config_disable_cart_button_text[$this->config->get('config_language_id')]['disable_cart_button_text'])){
+					$data['disable_cart_button_text'] = $config_disable_cart_button_text[$this->config->get('config_language_id')]['disable_cart_button_text'];
+				} else {
+					$data['disable_cart_button_text'] = $this->language->get('disable_cart_button_text');
+				}
+			]]></add>
+		</operation>
+		<operation error="log">
+			<search ><![CDATA[$data['products'][] = array(]]></search>
+			<add position="before"><![CDATA[			
+			$results_img = $this->model_catalog_product->getProductImages($result['product_id']);
+			$additional_img = array();
+			foreach ($results_img as $result_img) {
+				if ($result_img['image']) {	
+					$image_additional = $this->model_tool_image->resize($result_img['image'], $this->config->get('theme_' . $this->config->get('config_theme') . '_image_product_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_product_height'));
+				} else {
+					$image_additional = false;
+				}
+			$additional_img[] = $image_additional;
+			}
+			$additional_image_hover = '';
+			$additional_image_hover_on_off = $this->config->get('config_on_off_search_page_slider_additional_image');
+			if($additional_image_hover_on_off =='2'){
+				foreach ($results_img as $key => $result_img) {
+					if ($key < 1) {
+						$additional_image_hover = $this->model_tool_image->resize($result_img['image'], $this->config->get('theme_' . $this->config->get('config_theme') . '_image_product_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_product_height'));	
+					}
+				}
+			}
+			if ((float)$result['special']) {
+				$price2 = $this->tax->calculate($result['price'], $result['tax_class_id'], $this->config->get('config_tax'));
+				$special2 = $this->tax->calculate($result['special'], $result['tax_class_id'], $this->config->get('config_tax'));
+				$skidka = $special2/($price2/100)-100;
+			} else {
+				$skidka = "";
+			}
+			if (($this->config->get('config_customer_price') && $this->customer->isLogged()) || !$this->config->get('config_customer_price')) {
+					$price_no_format = $this->tax->calculate($result['price'], $result['tax_class_id'], $this->config->get('config_tax'));
+				} else {
+					$price_no_format = false;
+				}
+
+				if ((float)$result['special']) {
+					$special_no_format = $this->tax->calculate($result['special'], $result['tax_class_id'], $this->config->get('config_tax'));
+				} else {
+					$special_no_format = false;
+				}
+				$var_currency = array();
+				$var_currency['value'] = $this->currency->getValue($this->session->data['currency']);
+				$var_currency['symbol_left'] = $this->currency->getSymbolLeft($this->session->data['currency']);
+				$var_currency['symbol_right'] = $this->currency->getSymbolRight($this->session->data['currency']);
+				$var_currency['currency_code'] = $this->session->data['currency'];
+				$var_currency['decimals'] = $this->currency->getDecimalPlace($this->session->data['currency']);
+				$var_currency['decimal_point'] = $this->language->get('decimal_point');
+				$var_currency['thousand_point'] = $this->language->get('thousand_point');
+				$data['currency'] = $var_currency;
+				$top_bestsellers = $this->model_catalog_product->getTopSeller($result['product_id']);
+				$product_quantity = $result['quantity'];
+				$stock_status = $result['stock_status'];
+	]]></add>
+		</operation>
+		<operation error="log">
+			<search ><![CDATA[$data['products'][] = array(]]></search>
+			<add position="after"><![CDATA[
+			'price_no_format' 		=> $price_no_format,
+			'special_no_format' 	=> $special_no_format,	
+			'product_quantity' 		=> $product_quantity,	
+			'stock_status' 			=> $stock_status,	
+			'additional_img' 		=> $additional_img,	
+			'additional_image_hover' => $additional_image_hover,
+			'reviews'    			=> sprintf((int)$result['reviews']),
+			'skidka'     			=> round($skidka),
+			'model'     			=> $result['model'],
+			'date_available'		=> $result['date_available'],
+			'viewed'	 			=> $result['viewed'],
+			'top_bestsellers'	 	=> $top_bestsellers['total'],
+	]]></add>
+		</operation>	
+	</file>
+	<file path="catalog/controller/extension/module/category.php">
+		<operation error="log">
+			<search><![CDATA[if ($category['category_id'] == $data['category_id']) {]]></search>
+			<add position="replace"><![CDATA[
+			if ($category['category_id']){
+			]]></add>
+		</operation>
+		<operation error="log">
+			<search><![CDATA[$children_data[] = array(]]></search>
+			<add position="before"><![CDATA[
+			$children_data_child = array();
+					$children_child = $this->model_catalog_category->getCategories($child['category_id']);
+					  foreach ($children_child as $child_3) {
+						$data_child_3 = array(
+						  'filter_category_id'  => $child_3['category_id'],
+						  'filter_sub_category' => true
+						);
+						if ($this->config->get('config_product_count')) {
+						$product_total_child_3 = $this->model_catalog_product->getTotalProducts($data_child_3);
+						}
+						$children_data_child[] = array(
+						  'name'  => $child_3['name'],
+						  'href'  => $this->url->link('product/category', 'path=' . $category['category_id'] . '_' . $child['category_id'] . '_' . $child_3['category_id'])
+						);
+					  }
+			]]></add>
+		</operation>		
+		<operation error="log">
+			<search><![CDATA[$children_data[] = array(]]></search>
+			<add position="after"><![CDATA[
+			'children' => $children_data_child,
+			]]></add>
+		</operation>
+	</file>
+	<file path="catalog/controller/checkout/cart.php">
+		<operation>
+			<search><![CDATA[$data['checkout'] = $this->url->link('checkout/checkout', '', true);]]></search>
+			<add position="replace" error="skip"><![CDATA[
+			$module_myonepagecheckout_status = $this->config->get('module_myonepagecheckout_status');
+			if ($module_myonepagecheckout_status == '1') {
+				$data['checkout'] = $this->url->link('checkout/newstorecheckout', '', true);
+			} else {
+				$data['checkout'] = $this->url->link('checkout/checkout', '', true);
+			}
+			]]></add>
+		</operation>
+        <operation>
+           <search><![CDATA[$this->cart->add($this->request->post['product_id'], $quantity, $option, $recurring_id);]]></search>
+            <add position="after"><![CDATA[
+			$json['popup_design'] = $this->config->get('config_shopping_cart_after_add');
+			$json['show_newstorecheckout'] = $this->config->get('module_myonepagecheckout_status');
+				$this->load->model('tool/image');
+				if ($product_info['image']) {
+					$image = $this->model_tool_image->resize($product_info['image'], 200,200);
+				} else {
+					$image = $this->model_tool_image->resize('placeholder.png', 200, 200);
+				}
+				$json['image_cart'] = $image;
+			]]></add>
+        </operation>
+		<operation>
+			<search><![CDATA[	
+				$json['total'] = sprintf($this->language->get('text_items'), $this->cart->countProducts() + (isset($this->session->data['vouchers']) ? count($this->session->data['vouchers']) : 0), $this->currency->format($total, $this->session->data['currency']));
+			]]></search>
+			<add position="after"><![CDATA[
+				$this->load->language('ns/newstorelang');
+				$json['total'] = sprintf($this->language->get('text_items_my'), $this->cart->countProducts() + (isset($this->session->data['vouchers']) ? count($this->session->data['vouchers']) : 0), $this->currency->format($total, $this->session->data['currency']));
+			]]></add>
+		</operation>
+	</file>
+	
+	<file path="admin/controller/common/header.php">
+     <operation error="skip">
+      <search><![CDATA[public function index() {]]></search>
+      <add position="after"><![CDATA[
+		$this->document->addStyle('view/stylesheet/label_ns.css');
+      ]]></add>
+    </operation>
+  </file>
+ <file path="admin/controller/common/column_left.php">
+    <operation error="skip">
+      <search><![CDATA[$catalog = array();]]></search>
+      <add position="after"><![CDATA[
+		$newstore_left_menu = array();
+		$newstore_left_menu[] = array(
+			'name'	   => $this->language->get('text_newstore_theme'),
+			'href'     => $this->url->link('extension/module/settingnewstore', 'user_token=' . $this->session->data['user_token'], true),
+			'children' => array()
+		); 
+      ]]></add>
+    </operation>
+	<operation error="skip">
+      <search><![CDATA[if ($this->user->hasPermission('access', 'catalog/product')) {]]></search>
+      <add position="before"><![CDATA[
+		$data['menus'][] = array(
+				'id'       => 'menu-newstore',
+				'icon'	   => 'view/image/newstore_icon.png',
+				'name'	   => $this->language->get('text_newstore_menu'),
+				'href'     => '',
+				'children' => $newstore_left_menu
+		);  
+      ]]></add>
+    </operation>
+  </file>
+  <file path="admin/language/en-gb/common/column_left.php">
+     <operation error="skip">
+      <search><![CDATA[
+	  $_['text_catalog']
+	  ]]></search>
+      <add position="before"><![CDATA[
+        $_['text_newstore_menu'] = 'NewStore';
+        $_['text_newstore_theme'] = 'Theme Seting';
+      ]]></add>
+    </operation>
+  </file>
+  <file path="admin/language/ru-ru/common/column_left.php">
+     <operation error="skip">
+      <search><![CDATA[
+	  $_['text_catalog']
+	  ]]></search>
+      <add position="before"><![CDATA[
+        $_['text_newstore_menu'] = 'NewStore';
+        $_['text_newstore_theme'] = 'Настройка шаблона';
+      ]]></add>
+    </operation>
+  </file>
+  
+  <file path="admin/view/template/common/column_left.twig">
+     <operation error="skip" index="1">
+      <search><![CDATA[<i class="fa {{ menu.icon }} fw"></i>]]></search>
+      <add position="replace"><![CDATA[{% if (menu.id == 'menu-newstore') %}<i><img src="{{ menu.icon }}" /></i>{% else %}<i class="fa {{ menu.icon }} fw"></i>{% endif %}]]></add>
+    </operation>
+  </file>
+  <file path="admin/model/catalog/review.php">
+		<operation >
+			<search><![CDATA[text = '" . $this->db->escape(strip_tags($data['text'])) . "',]]></search>
+			<add position="replace"><![CDATA[text = '" . $this->db->escape(strip_tags($data['text'])) . "', purchased = '" . $this->db->escape(strip_tags($data['purchased'])) . "', plus = '" . $this->db->escape(strip_tags($data['plus'])) . "', minus = '" . $this->db->escape(strip_tags($data['minus'])) . "', admin_reply = '" . $this->db->escape(strip_tags($data['admin_reply'])) . "',]]></add>
+		</operation>
+	</file>
+  <file path="admin/controller/catalog/review.php">		
+		<operation >
+			<search><![CDATA[$data['text_form'] = !isset($this->request->get['review_id']) ? $this->language->get('text_add') : $this->language->get('text_edit');]]></search>
+			<add position="after"><![CDATA[
+			$data['entry_plus'] = $this->language->get('entry_plus');
+			$data['entry_purchased'] = $this->language->get('entry_purchased');
+			$data['entry_minus'] = $this->language->get('entry_minus');
+			$data['entry_admin_reply'] = $this->language->get('entry_admin_reply');
+			$data['text_yes'] = $this->language->get('text_yes');
+			$data['text_no'] = $this->language->get('text_no');
+			]]></add>
+		</operation>
+		<operation >
+			<search><![CDATA[if (isset($this->request->post['rating'])) {]]>
+			</search>
+			<add position="before"><![CDATA[
+			if (isset($this->request->post['plus'])) {
+				$data['plus'] = $this->request->post['plus'];
+			} elseif (!empty($review_info)) {
+				$data['plus'] = $review_info['plus'];
+			} else {
+				$data['plus'] = '';
+			}
+			if (isset($this->request->post['purchased'])) {
+				$data['purchased'] = $this->request->post['purchased'];
+			} elseif (!empty($review_info)) {
+				$data['purchased'] = $review_info['purchased'];
+			} else {
+				$data['purchased'] = '';
+			}
+			if (isset($this->request->post['minus'])) {
+				$data['minus'] = $this->request->post['minus'];
+			} elseif (!empty($review_info)) {
+				$data['minus'] = $review_info['minus'];
+			} else {
+				$data['minus'] = '';
+			}
+			if (isset($this->request->post['admin_reply'])) {
+				$data['admin_reply'] = $this->request->post['admin_reply'];
+			} elseif (!empty($review_info)) {
+				$data['admin_reply'] = $review_info['admin_reply'];
+			} else {
+				$data['admin_reply'] = '';
+			}
+			]]></add>
+		</operation>
+	</file>
+	<file path="admin/language/ru-ru/catalog/review.php">
+		<operation >
+			<search><![CDATA[// Heading]]>
+			</search>
+			<add position="after"><![CDATA[
+			$_['entry_plus']   		= 'Достоинства:';
+			$_['entry_purchased']   = 'Куплен в этом магазине:';
+			$_['entry_minus']  		= 'Недостатки:';
+			$_['entry_admin_reply'] = 'Ответ:';
+			$_['text_yes'] 			= 'Да';
+			$_['text_no'] 			= 'Нет';
+			]]></add>
+		</operation>
+	</file>
+	<file path="admin/language/en-gb/catalog/review.php">
+		<operation >
+			<search><![CDATA[// Heading]]>
+			</search>
+			<add position="after"><![CDATA[
+			$_['entry_plus']   		= 'Dignity:';
+			$_['entry_purchased']   = 'Purchased in this store:';
+			$_['entry_minus']  		= 'Disadvantages:';
+			$_['entry_admin_reply'] = 'Answer:';
+			$_['text_yes'] 			= 'Yes';
+			$_['text_no'] 			= 'No';
+			]]></add>
+		</operation>
+	</file>
+	
+	<file path="admin/view/template/catalog/review_form.twig">
+		<operation >
+			<search><![CDATA[<select name="status" id="input-status" class="form-control">]]></search>
+			<add position="before" offset="3"><![CDATA[
+			<div class="form-group required">
+				<label class="col-sm-2 control-label" for="input-plus">{{ entry_plus }}</label>
+				<div class="col-sm-10">
+					<textarea name="plus" cols="60" rows="8" placeholder="{{ entry_plus }}" id="input-text" class="form-control">{{ plus }}</textarea>
+				</div>
+			</div>
+			<div class="form-group required">
+				<label class="col-sm-2 control-label" for="input-minus">{{ entry_minus }}</label>
+				<div class="col-sm-10">
+					<textarea name="minus" cols="60" rows="8" placeholder="{{ entry_minus }}" id="input-text" class="form-control">{{ minus }}</textarea>
+				</div>
+			</div>
+			<div class="form-group required">
+				<label class="col-sm-2 control-label" for="input-admin_reply">{{ entry_admin_reply }}</label>
+				<div class="col-sm-10">
+					<textarea name="admin_reply" cols="60" rows="8" placeholder="{{ entry_admin_reply }}" id="input-text" class="form-control">{{ admin_reply }}</textarea>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-2 control-label">{{ 'Куплен в этом магазине' }}</label>
+				<div class="col-sm-10">
+						<div class="radio-group-infinity">	
+							{% if purchased %}
+							<input id="purchased_yes" class="hide-radio" type="radio" name="purchased" value="1" checked="checked" />
+							<label for="purchased_yes">{{ text_yes }}</label>
+							{% else %}
+							<input id="purchased_yes" class="hide-radio" type="radio" name="purchased" value="1" />
+							<label for="purchased_yes">{{ text_yes }}</label>
+							{% endif %}
+							{% if not purchased %} 
+							<input id="purchased_no" class="hide-radio" type="radio" name="purchased" value="0" checked="checked" />							
+							<label for="purchased_no">{{ text_no }}</label>
+							{% else %} 
+							<input id="purchased_no" class="hide-radio" type="radio" name="purchased" value="0" />							
+							<label for="purchased_no">{{ text_no }}</label>
+							{% endif %}						  
+						</div>						 
+					</div>
+				</div>
+<style>
+.hide-radio {
+	display:none;
+}
+.radio-group-infinity {
+	display: inline-block;
+	margin-top: 9px;
+	border-radius:15px;
+	background-color: white;
+	background-image: linear-gradient(to bottom, #eeeeee, white 25px);
+	padding:3px;
+	box-shadow: 0 -1px white inset, 0 1px 1px rgba(0, 0, 0, 0.05) inset;
+}
+.hide-radio + label {
+	background: #eceeef none repeat scroll 0 0;
+	color: #fff;
+	display: block;
+	float: left;
+	font-family: "Oswald",sans-serif;
+	padding: 5px 0;
+	text-align: center;
+	-webkit-transition: background-image 0.15s ease-in-out;
+	-moz-transition: background-image 0.15s ease-in-out;
+	-o-transition: background-color 0.15s ease-in-out;
+	transition: background-image 0.15s ease-in-out;
+	width: 45px;
+	margin-bottom:0px;	
+	position:relative;
+	color:#969696;
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15) inset, 0 0 3px rgba(0, 0, 0, 0.2) inset;
+	text-shadow:0 1px rgba(255, 255, 255, 0.8);
+}
+.hide-radio + label:hover {
+	box-shadow:2px 3px 3px rgba(0, 0, 0, 0.25) inset;
+}
+.hide-radio:first-child + label{
+	border-radius:15px 0px 0px 15px;
+}
+.radio-group-infinity > label:last-child{
+	border-radius:0px 15px 15px 0px;	
+	margin-left:-1px;
+}
+ 
+.hide-radio:checked + label {
+	background-image: linear-gradient(#47a8d8, #47a8d8);
+	display: inline-block;
+	margin-bottom:0px;
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15) inset, 0 0 3px rgba(0, 0, 0, 0.2) inset;
+	color:#fff;
+	text-shadow:0 1px rgba(0, 0, 0, 0.2);
+}
+
+</style>
+			]]></add>
+		</operation>
+	</file>
+	
+	<file path="admin/controller/catalog/option.php">
+  	<operation>
+  	  <search><![CDATA[if (isset($this->request->post['sort_order'])) {]]></search>
+  	  <add position="before">
+  			<![CDATA[
+		if (isset($this->request->post['status_color_type'])) {
+			$data['status_color_type'] = $this->request->post['status_color_type'];
+		} elseif (!empty($option_info)) {
+			$data['status_color_type'] = $option_info['status_color_type'];
+		} else {
+			$data['status_color_type'] = '';
+		}
+		]]>
+  	  </add>
+  	</operation>
+	<operation>
+  	  <search><![CDATA[$data['entry_image'] = $this->language->get('entry_image');]]></search>
+  	  <add position="before">
+  			<![CDATA[
+			$data['entry_color'] = $this->language->get('entry_color');
+			$data['entry_status_color_type'] = $this->language->get('entry_status_color_type');
+			$data['text_yes'] = $this->language->get('text_yes');
+			$data['text_no'] = $this->language->get('text_no');
+		]]>
+  	  </add>
+  	</operation>
+	<operation>
+  	  <search><![CDATA[$data['option_values'][] = array(]]></search>
+  	  <add position="after">
+  			<![CDATA[
+			'color'                    => $option_value['color'],
+		]]>
+  	  </add>
+  	</operation>
+  </file>
+  <file path="admin/view/template/catalog/option_form.twig">
+	<operation>
+      <search><![CDATA[<div id="content">]]></search>
+      <add position="after">
+        <![CDATA[
+         <script type="text/javascript" src="view/javascript/newstore/jscolor/jscolor.js"></script>
+        ]]>
+      </add>
+    </operation>
+    <operation>
+      <search><![CDATA[<table id="option-value" class="table table-striped table-bordered table-hover">]]></search>
+      <add position="before">
+        <![CDATA[
+        <div class="form-group">
+            <label class="col-sm-2 control-label" for="input-status_color_type">{{ entry_status_color_type }}</label>
+            <div class="col-sm-10">
+              <select name="status_color_type" id="input-status_color_type" class="form-control">
+				{% if status_color_type %}
+                <option value="1" selected="selected">{{ text_yes }}</option>
+                <option value="0">{{ text_no }}</option>
+				{% else %}
+                <option value="1">{{ text_yes }}</option>
+                <option value="0" selected="selected">{{ text_no }}</option>
+               {% endif %}
+              </select>
+            </div>
+          </div>
+        ]]>
+      </add>
+    </operation>
+	<operation>
+      <search><![CDATA[<td class="text-center">{{ entry_image }}</td>]]></search>
+      <add position="after">
+        <![CDATA[
+        <td class="text-left">{{ entry_color }}</td>
+        ]]>
+      </add>
+    </operation>
+	<operation>
+      <search><![CDATA[<td class="text-right"><input type="text" name="option_value[{{ option_value_row }}][sort_order]" value="{{ option_value.sort_order }}" class="form-control" /></td>]]></search>
+      <add position="before">
+        <![CDATA[
+         <td class="text-left">
+			<input class="form-control color" type="text" name="option_value[{{ option_value_row }}][color]" value="{{ option_value.color }}" />
+		</td>
+        ]]>
+      </add>
+    </operation>
+	<operation>
+      <search><![CDATA[html += '  <td class="text-right"><input type="text" name="option_value[' + option_value_row + '][sort_order]" value="" placeholder="{{ entry_sort_order }}" class="form-control" /></td>';]]></search>
+      <add position="before">
+        <![CDATA[
+        html += ' <td class="text-left"><input class="form-control color" type="text" name="option_value['+ option_value_row +'][color]" value="" /></td>';
+        ]]>
+      </add>
+    </operation>
+	<operation>
+      <search><![CDATA[<td colspan="3"></td>]]></search>
+      <add position="replace">
+        <![CDATA[
+		<td colspan="4"></td>
+		]]>
+      </add>
+    </operation>
+	<operation>
+      <search><![CDATA[$('#option-value tbody').append(html);]]></search>
+      <add position="after">
+        <![CDATA[
+		jscolor.init();
+		]]>
+      </add>
+    </operation>
+  </file>
+  <file path="admin/model/catalog/option.php">
+    <operation>
+      <search><![CDATA[type = '" . $this->db->escape($data['type']) . "',]]></search>
+      <add position="replace">
+        <![CDATA[type = '" . $this->db->escape($data['type']) . "',status_color_type = '" . (int)$data['status_color_type'] . "',]]>
+      </add>
+    </operation>
+	<operation>
+      <search><![CDATA[sort_order = '" . (int)$option_value['sort_order'] . "']]></search>
+      <add position="replace">
+        <![CDATA[color = '" . $this->db->escape($option_value['color']) . "', sort_order = '" . (int)$option_value['sort_order'] . "']]>
+      </add>
+    </operation>
+	<operation>
+      <search><![CDATA['option_value_id'          => $option_value['option_value_id'],]]></search>
+      <add position="after">
+        <![CDATA[
+		'color'           => $option_value['color'],
+		]]>
+      </add>
+    </operation>
+  </file>
+  <file path="admin/language/ru-ru/catalog/option.php">
+    <operation>
+      <search><![CDATA[$_['entry_image']]]></search>
+      <add position="before">
+        <![CDATA[
+		$_['entry_status_color_type'] = 'Цвет вместо картинки для типа опции Изображение';
+		$_['entry_color']         = 'Цвет';
+		$_['text_no']         	  = 'Нет';
+		$_['text_yes']         	  = 'Да';
+		]]>
+      </add>
+    </operation>
+  </file>
+  <file path="admin/language/en-gb/catalog/option.php">
+    <operation>
+      <search><![CDATA[$_['entry_image']]]></search>
+      <add position="before">
+        <![CDATA[
+		$_['entry_status_color_type'] = 'Color instead of a picture for the type of option Image';
+		$_['entry_color']         = 'Цвет';
+		$_['text_no']         	  = 'No';
+		$_['text_yes']         	  = 'Yes';
+		]]>
+      </add>
+    </operation>
+  </file>
+	<file path="catalog/controller/extension/module/featured.php">
+	<operation error="log">
+		<search><![CDATA[foreach ($products as $product_id) {]]></search>
+		<add position="before"><![CDATA[
+			$data['all_prod'] = implode(",", $products);	
+		]]></add>
+	</operation>
+	</file>
+	<file path="catalog/controller/extension/module/special.php">
+	<operation error="log">
+		<search><![CDATA[$results = $this->model_catalog_product->getProductSpecials($filter_data);]]></search>
+		<add position="after"><![CDATA[
+			$this->load->model('ns/newstore');
+			$data['all_prod'] = $this->model_ns_newstore->multi_implode(",", $results);
+		]]></add>
+	</operation>
+	</file>
+	<file path="catalog/controller/extension/module/bestseller.php">
+	<operation error="log">
+		<search><![CDATA[$results = $this->model_catalog_product->getBestSellerProducts($setting['limit']);]]></search>
+		<add position="after"><![CDATA[
+			$this->load->model('ns/newstore');
+			$data['all_prod'] = $this->model_ns_newstore->multi_implode(",", $results);
+		]]></add>
+	</operation>
+	</file>
+	<file path="catalog/controller/extension/module/latest.php">
+	<operation error="log">
+		<search><![CDATA[$results = $this->model_catalog_product->getProducts($filter_data);]]></search>
+		<add position="after"><![CDATA[
+			$this->load->model('ns/newstore');
+			$data['all_prod'] = $this->model_ns_newstore->multi_implode(",", $results);
+		]]></add>
+	</operation>
+	</file>
+	<file path="catalog/controller/product/category.php">
+	<operation error="log">
+		<search index="1"><![CDATA[foreach ($results as $result) {]]></search>
+		<add position="before"><![CDATA[
+			$this->load->model('ns/newstore');
+			$data['all_prod'] = $this->model_ns_newstore->multi_implode(",", $results);
+		]]></add>
+	</operation>
+	</file>
+	<file path="catalog/controller/product/special.php">
+	<operation error="log">
+		<search><![CDATA[foreach ($results as $result) {]]></search>
+		<add position="before"><![CDATA[
+			$this->load->model('ns/newstore');
+			$data['all_prod'] = $this->model_ns_newstore->multi_implode(",", $results);
+		]]></add>
+	</operation>
+	</file>
+	<file path="catalog/controller/product/search.php">
+	<operation error="log">
+		<search><![CDATA[$results = $this->model_catalog_product->getProducts($filter_data);]]></search>
+		<add position="after"><![CDATA[
+			$this->load->model('ns/newstore');
+			$data['all_prod'] = $this->model_ns_newstore->multi_implode(",", $results);
+		]]></add>
+	</operation>
+	<operation error="log">
+		<search><![CDATA[$filter_data = array(]]></search>
+		<add position="after"><![CDATA[
+			'filter_model_ns'     => true,
+		]]></add>
+	</operation>
+	</file>
+	<file path="catalog/controller/product/manufacturer.php">
+	<operation error="log">
+		<search error="skip" index="1"><![CDATA[$results = $this->model_catalog_product->getProducts($filter_data);]]></search>
+		<add position="after"><![CDATA[
+			$this->load->model('ns/newstore');
+			$data['all_prod'] = $this->model_ns_newstore->multi_implode(",", $results);
+		]]></add>
+	</operation>
+	</file>
+	<file path="catalog/controller/extension/module/{carousel,slideshow,banner}.php">
+		<operation error="log">
+			<search error="skip"><![CDATA[$this->document->addStyle('catalog/view/javascript/jquery/swiper/css/swiper.min.css');]]></search>
+			<add position="replace"><![CDATA[]]></add>
+		</operation>
+	</file>
+	<file path="catalog/controller/extension/module/{carousel,slideshow,banner}.php">
+		<operation error="log">
+			<search error="skip"><![CDATA[$this->document->addStyle('catalog/view/javascript/jquery/swiper/css/opencart.css');]]></search>
+			<add position="replace"><![CDATA[]]></add>
+		</operation>
+	</file>
+	<file path="catalog/controller/extension/module/{carousel,slideshow,banner}.php">
+		<operation error="log">
+			<search error="skip"><![CDATA[$this->document->addScript('catalog/view/javascript/jquery/swiper/js/swiper.jquery.js');]]></search>
+			<add position="replace"><![CDATA[]]></add>
+		</operation>
+	</file>
+	
+	
+	<file path="catalog/controller/extension/module/featured_product.php">
+	<operation>
+      <search>
+        <![CDATA[$this->load->language('extension/module/featured_product');]]>
+      </search>
+      <add position="after">
+        <![CDATA[
+			$this->load->model('ns/moduleonoff');
+			$data['ns_on_off_module_quick_order'] = $this->model_ns_moduleonoff->getQuickOrderModuleModification();
+			$this->load->language('ns/newstorelang');
+			$data['ns_on_off_featured_model_product'] = $this->config->get('config_on_off_featured_model_product'); 	
+			$data['ns_on_off_featured_description'] = $this->config->get('config_on_off_featured_description'); 	
+			$data['ns_on_off_featured_slider_additional_image'] = $this->config->get('config_on_off_featured_slider_additional_image');	
+			$data['ns_select_featured_additional_animate_method'] = $this->config->get('config_select_featured_additional_animate_method');	
+			$data['ns_on_off_featured_rating'] = $this->config->get('config_on_off_featured_rating');	
+			$data['ns_on_off_featured_quantity_reviews'] = $this->config->get('config_on_off_featured_quantity_reviews');	
+			$data['ns_on_off_featured_fastorder'] = $this->config->get('config_on_off_featured_fastorder');	
+			$data['ns_on_off_featured_wishlist'] = $this->config->get('config_on_off_featured_wishlist');	
+			$data['ns_on_off_featured_compare'] = $this->config->get('config_on_off_featured_compare');	
+			$data['config_on_off_featured_quickview'] = $this->config->get('config_on_off_featured_quickview');
+			$data['nst_data'] = $this->config->get('nst_data');
+			if(isset($data['nst_data']['lazyload_module']) && ($data['nst_data']['lazyload_module'] == 1)){
+				$data['lazyload_module'] = true;
+				if (isset($data['nst_data']['lazyload_image']) && ($data['nst_data']['lazyload_image'] !='')) {
+					$data['lazy_image'] = 'image/' . $data['nst_data']['lazyload_image'];
+				} else {
+					$data['lazy_image'] = 'image/catalog/lazyload/lazyload.jpg';
+				}
+			} else {
+				$data['lazyload_module'] = false;
+			}
+			$data['text_select'] = $this->language->get('text_select');	
+			$data['config_additional_settings_newstore'] = $this->config->get('config_additional_settings_newstore');
+			$data['show_special_timer_module'] = $this->config->get('config_show_special_timer_module');
+			$data['on_off_sticker_special'] = $this->config->get('on_off_sticker_special');
+			$data['config_change_icon_sticker_special'] = $this->config->get('config_change_icon_sticker_special');
+			$data['on_off_sticker_topbestseller'] = $this->config->get('on_off_sticker_topbestseller');
+			$data['config_limit_order_product_topbestseller'] = $this->config->get('config_limit_order_product_topbestseller');
+			$data['config_change_icon_sticker_topbestseller'] = $this->config->get('config_change_icon_sticker_topbestseller');
+			$data['on_off_sticker_popular'] = $this->config->get('on_off_sticker_popular');
+			$data['config_min_quantity_popular'] = $this->config->get('config_min_quantity_popular');
+			$data['config_change_icon_sticker_popular'] = $this->config->get('config_change_icon_sticker_popular');
+			$data['on_off_sticker_newproduct'] = $this->config->get('on_off_sticker_newproduct');
+			$data['config_limit_day_newproduct'] = $this->config->get('config_limit_day_newproduct');
+			$data['config_change_icon_sticker_newproduct'] = $this->config->get('config_change_icon_sticker_newproduct');
+			$data['lang_id'] = $this->config->get('config_language_id');
+			$data['required_text_option'] = $this->language->get('required_text_option');
+			$data['change_text_cart_button_out_of_stock'] = $this->config->get('config_change_text_cart_button_out_of_stock');	
+			$data['text_sticker_special'] = $this->config->get('config_change_text_sticker_special');
+			$data['text_sticker_newproduct'] = $this->config->get('config_change_text_sticker_newproduct');
+			$data['text_sticker_popular'] = $this->config->get('config_change_text_sticker_popular');
+			$data['text_sticker_topbestseller'] = $this->config->get('config_change_text_sticker_topbestseller');
+			$this->language->load('product/product');
+			$data['icon_open_form_send_order'] = $this->config->get('config_icon_open_form_send_order');
+			$data['color_button_open_form_send_order'] = $this->config->get('config_color_button_open_form_send_order');
+			$data['config_text_open_form_send_order'] = $this->config->get('config_text_open_form_send_order');
+			$data['text_reviews_title'] = $this->language->get('text_reviews_title');
+			$data['config_quickview_btn_name'] = $this->config->get('config_quickview_btn_name');
+			$data['show_stock_status'] = $this->config->get('config_show_stock_status');
+			$data['disable_cart_button'] = $this->config->get('config_disable_cart_button');
+			$data['disable_fastorder_button'] = $this->config->get('config_disable_fastorder_button');
+				$config_disable_cart_button_text = $this->config->get('config_disable_cart_button_text');
+				if(!empty($config_disable_cart_button_text[$this->config->get('config_language_id')]['disable_cart_button_text'])){
+					$data['disable_cart_button_text'] = $config_disable_cart_button_text[$this->config->get('config_language_id')]['disable_cart_button_text'];
+				} else {
+					$data['disable_cart_button_text'] = $this->language->get('disable_cart_button_text');
+				}
+			
+		]]>
+      </add>
+    </operation>
+	<operation>
+      <search>
+        <![CDATA[$data['products'][] = array(]]>
+      </search>
+      <add position="before">
+        <![CDATA[
+					
+					if((isset($product['date_available'])&&(round((strtotime(date("Y-m-d"))-strtotime($product['date_available']))/86400))<=$this->config->get('config_limit_day_newproduct'))) {
+						$sticker_new_prod = true;
+					} else {
+						$sticker_new_prod = false;
+					}
+					if (($this->config->get('config_customer_price') && $this->customer->isLogged()) || !$this->config->get('config_customer_price')) {
+						$price_no_format = $this->tax->calculate($product['price'], $product['tax_class_id'], $this->config->get('config_tax'));
+					} else {
+						$price_no_format = false;
+					}
+
+					if ((float)$product['special']) {
+						$special_no_format = $this->tax->calculate($product['special'], $product['tax_class_id'], $this->config->get('config_tax'));
+					} else {
+						$special_no_format = false;
+					}
+					
+					if ((float)$product['special']) {
+						$special_date_end = $this->model_catalog_product->getDateEnd($product['product_id']);
+					} else {
+						$special_date_end = false;
+					}
+					$options = array();
+					$data['show_options'] = $this->config->get('config_show_options_module');
+					$show_options_required_featured = $this->config->get('config_show_options_required_module');
+				if ($data['show_options']==1) {
+					foreach ($this->model_catalog_product->getProductOptions($product['product_id']) as $option) {
+						$product_option_value_data = array();
+
+						foreach ($option['product_option_value'] as $option_value) {
+							if (!$option_value['subtract'] || ($option_value['quantity'] > 0)) {
+								if ((($this->config->get('config_customer_price') && $this->customer->isLogged()) || !$this->config->get('config_customer_price')) && (float)$option_value['price']) {
+									$option_price = $this->currency->format($this->tax->calculate($option_value['price'], $product['tax_class_id'], $this->config->get('config_tax') ? 'P' : false), $this->session->data['currency']);
+								} else {
+									$option_price = false;
+								}
+
+								$product_option_value_data[] = array(
+									'product_option_value_id' => $option_value['product_option_value_id'],
+									'option_value_id'         => $option_value['option_value_id'],
+									'name'                    => $option_value['name'],
+									'color'                   => $option_value['color'],
+									'image'                   => $option_value['image'] ? $this->model_tool_image->resize($option_value['image'], 50, 50) : '',
+									'price'                   => $option_price,
+									'price_value'             => $this->tax->calculate($option_value['price'], $product['tax_class_id'], $this->config->get('config_tax') ? 'P' : false),
+									'price_prefix'            => $option_value['price_prefix']
+								);
+							}
+						}
+						if($show_options_required_featured ==1) {
+							if($option['required']) {
+								$options[] = array(
+									'product_option_id'    => $option['product_option_id'],
+									'product_option_value' => $product_option_value_data,
+									'option_id'            => $option['option_id'],
+									'name'                 => $option['name'],
+									'type'                 => $option['type'],
+									'status_color_type'    => $option['status_color_type'],
+									'value'                => $option['value'],
+									'required'             => $option['required']
+								);
+							}
+						} else {
+							$options[] = array(
+								'product_option_id'    => $option['product_option_id'],
+								'product_option_value' => $product_option_value_data,
+								'option_id'            => $option['option_id'],
+								'name'                 => $option['name'],
+								'type'                 => $option['type'],
+								'status_color_type'    => $option['status_color_type'],
+								'value'                => $option['value'],
+								'required'             => $option['required']
+							);
+						}
+					}
+				}
+		
+		
+		
+		
+		
+			$results_img = $this->model_catalog_product->getProductImages($product['product_id']);
+			$additional_img = array();
+			if($data['ns_on_off_featured_slider_additional_image'] =='1'){
+				foreach ($results_img as $result_img) {
+					if ($result_img['image']) {	
+						$image_additional = $this->model_tool_image->resize($result_img['image'], $setting['width'], $setting['height']);
+					} else {
+						$image_additional = false;
+					}
+					$additional_img[] = $image_additional;
+				}
+			}
+			$additional_image_hover = '';
+			
+			if($data['ns_on_off_featured_slider_additional_image'] =='2'){
+				foreach ($results_img as $key => $result_img) {
+					if ($key < 1) {
+						$additional_image_hover = $this->model_tool_image->resize($result_img['image'], $setting['width'], $setting['height']);	
+					}
+				}
+			}
+			if ((float)$product['special']) {
+				$price2 = $this->tax->calculate($product['price'], $product['tax_class_id'], $this->config->get('config_tax'));
+				$special2 = $this->tax->calculate($product['special'], $product['tax_class_id'], $this->config->get('config_tax'));
+				$skidka = $special2/($price2/100)-100;
+			} else {
+				$skidka = "";
+			}
+			
+			$top_bestsellers = $this->model_catalog_product->getTopSeller($product['product_id']);
+			$product_quantity = $product['quantity'];
+			$stock_status = $product['stock_status'];
+		]]>
+      </add>
+    </operation>
+		
+	<operation>
+      <search>
+        <![CDATA[$data['products'][] = array(]]>
+      </search>
+      <add position="after">
+        <![CDATA[
+		'options'	  => $options,
+		'sticker_new_prod'  => $sticker_new_prod,
+		'date_end'			=> $special_date_end, 
+		'minimum'     => ($product['minimum'] > 0) ? $product['minimum'] : 1,
+		'price_no_format' 	=> $price_no_format,
+		'special_no_format' => $special_no_format,	
+		'product_quantity' 		=> $product_quantity,
+		'stock_status' 			=> $stock_status,
+		'additional_img' 		=> $additional_img,
+		'additional_image_hover' => $additional_image_hover,
+		'reviews'    			=> sprintf((int)$product['reviews']),
+		'skidka'     			=> round($skidka),
+		'model'     			=> $product['model'],
+		'date_available'		=> $product['date_available'],
+		'viewed'	 			=> $product['viewed'],
+		'top_bestsellers'	 	=> $top_bestsellers['total'],
+		]]>
+      </add>
+    </operation>
+  </file>
+  <file path="catalog/controller/product/product.php">
+		<operation>
+			<search><![CDATA[$this->document->addScript('catalog/view/javascript/jquery/magnific/jquery.magnific-popup.min.js');]]></search>
+			<add position="replace"><![CDATA[]]></add>
+		</operation>
+		<operation>
+			<search><![CDATA[$this->document->addStyle('catalog/view/javascript/jquery/magnific/magnific-popup.css');]]></search>
+			<add position="replace"><![CDATA[]]></add>
+		</operation>
+	</file>
+</modification>

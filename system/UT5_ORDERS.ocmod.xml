@@ -1,0 +1,2125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<modification>
+  <name>NS -> UT5</name>
+  <code>NS -> UT5</code>
+  <version>2.6.1</version>
+  <author>Alex.Konushin(29aleksey)</author>
+  <link></link>
+  <file path="admin/controller/localisation/order_status.php">
+	<operation>
+      <search>
+        <![CDATA[function index()]]>
+      </search>
+      <add position="before">
+        <![CDATA[ 
+		public function setOrderStatusColor() {
+					$json = array();
+			
+					$this->load->language('localisation/order_status');
+			
+					$this->load->model('localisation/order_status');
+			
+					if (isset($this->request->post['order_status_id'])) {
+						$order_status_id = $this->request->post['order_status_id'];
+					} else {
+						$order_status_id = -1;
+						$json['error'] = $this->language->get('error_color');
+					}
+			
+					if (!$json) {									
+						$this->model_localisation_order_status->setOrderStatusColor($order_status_id, $this->request->post['row_color']);
+						$json['success'] = $this->language->get('text_success');
+					} 	
+		}
+		public function setOrderStatusColorText() {
+					$json = array();
+			
+					$this->load->language('localisation/order_status');
+			
+					$this->load->model('localisation/order_status');
+			
+					if (isset($this->request->post['order_status_id'])) {
+						$order_status_id = $this->request->post['order_status_id'];
+					} else {
+						$order_status_id = -1;
+						$json['error'] = $this->language->get('error_color');
+					}			
+					if (!$json) {									
+						$this->model_localisation_order_status->setOrderStatusColorText($order_status_id, $this->request->post['row_color_text']);
+						$json['success'] = $this->language->get('text_success');
+					} 	
+		}
+		public function sendMailThisStatusOnOff() {
+					$json = array();
+			
+					$this->language->load('localisation/order_status');
+			
+					$this->load->model('localisation/order_status');
+			
+					if (isset($this->request->post['order_status_id'])) {
+						$order_status_id = $this->request->post['order_status_id'];
+					} else {
+						$order_status_id = -1;
+						$json['error'] = $this->language->get('error_color');
+					}
+			
+					if (!$json) {									
+						$this->model_localisation_order_status->sendMailThisStatusOnOff($order_status_id, $this->request->post['status_send_on_off']);
+						$json['success'] = $this->language->get('text_success');
+					} 
+					
+					$this->response->setOutput(json_encode($json));		
+				}
+		]]>
+      </add>
+    </operation>
+	<operation>
+      <search>
+        <![CDATA[function getList()]]>
+      </search>
+      <add position="after">
+        <![CDATA[ 
+		$this->document->addScript('view/javascript/newstore/jscolor/jscolor.js');
+		$data['user_token'] = $this->session->data['user_token'];
+		$data['column_select_bg_os'] = $this->language->get('column_select_bg_os');
+		$data['column_select_color_text_os'] = $this->language->get('column_select_color_text_os');
+		$data['column_on_off_send_mail'] = $this->language->get('column_on_off_send_mail');
+		]]>
+      </add>
+    </operation>
+	<operation>
+      <search>
+        <![CDATA['order_status_id' => $result['order_status_id'],]]>
+      </search>
+      <add position="after">
+        <![CDATA[ 
+		'row_color' 				=> $result['row_color'],
+		'row_color_text' 			=> $result['row_color_text'],
+		'status_send_on_off' 		=> $result['status_send_on_off'],
+		]]>
+      </add>
+    </operation>
+  </file>
+  <file path="admin/language/ru-ru/localisation/order_status.php">
+	<operation>
+      <search>
+        <![CDATA[$_['text_list']]]>
+      </search>
+      <add position="before">
+        <![CDATA[ 
+		$_['column_select_bg_os']          			= 'Выбрать Фон';
+		$_['column_select_color_text_os']          	= 'Выбрать Цвет текста';
+		$_['column_on_off_send_mail']          		= 'Вкл / Выкл отправку письма на почту';
+		]]>
+      </add>
+    </operation>
+  </file>
+  <file path="admin/language/en-gb/localisation/order_status.php">
+	<operation>
+      <search>
+        <![CDATA[$_['text_list']]]>
+      </search>
+      <add position="before">
+        <![CDATA[ 
+		$_['column_select_bg_os']          			= 'Select background color';
+		$_['column_select_color_text_os']          	= 'select color text';
+		$_['column_on_off_send_mail']          		= 'On Off Send Mail';
+		]]>
+      </add>
+    </operation>
+  </file>
+  <file path="admin/model/localisation/order_status.php">
+	<operation>
+      <search>
+        <![CDATA[function addOrderStatus]]>
+      </search>
+      <add position="before">
+        <![CDATA[ 
+		public function setOrderStatusColor($order_status_id, $color) {
+			$query = $this->db->query("UPDATE `" . DB_PREFIX . "order_status` SET row_color = '" . $color . "' WHERE order_status_id = '" . (int)$order_status_id . "'");
+		}
+		public function setOrderStatusColorText($order_status_id, $color_text) {
+			$query = $this->db->query("UPDATE `" . DB_PREFIX . "order_status` SET row_color_text = '" . $color_text . "' WHERE order_status_id = '" . (int)$order_status_id . "'");
+		}
+		public function sendMailThisStatusOnOff($order_status_id, $status_send_on_off) {
+		   	$query = $this->db->query("UPDATE `" . DB_PREFIX . "order_status` SET status_send_on_off = '" . $status_send_on_off . "' WHERE order_status_id = '" . (int)$order_status_id . "'");
+		}
+		]]>
+      </add>
+    </operation>
+  </file>
+  <file path="admin/view/template/localisation/order_status_list.twig">
+	<operation>
+      <search>
+        <![CDATA[<td class="text-right">{{ column_action }}</td>]]>
+      </search>
+      <add position="before">
+        <![CDATA[ 
+		<td class="left">{{ column_select_bg_os }}</td>
+		<td class="left">{{ column_select_color_text_os }}</td>
+		<td class="left">{{ column_on_off_send_mail }}</td>
+		]]>
+      </add>
+    </operation>
+	<operation>
+      <search>
+        <![CDATA[<td class="text-left">{{ order_status.name }}</td>]]>
+      </search>
+      <add position="after">
+        <![CDATA[ 
+		<td class="left"><input class="form-control color" type="text" value="{{ order_status.row_color }}" name="colorbox" onChange="setOrderStatusColor({{ order_status.order_status_id }}, this.value)" /></td>
+		<td class="left"><input class="form-control color" type="text" value="{{ order_status.row_color_text }}" name="colorbox_text" onChange="setOrderStatusColorText({{ order_status.order_status_id }}, this.value)" /></td>
+		<td class="left"><input type="checkbox" value="{{ order_status.status_send_on_off }}" {{ order_status.status_send_on_off == "Y" ? "checked" : ""}} onChange="sendMailThisStatusOnOff({{ order_status.order_status_id }}, this.checked ? 'Y' : 'N');" /></td>
+		]]>
+      </add>
+    </operation>
+	<operation>
+      <search>
+        <![CDATA[{{ footer }}]]>
+      </search>
+      <add position="before">
+        <![CDATA[ 
+		<script>
+				function setOrderStatusColor(orderStatusId, rowColor) {
+					$.ajax({
+						url: 'index.php?route=localisation/order_status/setOrderStatusColor&user_token={{ user_token }}',
+						type: 'post',
+						data: '&order_status_id=' + orderStatusId + '&row_color=' + rowColor,
+						dataType: 'json',
+						beforeSend: function() {
+							$('.success, .warning, .attention, .error').remove();
+						},							
+						success: function(json) {
+							$('.success, .warning, .attention, .information, .error').remove();			
+							if (json['error']) {
+								$('.box').before('<div class="success" style="display: none;">' + json['error'] + '</div>');
+								$('.warning').fadeIn('slow');				
+							}	
+				
+						}
+					});
+				}
+				function setOrderStatusColorText(orderStatusId, rowColorText) {
+					$.ajax({
+						url: 'index.php?route=localisation/order_status/setOrderStatusColorText&user_token={{ user_token }}',
+						type: 'post',
+						data: '&order_status_id=' + orderStatusId + '&row_color_text=' + rowColorText,
+						dataType: 'json',
+						beforeSend: function() {
+							$('.success, .warning, .attention, .error').remove();
+						},							
+						success: function(json) {
+							$('.success, .warning, .attention, .information, .error').remove();			
+							if (json['error']) {
+								$('.box').before('<div class="success" style="display: none;">' + json['error'] + '</div>');
+								$('.warning').fadeIn('slow');				
+							}	
+				
+						}
+					});
+				}
+				function sendMailThisStatusOnOff(orderStatusId, status_send_on_off) {
+					$.ajax({
+						url: 'index.php?route=localisation/order_status/sendMailThisStatusOnOff&user_token={{ user_token }}',
+						type: 'post',
+						data: '&order_status_id=' + orderStatusId + '&status_send_on_off=' + status_send_on_off,
+						dataType: 'json',
+						beforeSend: function() {
+							$('.success, .warning, .attention, .error').remove();
+						},							
+						success: function(json) {
+							$('.success, .warning, .attention, .information, .error').remove();				
+							if (json['success']) {				
+							}	
+							if (json['error']) {
+								$('.box').before('<div class="success" style="display: none;">' + json['error'] + '</div>');
+								$('.warning').fadeIn('slow');				
+							}	
+				
+						}
+					});
+				}
+		</script>		
+		]]>
+      </add>
+    </operation>
+  </file>
+  <file path="admin/view/template/localisation/order_status_form.twig">
+	<operation>
+      <search>
+        <![CDATA[</form>]]>
+      </search>
+      <add position="before">
+        <![CDATA[ 
+		<script src="view/javascript/summernote/summernote.js"></script>
+		<link href="view/javascript/summernote/summernote.css" rel="stylesheet" />
+		<script src="view/javascript/summernote/opencart.js"></script>
+		 <ul class="nav nav-tabs" id="language">
+            {% for language in languages %} 
+				<li><a href="#language{{ language['language_id'] }}" data-toggle="tab"><img src="language/{{ language['code'] }}/{{ language['code'] }}.png" /> {{ language['name'] }}</a></li>
+            {% endfor %} 
+        </ul>
+			<div class="tab-content">
+			{% for language in languages %} 
+                <div class="tab-pane" id="language{{ language['language_id'] }}">
+					<div class="form-group">
+						<label class="col-sm-2 control-label" for="ttn_subject{{ language['language_id'] }}"><b>{{ ttn_subject_text }}</b><br />{{ ttn_subject_text_variables }}</label>
+						<div class="col-sm-10">
+							<input class="form-control" type="text" value="{{ order_status[language['language_id']] is defined ? order_status[language['language_id']]['order_status_subject'] : '' }}" name="order_status[{{ language['language_id'] }}][order_status_subject]" id="order_status_subject{{ language['language_id'] }}"></input>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label" for="ttn_description{{ language['language_id'] }}"><b>{{ text_email_template }}</b><br />{{ ttn_subject_text_variables }}
+						<div class="container{{ language['language_id'] }}">
+								<a href="javascript:PopUpShow{{ language['language_id'] }}()">{{ list_of_variables_text }}</a>
+						</div>
+						<div class="popup_variables list_of_variables{{ language['language_id'] }} close_variable">{{ list_of_variables_entry }}</div>
+						</label>
+						<div class="col-sm-10">
+							<textarea class="form-control" data-toggle="summernote" name="order_status[{{ language['language_id'] }}][os_email_template]" id="os_email_template{{ language['language_id'] }}">{{ order_status[language['language_id']] is defined ? order_status[language['language_id']]['os_email_template'] : '' }}</textarea>
+						</div>
+					</div>
+				</div>
+			{% endfor %} 
+			</div>
+		]]>
+      </add>
+    </operation>
+	<operation>
+      <search>
+        <![CDATA[{{ footer }}]]>
+      </search>
+      <add position="before">
+        <![CDATA[ 
+<script src="view/javascript/ut5/popup.js"></script>
+<script>
+{% for language in languages %} 
+	function PopUpShow{{ language.language_id }}(){
+		$('.list_of_variables{{ language.language_id }}').popup('show');
+	};	
+{% endfor %}
+	
+</script>
+<style>
+.close_variable {
+	display:none;
+}			
+.popup_variables {width:700px;max-width:90%;background:#ffffff;border-radius:4px;padding:10px;}			
+</style>				
+  <script><!--
+$('#language a:first').tab('show');
+//--></script></div>
+		]]>
+      </add>
+    </operation>
+  </file>
+  <file path="admin/controller/localisation/order_status.php">
+            <operation>
+                <search><![CDATA[function getForm() {]]></search>
+                <add position="after"><![CDATA[						
+					$data['ttn_subject_text'] = $this->language->get('ttn_subject_text');
+					$data['ttn_subject_text_variables'] = $this->language->get('ttn_subject_text_variables');
+					$data['list_of_variables'] = $this->language->get('list_of_variables');
+					$data['list_of_variables_text'] = $this->language->get('list_of_variables_text');
+					$data['list_of_variables_entry'] = $this->language->get('list_of_variables_entry');
+					$data['text_email_template'] = $this->language->get('text_email_template');
+					$data['it_supports_variable_or_html_tags'] = $this->language->get('it_supports_variable_or_html_tags');	
+                ]]></add>
+            </operation>
+    </file>
+	<file path="admin/model/localisation/order_status.php">
+        <operation>
+            <search><![CDATA[name = '" . $this->db->escape($value['name']) . "']]></search>
+               <add position="replace"><![CDATA[name = '" . $this->db->escape($value['name']) . "', order_status_subject = '" . $this->db->escape($value['order_status_subject']) . "', os_email_template = '" . $this->db->escape($value['os_email_template']) . "']]></add>
+       </operation>
+    </file>
+	<file path="admin/model/localisation/order_status.php">
+        <operation>
+            <search><![CDATA['name' => $result['name']]]></search>
+                <add  position="replace"><![CDATA['name' => $result['name'], 'order_status_subject' => $result['order_status_subject'], 'os_email_template' => $result['os_email_template']]]></add>
+        </operation>
+    </file>
+	
+  <file path="admin/language/ru-ru/localisation/order_status.php">
+            <operation>
+                <search><![CDATA[$_['entry_name']]]></search>
+                <add position="before"><![CDATA[						
+$_['text_email_template'] = ' Шаблон письма';
+$_['it_supports_variable_or_html_tags'] = ' Поддерживает переменные и html теги';
+$_['text_close'] = 'Закрыть';
+$_['ttn_subject_text'] = 'Тема письма';
+$_['ttn_subject_text_variables'] = 'Поддерживает переменные';
+$_['list_of_variables'] = 'Список Переменных';
+$_['list_of_variables_text'] = 'Список Переменных';
+$_['list_of_variables_entry'] = '<table><tr><td>
+<br/><b>~number_ttn~</b> - номер ТТН
+<br/><b>~order_id~</b> - номер заказа
+<br/><b>~totals~</b> - сумма заказа в текущей валюте
+<br/><b>~invoice_no~</b> - номер счета      
+<br/><b>~invoice_prefix~</b> - префикс счета    
+<br/><b>~store_id~</b> - id магазина          
+<br/><b>~store_name~</b> - название магазина          
+<br/><b>~store_url~</b> - url магазина           			
+<br/><b>~customer_id~</b> - id покупателя 
+<br/><b>~firstname~</b> - имя
+<br/><b>~lastname~</b> - фамилия               
+<br/><b>~telephone~</b> - телефон      
+<br/><b>~fax~</b> - факс
+<br/><b>~email~</b> - почта              
+<br/><b>~payment_firstname~</b> - имя плательщика      
+<br/><b>~payment_lastname~</b> - фамилия плательщика
+<br/><b>~payment_company~</b> - компания плательщика
+<br/><b>~payment_address_1~</b> - адрес плательщика
+<br/><b>~payment_address_2~</b> - адрес2 плательщика
+<br/><b>~payment_postcode~</b> - индекс плательщика
+<br/><b>~payment_city~</b> - город плательщика
+<br/><b>~payment_zone_id~</b> - id гео зоны плательщика
+<br/><b>~payment_zone~</b> - гео зона плательщика
+<br/><b>~payment_zone_code~</b> - код зоны плательщика
+<br/><b>~payment_country_id~</b> - id страны плательщика 
+<br/><b>~payment_country~</b> - страна плательщика
+<br/><b>~payment_iso_code_2~</b> - iso код плательщика
+<br/><b>~payment_iso_code_3~</b>  - iso код плательщика    
+<br/><b>~payment_address_format~</b> - формат адреса плательщика
+<br/><b>~payment_method~</b> - метод оплаты
+<br/><b>~payment_code~</b> - код оплаты
+</td><td>
+<br/><b>~shipping_firstname~</b> - имя для доставки
+<br/><b>~shipping_lastname~</b> - фамилия для доставки
+<br/><b>~shipping_company~</b> - компания для доставки  
+<br/><b>~shipping_address_1~</b> - адрес доставки
+<br/><b>~shipping_address_2~</b> - адрес2 доставки
+<br/><b>~shipping_postcode~</b> - индекс для доставки
+<br/><b>~shipping_city~</b> - город доставки       
+<br/><b>~shipping_zone_id~</b> - id гео зоны доставки
+<br/><b>~shipping_zone~</b> - гео зона доставки
+<br/><b>~shipping_zone_code~</b>  - код зоны доставки
+<br/><b>~shipping_country_id~</b> - id страны доставки
+<br/><b>~shipping_country~</b> - страна доставки
+<br/><b>~shipping_iso_code_2~</b> - iso код доставки
+<br/><b>~shipping_iso_code_3~</b> - iso код доставки 
+<br/><b>~shipping_address_format~</b> - формат адреса доставки
+<br/><b>~shipping_method~</b> - метод доставки
+<br/><b>~shipping_code~</b> - код метода доставки     
+<br/><b>~comment~</b> - комментарий        
+<br/><b>~total~</b> - итого (в валюте по умолчанию)         
+<br/><b>~order_status_id~</b> - id статуса заказа         
+<br/><b>~order_status~</b> - статус заказа
+<br/><b>~language_id~</b> - id языка
+<br/><b>~language_code~</b> - код языка  
+<br/><b>~language_filename~</b> - файл языка
+<br/><b>~language_directory~</b> - дирректория языка
+<br/><b>~currency_id~</b> - id валюты
+<br/><b>~currency_code~</b> - код валюты 
+<br/><b>~currency_value~</b> - курс валюты
+<br/><b>~ip~</b> - ip
+<br/><b>~forwarded_ip~</b> - переадресованный ip            
+<br/><b>~user_agent~</b> - юзер агент          
+<br/><b>~accept_language~</b> - язык 		
+<br/><b>~date_modified~</b> - дата изменения заказа   
+<br/><b>~date_added~</b> - дата создания заказа
+</td></tr></table><br/>
+Некоторые переменные могут не работать, зависит от версии магазина.
+';
+                ]]></add>
+            </operation>
+        </file>
+		<file path="admin/language/en-gb/localisation/order_status.php">
+            <operation>
+                <search><![CDATA[$_['entry_name']]]></search>
+                <add position="before"><![CDATA[						
+$_['text_email_template'] 	= ' letters Template';
+$_['it_supports_variable_or_html_tags'] 	= ' It supports variables and html tags';
+$_['text_close'] 							= 'close';
+$_['ttn_subject_text'] 						= 'Letter subject';
+$_['ttn_subject_text_variables'] = 'It supports variables';
+$_['list_of_variables'] 					= 'List of Variables';
+$_['list_of_variables_text'] 				= 'List of Variables';
+$_['list_of_variables_entry'] 				= '<table><tr><td>
+<br/><b>~number_ttn~</b> - number ttn
+<br/><b>~order_id~</b> - order id
+<br/><b>~totals~</b> - totals
+<br/><b>~invoice_no~</b> - invoice no     
+<br/><b>~invoice_prefix~</b> - invoice prefix    
+<br/><b>~store_id~</b> - store id         
+<br/><b>~store_name~</b> - store name          
+<br/><b>~store_url~</b> - store url          			
+<br/><b>~customer_id~</b> - customer id 
+<br/><b>~firstname~</b> - firstname
+<br/><b>~lastname~</b> - lastname               
+<br/><b>~telephone~</b> - telephone      
+<br/><b>~fax~</b> - fax
+<br/><b>~email~</b> - email              
+<br/><b>~payment_firstname~</b> - payment firstname    
+<br/><b>~payment_lastname~</b> - payment lastname
+<br/><b>~payment_company~</b> - payment company
+<br/><b>~payment_address_1~</b> - payment address_1
+<br/><b>~payment_address_2~</b> - payment address_2
+<br/><b>~payment_postcode~</b> - payment postcode
+<br/><b>~payment_city~</b> - payment city
+<br/><b>~payment_zone_id~</b> - payment zone id
+<br/><b>~payment_zone~</b> - payment zone
+<br/><b>~payment_zone_code~</b> - payment zone code
+<br/><b>~payment_country_id~</b> - payment country id
+<br/><b>~payment_country~</b> - payment country
+<br/><b>~payment_iso_code_2~</b> - payment iso code 2
+<br/><b>~payment_iso_code_3~</b>  - payment iso code 3  
+<br/><b>~payment_address_format~</b> - payment address format
+<br/><b>~payment_method~</b> - payment method
+<br/><b>~payment_code~</b> - payment code
+</td><td>
+<br/><b>~shipping_firstname~</b> - shipping firstname
+<br/><b>~shipping_lastname~</b> - shipping lastname
+<br/><b>~shipping_company~</b> - shipping company 
+<br/><b>~shipping_address_1~</b> - shipping address 1
+<br/><b>~shipping_address_2~</b> - shipping address 2
+<br/><b>~shipping_postcode~</b> - shipping postcode
+<br/><b>~shipping_city~</b> - shipping city       
+<br/><b>~shipping_zone_id~</b> - shipping zone id
+<br/><b>~shipping_zone~</b> - shipping zone
+<br/><b>~shipping_zone_code~</b>  - shipping zone code
+<br/><b>~shipping_country_id~</b> - shipping country id
+<br/><b>~shipping_country~</b> - shipping country
+<br/><b>~shipping_iso_code_2~</b> - shipping iso code 2
+<br/><b>~shipping_iso_code_3~</b> - shipping iso code 3 
+<br/><b>~shipping_address_format~</b> - shipping address format
+<br/><b>~shipping_method~</b> - shipping method
+<br/><b>~shipping_code~</b> - shipping code     
+<br/><b>~comment~</b> - comment        
+<br/><b>~total~</b> - total         
+<br/><b>~order_status_id~</b> - order status id         
+<br/><b>~order_status~</b> - order status
+<br/><b>~language_id~</b> - language id
+<br/><b>~language_code~</b> - language code  
+<br/><b>~language_filename~</b> - language filename
+<br/><b>~language_directory~</b> - language directory
+<br/><b>~currency_id~</b> - currency id
+<br/><b>~currency_code~</b> - currency code 
+<br/><b>~currency_value~</b> - currency value
+<br/><b>~ip~</b> - ip
+<br/><b>~forwarded_ip~</b> - forwarded ip            
+<br/><b>~user_agent~</b> - user agent         
+<br/><b>~accept_language~</b> - accept language		
+<br/><b>~date_modified~</b> - date modified   
+<br/><b>~date_added~</b> - date added
+</td></tr></table><br/>
+Some variables may not work, depending on the version store.
+';
+                ]]></add>
+            </operation>
+        </file>
+		
+		
+		
+		
+		
+  <!--ORDER PAGE SETTINGS-->
+  <file path="admin/view/template/sale/order_list.twig">
+  
+  <operation>
+      <search index="1">
+        <![CDATA[<div class="panel-body">]]>
+      </search>
+      <add position="replace">
+        <![CDATA[ 
+		<div class="panel-body table-responsive">
+		]]>
+      </add>
+    </operation>
+	<operation>
+      <search>
+        <![CDATA[<button type="button" id="button-filter" class="btn btn-default"><i class="fa fa-filter"></i> {{ button_filter }}</button>]]>
+      </search>
+      <add position="before" offset="1">
+        <![CDATA[ 
+		
+			
+				<div class="form-group">
+					<label class="control-label" for="input-order-id">{{ entry_build_yes_no }}</label>
+					<select name="filter_build_price_yes_no" class="form-control">
+						<option value=""></option>
+						<option value="Y" {{ filter_build_price_yes_no == 'Y' ? 'selected' : '' }}>{{ text_yes }}</option>
+						<option value="N" {{ filter_build_price_yes_no == 'N' ? 'selected' : ''}}>{{ text_no }}</option>
+					</select>
+				</div>
+			
+			
+				<div class="form-group">
+					<label class="control-label" for="input-order-id">{{ entry_rise_yes_no }}</label>
+					<select name="filter_rise_product_yes_no" class="form-control">
+						<option value=""></option>
+						<option value="Y" {{ filter_rise_product_yes_no == 'Y' ? 'selected' : '' }}>{{ text_yes }}</option>
+						<option value="N" {{ filter_rise_product_yes_no == 'N' ? 'selected' : ''}}>{{ text_no }}</option>
+					</select>
+				</div>
+			
+				<div class="form-group">
+					<label class="control-label" for="input-total">{{ entry_delivery_price }}</label>
+					<input type="text" name="filter_delivery_price" value="{{ filter_delivery_price }}" placeholder="{{ entry_delivery_price }}" id="input-total" class="form-control" />
+				</div>
+            
+				<div class="form-group">
+					<label class="control-label" for="input-total">{{ entry_calculated_summ }}</label>
+					<input type="text" name="filter_calculated_summ" value="{{ filter_calculated_summ }}" placeholder="{{ entry_calculated_summ }}" id="input-total" class="form-control" />
+				</div>
+           
+				<div class="form-group">
+					<label class="control-label" for="input-order-id">{{ entry_manager_process_orders }}</label>
+					<select name="filter_manager_process_orders" class="form-control">
+						<option value=""></option>
+						{% for manager in users %}
+							 {% if (manager['username'] == filter_manager_process_orders) %} 
+								<option value="{{ manager['username']}}" selected="selected">{{ manager['username']}}</option>
+							{% else %} 
+								<option value="{{ manager['username']}}">{{ manager['username']}}</option>
+							{% endif %} 
+						{% endfor %} 
+					</select>
+				</div>
+			
+				<div class="form-group">
+					<label class="control-label" for="filter_date_added_start">{{ entry_date_added_start }}</label>
+					<div class="input-group date">
+						<input type="text" name="filter_date_added_start" value="{{ filter_date_added_start }}" data-date-format="YYYY-MM-DD" id="input-date-added" class="form-control" />
+						<span class="input-group-btn">
+						<button type="button" class="btn btn-default"><i class="fa fa-calendar"></i></button>
+						</span></div>
+				</div>
+            
+				<div class="form-group">
+					<label class="control-label" for="filter_date_added_end">{{ entry_date_added_end }}</label>
+					<div class="input-group date">
+						<input type="text" name="filter_date_added_end" value="{{ filter_date_added_end }}" data-date-format="YYYY-MM-DD" id="filter_date_added_end" class="form-control" />
+						<span class="input-group-btn">
+						<button type="button" class="btn btn-default"><i class="fa fa-calendar"></i></button>
+						</span></div>
+				</div>
+            
+		
+		]]>
+      </add>
+    </operation>
+	<operation>
+      <search>
+        <![CDATA[var filter_order_id = $('input[name=\'filter_order_id\']').val();]]>
+      </search>
+      <add position="before">
+        <![CDATA[ 
+		var filter_build_price_yes_no = $('select[name=\'filter_build_price_yes_no\']').val();
+
+		if (filter_build_price_yes_no) {
+			url += '&filter_build_price_yes_no=' + encodeURIComponent(filter_build_price_yes_no);
+		}
+		var filter_rise_product_yes_no = $('select[name=\'filter_rise_product_yes_no\']').val();
+
+		if (filter_rise_product_yes_no) {
+			url += '&filter_rise_product_yes_no=' + encodeURIComponent(filter_rise_product_yes_no);
+		}
+		var filter_delivery_price = $('input[name=\'filter_delivery_price\']').val();
+
+		if (filter_delivery_price) {
+			url += '&filter_delivery_price=' + encodeURIComponent(filter_delivery_price);
+		}
+		var filter_calculated_summ = $('input[name=\'filter_calculated_summ\']').val();
+
+		if (filter_calculated_summ) {
+			url += '&filter_calculated_summ=' + encodeURIComponent(filter_calculated_summ);
+		}
+		var filter_manager_process_orders = $('select[name=\'filter_manager_process_orders\']').val();
+
+		if (filter_manager_process_orders) {
+			url += '&filter_manager_process_orders=' + encodeURIComponent(filter_manager_process_orders);
+		}
+		
+		var filter_date_added_start = $('input[name=\'filter_date_added_start\']').val();
+
+		if (filter_date_added_start) {
+			url += '&filter_date_added_start=' + encodeURIComponent(filter_date_added_start);
+		}
+		
+		var filter_date_added_end = $('input[name=\'filter_date_added_end\']').val();
+
+		if (filter_date_added_end) {
+			url += '&filter_date_added_end=' + encodeURIComponent(filter_date_added_end);
+		}
+		]]>
+      </add>
+    </operation>
+	<operation>
+      <search>
+        <![CDATA[<td class="text-left">{% if sort == 'order_status' %} <a href="{{ sort_status }}" class="{{ order|lower }}">{{ column_status }}</a> {% else %} <a href="{{ sort_status }}">{{ column_status }}</a> {% endif %}</td>]]>
+      </search>
+      <add position="before">
+        <![CDATA[ 
+		{% if (on_off_column_product != '0') %}<td>{{ text_column_products }}</td>{% endif %} 
+		{% if (on_off_column_rise_product != '0') %}<td>{{ text_column_rise_product }}</td>{% endif %} 
+		{% if (on_off_column_build != '0') %}<td>{{ text_column_build_price }}</td>{% endif %} 
+		{% if (on_off_column_delivery_price != '0') %}<td>{{ text_column_delivery_price }}</td>{% endif %} 
+		{% if (on_off_column_price_purchase != '0') %}<td>{{ text_column_price_purchase }}</td>{% endif %}	
+		{% if (on_off_column_total_profit != '0') %}<td>{{ text_column_total_profit }}</td>{% endif %} 
+		{% if (on_off_column_send_ttn_email != '0') %}<td>{{ text_column_send_ttn_email }}</td>{% endif %} 
+		{% if (on_off_column_comment_manager != '0') %}<td>{{ text_column_comment_manager }}</td>{% endif %}		
+		{% if (on_off_column_manager_process_orders != '0') %}<td>{{ text_column_manager_process_orders }}</td>{% endif %}
+		
+		]]>
+      </add>
+    </operation>
+	<operation>
+      <search>
+        <![CDATA[{% for order in orders %}]]>
+      </search>
+      <add position="replace" offset="1">
+        <![CDATA[ 
+		{% for order in orders %}
+		<tr class="salerow" id="row_{{ order['order_id'] }}" style="color: {{ order['row_color_text'] ? order['row_color_text'] : '#666666' }} !important; background-color: {{ order['row_color'] ? order['row_color'] : '#F4F4F8' }} !important;">
+		]]>
+      </add>
+    </operation>
+	<operation>
+      <search>
+        <![CDATA[<td class="text-left">{{ order.customer }}</td>]]>
+      </search>
+      <add position="replace">
+        <![CDATA[ 
+				<td class="text-left" style="min-width:210px;">
+					<div><i class="fa fa-user fa-fw"></i> {{ order['customer'] }}</div>
+					{% if (order['shipping_city']) %}<div><i class="fa fa-globe fa-fw"></i> {{ order['shipping_city'] }}</div>{% endif %} 
+					{% if (order['shipping_address_1']) %}<div><i class="fa fa-home fa-fw"></i> {{ order['shipping_address_1'] }}</div>{% endif %} 
+					{% if (order['telephone']) %}<div><i class="fa fa-phone fa-fw"></i> {{ order['telephone'] }}</div>{% endif %} 
+					{% if (order['email']) %}<div><i class="fa fa-envelope-o fa-fw"></i> {{ order['email'] }}	</div>{% endif %} 
+					{% if (on_off_order_payment_method != '0') %}{% if (order['payment_method']) %}<div><i class="fa fa-credit-card fa-fw"></i> {{ order['payment_method'] }}</div>{% endif %}{% endif %} 
+					{% if (on_off_order_shipping_method != '0') %}{% if (order['shipping_method']) %}<div><i class="fa fa-truck fa-fw"></i> {{ order['shipping_method'] }}</div>{% endif %}{% endif %} 
+				</td>
+				
+				
+				{% if (on_off_column_product != '0') %} 
+				  <td class="text-left" style="min-width:300px;">
+				  <div>
+						{% set i = 0 %}
+						{% for product in order['products'] %} 
+						<div class="product_cont_{{ order['order_id'] }} {% if (i > 0) %}cl hid {% endif %}">
+						<div><a href="{{ product['href'] }}" target="_blank">{{ product['name'] }}</a></div>
+						<div class="col-sm-3">
+							{% if (product['thumb']) %}<div style="float: left;"><img style="border: 1px solid #DDDDDD; margin-right: 3px;" src="{{ product['thumb'] }}" id="image" /></div>{% endif %} 
+						</div>
+						<div class="col-sm-9">
+							<div style="font-weight:bold;">{{ product['price'] }} x {{ product['quantity'] }}</div>
+							{% if (on_off_model_product != '0') %}<div><span style="font-weight:bold;">{{ text_product_model }}</span> - {{ product['model'] }}</div>{% endif %} 
+							{% if (on_off_sku_product != '0') %}{% if (product['sku'] != '') %}<div><span style="font-weight:bold;">{{ text_product_sku }}</span> - {{ product['sku'] }}</div>{% endif %}{% endif %} 
+							{% if (on_off_upc_product != '0') %}{% if (product['upc'] != '') %}<div><span style="font-weight:bold;">{{ text_product_upc }}</span> - {{ product['upc'] }}</div>{% endif %}{% endif %} 
+							<div class="options-product">
+								{% for option in product['option'] %} 
+								{% if (option['type'] != 'file') %} 
+								&nbsp;<small> - {{ option['name'] }}: {{ option['value'] }}</small>
+								{% else %} 
+								&nbsp;<small> - {{ option['name'] }}: <a href="{{ option['href'] }}">{{ option['value'] }}</a></small>
+								{% endif %}</br>
+								{% endfor %} 
+							</div>
+						</div>
+							<div class="clearfix"></div><br />
+							{% set i = i + 1 %}	
+						</div>	
+						{% endfor %} 
+						
+						{% if (i > 1) %}
+							   <div class="btn btn-default click_pr_btn_{{ order['order_id'] }} open_all_product"></div>
+						{% endif %} 
+						</div>	
+					<script>
+					$(document).ready(function() { 
+						$(".click_pr_btn_{{ order['order_id'] }}").click(function(){ 
+							$('.product_cont_{{ order['order_id'] }}.cl').toggleClass('hid');
+							$('.click_pr_btn_{{ order['order_id'] }}').toggleClass('active');
+						});
+					});
+					</script>
+					
+				  </td>
+				  {% endif %}
+				  
+				   <td style="min-width:220px; {% if (on_off_column_rise_product == '0') %} display:none;{% endif %}">
+				  <input style="width:10%; display:inline-block;" type="checkbox" value="{{ order['rise_product_yes_no'] }}" {{ order['rise_product_yes_no'] == "Y" ? "checked" : ""}} onChange="updateRiseProduct({{ order['order_id'] }}, this.checked ? 'Y' : 'N');" />
+				  <select onChange="savePriceZak({{ order['order_id'] }}, this.value);" class="rise_product_price_prefix_{{ order['order_id'] }} form-control" style="width:40%; display:inline-block;" name="rise_product_price_prefix">					
+					{% if (order['rise_product_price_prefix'] == '+') %} 
+						<option value="+" selected="selected">{{ "+" }}</option>
+						<option value="-">{{ "-" }}</option>
+					{% else %} 
+						<option value="+">{{ "+" }}</option>
+						<option value="-" selected="selected">{{ "-" }}</option>
+					{% endif %}			
+				  </select>
+				  <input style="width:40%; display:inline-block;" class='rise_product_price_{{ order['order_id'] }} form-control' value="{{ order['rise_product_price']}}" contenteditable="true" onBlur="savePriceZak({{ order['order_id'] }}, this.value);"></input>
+				  </td>
+				  
+				 
+				  <td style="min-width:220px; {% if (on_off_column_build == '0') %}display:none;{% endif %}">
+				  <input style="width:10%; display:inline-block;" type="checkbox" value="{{ order['build_price_yes_no'] }}" {{ order['build_price_yes_no'] == "Y" ? "checked" : ""}} onChange="updateBuild({{ order['order_id'] }}, this.checked ? 'Y' : 'N');" />
+				  <select onChange="savePriceZak({{ order['order_id'] }}, this.value);" class="build_price_prefix_{{ order['order_id'] }} form-control" style="width:40%; display:inline-block;" name="build_price_prefix">					
+					{% if (order['build_price_prefix'] == '+') %} 
+						<option value="+" selected="selected">{{ "+" }}</option>
+						<option value="-">{{ "-" }}</option>
+					{% else %} 
+						<option value="+">{{ "+" }}</option>
+						<option value="-" selected="selected">{{ "-" }}</option>
+					{% endif %} 
+				  </select>
+				  <input style="width:40%; display:inline-block;" class='build_price_{{ order['order_id'] }} form-control' value="{{ order['build_price']}}" contenteditable="true" onBlur="savePriceZak({{ order['order_id'] }}, this.value);"></input>
+				  </td>
+				
+				  
+				  <td style="min-width:110px; {% if (on_off_column_delivery_price == '0') %}display:none;{% endif %}">
+				  <input class='delivery_price_{{ order['order_id'] }} price_2 form-control' value="{{ order['delivery_price']}}" contenteditable="true" onBlur="savePriceZak({{ order['order_id'] }}, this.value);"></input>
+				  </td>
+				  
+				  
+				  <td style="min-width:110px; {% if (on_off_column_price_purchase == '0') %} display:none;{% endif %}">
+					{% for product in order['products'] %} 
+				  	<input class="price_zak_{{ product['order_id'] }} form-control price_zak" contenteditable="true" onBlur="savePriceZak({{ product['order_id'] }}, this.value, '{{ product['product_id'] }}');" sum="{{ product['quantity'] }}" value="{{ product['price_zak'] }}"></input>
+					{% endfor %} 
+				  </td>
+				  
+				  {% if (on_off_column_total_profit != '0') %} 
+					<td id="calculated_summ_{{ order['order_id'] }}">{{ order['calculated_summ'] }}</td>
+				  {% endif %} 
+				  {% if (on_off_column_send_ttn_email != '0') %} 
+				  <td style="min-width:250px;">
+					 <button style="margin-bottom:10px;" onclick="sendTTN({{ order['order_id'] }});" type="button" id="button-customer_{{ order['order_id'] }}" data-loading-text="{{ text_loading }}" class="btn btn-primary"><i class="fa fa-envelope-o"></i> {{ text_btn_send_ttn }}</button>
+						<textarea  id='number_ttn_{{ order['order_id'] }}' class="form-control ttn_send" contenteditable="true" onBlur="saveTTN({{ order['order_id'] }}, this.value);" value="{{ order['text_ttn'] }}">{{ order['text_ttn'] }}</textarea>
+					<input type="hidden" id="email_{{ order['order_id'] }}" value="{{ order['email'] }}"></input>
+				 </td>
+				  {% endif %} 
+				 {% if (on_off_column_comment_manager != '0') %} 
+				  <td style="min-width:250px;">
+					<textarea  id='comment_manager_{{ order['order_id'] }}' class="form-control comment_manager" contenteditable="true" onBlur="saveCommentManager({{ order['order_id'] }}, this.value);" value="{{ order['comment_manager'] }}">{{ order['comment_manager'] }}</textarea>
+				  </td>
+				  {% endif %} 
+				  
+				  
+				  {% if (on_off_column_manager_process_orders != '0') %} 
+				  <td style="min-width:150px;"><div id='note4_{{ order['order_id'] }}'  >
+							<select class="form-control" name="username" onChange="saveManagerUser({{ order['order_id'] }}, this.value);">
+							{% if (order['manager_process_orders'] != '') %} 
+							<option value="{{ order['manager_process_orders'] }}">{{ order['manager_process_orders'] }}</option>
+							{% else %} 
+							<option value=""></option>
+							{% endif %} 
+							{% for user in users %}
+							<option value="{{ user['username']}}">{{ user['username']}}</option>
+							{% endfor %}
+							</select>
+						</div> </td>
+					{% endif %}	
+		]]>
+      </add>
+    </operation>
+	<operation>
+      <search>
+        <![CDATA[<td class="text-left">{{ order.order_status }}</td>]]>
+      </search>
+      <add position="replace">
+        <![CDATA[ 
+		<td class="text-left" style="min-width:200px;">
+			<div class="input-group"> 
+				<span class="input-group-addon">
+					<input data-toggle="tooltip" title="{{ entry_notify }}" name="notify" value="1" id="input-notify-{{ order['order_id'] }}" type="checkbox">
+				</span>	
+					<select class="form-control" name="order_status_select" onChange="ChangeHistory({{ order['order_id'] }}, this.value,'{{ logged }}');setOrderStatus({{ order['order_id'] }}, this.value,'{{ logged }}');">
+		                  {% for order_status in order_statuses %} 
+		                  {% if (order_status['order_status_id'] == order['order_status_id']) %} 
+		                  <option value="{{ order_status['order_status_id'] }}" selected="selected">{{ order_status['name'] }}</option>
+		                  {% else %} 
+		                  <option value="{{ order_status['order_status_id'] }}">{{ order_status['name'] }}</option>
+		                  {% endif %} 
+		                  {% endfor %} 
+		            </select>
+			</div>
+		</td>
+			
+		]]>
+      </add>
+    </operation>
+	<operation>
+      <search>
+        <![CDATA[<td class="text-left">{{ order.date_added }}</td>]]>
+      </search>
+      <add position="replace">
+        <![CDATA[<td class="text-left">{{ order.time_date_added }}</td>]]>
+      </add>
+    </operation>
+	
+	<operation>
+      <search>
+        <![CDATA[{{ footer }}]]>
+      </search>
+      <add position="after">
+        <![CDATA[
+		<style>
+					.cl.hid {
+						display:none;
+					}
+					.cl {
+						display:block;
+					}
+					.open_all_product {
+						background:#fff;
+						border:1px solid #d9d9d9;
+						border-radius:5px;
+						text-align:center;
+						position:relative;
+						height:20px;
+						width:100%;
+						
+					}
+					.open_all_product:before {
+						width: 0; 
+						height: 0; 
+						border-left: 5px solid transparent;
+						border-right: 5px solid transparent;
+						border-top: 5px solid #000;
+						content:"";
+						position:absolute;
+						top:7px;
+					}
+					.open_all_product.active:after {
+						width: 0; 
+						height: 0; 
+						border-left: 5px solid transparent;
+						border-right: 5px solid transparent;
+						border-bottom: 5px solid #000;
+						content:"";
+						position:absolute;
+						top:7px;
+					}
+					.open_all_product.active:before {
+						width: 0; 
+						height: 0; 
+						border-left: 0px solid transparent;
+						border-right: 0px solid transparent;
+						border-bottom: 0px solid #000;
+						content:"";
+						position:absolute;
+						top:5px;
+					}
+					.options-product {
+						word-wrap:break-word;
+					}
+				</style>
+		
+		<script>
+		
+		$(document).ready(function() {
+		var table_out_width = $('.table').outerWidth();
+		var table_responsive = $('.table').parent().parent().outerWidth();
+		
+		if ($('.table').outerWidth() > $('.table').parent().parent().outerWidth()) {
+	
+				var html = '<div class="joystick shadow"><div class="joystick_left"></div><div class="joystick_right"></div></div>';
+				$('.table').parent().parent().prepend(html);
+				$('.joystick').hover(
+					function () { $(this).animate({'opacity':'1.0'}, 300); },
+					function () { $(this).animate({'opacity':'0.5'}, 300); }
+				);
+				$(document).on('click', '.joystick_left, .joystick_right', function () {
+					var this_ = $(this);
+					var width = $('.table').parent().outerWidth();
+					var scroll_left = $('.table').parent().scrollLeft();
+					
+					if (this_.attr('class') == 'joystick_left') {
+						$('.table').parent().animate({'scrollLeft':(scroll_left - 400)}, 400);
+					} else {
+						$('.table').parent().animate({'scrollLeft':(scroll_left + 400)}, 400);
+					}
+				});
+			}
+		});
+		</script>
+		<style>
+			.joystick {
+					position:fixed;
+					top:50%;
+					left:50%;
+					width:150px;
+					background:#F0F0F0;
+					opacity:0.5;
+					margin-left:-50px;
+					padding:5px;
+					border:1px solid #CCC;
+					border-radius:3px;
+					z-index:9999;
+				}
+				.joystick_left {
+					float:left;
+					background:url(view/image/go_left.png) no-repeat top center;
+				}
+				.joystick_right {
+					float:right;
+					background:url(view/image/go_right.png) no-repeat top center;
+				}
+				.joystick_left, .joystick_right {
+					width:36px;
+					height:36px;
+					border:1px solid #F0F0F0;
+					padding-bottom:2px;
+				}
+				.joystick_left:hover, .joystick_right:hover {
+					border:1px solid #CCC;
+					border-radius:3px;
+					cursor:pointer;
+				}
+		</style>
+		<script>
+				
+			function ChangeHistory(orderId, statusId, user_change) {
+					var comment = '';
+					var notify = $('#input-notify-' + orderId).prop('checked') ? 1 : 0;
+					var override = 1;
+					var append = 0;
+					$.ajax({
+						url: '{{ catalog }}index.php?route=api/order/history&api_token={{ api_token }}&store_id={{ store_id }}&order_id='+ orderId +'',
+						type: 'post',
+						dataType: 'json',
+						data: 'order_status_id='+ statusId +'&notify='+ notify +'&override='+ override +'&append='+ append +'&comment='+ comment,
+						
+						success: function(json) {
+							$('.alert').remove();
+
+							if (json['error']) {
+								$('#form-order').before('<div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> ' + json['error'] + ' <button type="button" class="close" data-dismiss="alert">&times;</button></div>');
+							}
+
+							if (json['success']) {
+								$('#form-order').before('<div class="alert alert-success"><i class="fa fa-check-circle"></i> ' + json['success'] + ' <button type="button" class="close" data-dismiss="alert">&times;</button></div>');
+							}
+						},
+						error: function(xhr, ajaxOptions, thrownError) {
+							alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+						}
+					});
+				}
+				function setOrderStatus(orderId, statusId, user_change) {
+					$.ajax({
+						url: 'index.php?route=sale/order/setOrderStatus&user_token={{ user_token }}',
+						type: 'post',
+						data: '&order_id=' + orderId + '&order_status_id=' + statusId + '&user_change=' + user_change,
+						dataType: 'json',
+						beforeSend: function() {
+							$('.success, .warning, .attention, .error').remove();
+						},			
+						success: function(json) {
+							$('.success, .warning, .attention, .information, .error').remove();	
+							$('#row_' + orderId).attr('style', 'background-color: ' + json['background_color'] + ' !important; color:'+ json['color_text'] +'');	
+						}
+					});
+				}
+				function saveCommentManager(orderId,value) {				
+					$.ajax({
+						url: 'index.php?route=sale/order/saveCommentManager&user_token={{ user_token }}',
+						type: 'post',
+						data: '&order_id=' + orderId + '&comment_manager=' + value,
+						dataType: 'json',
+						success: function(json) {
+							$('.success, .warning, .attention, .information, .error').remove();
+							if (json['success']) {
+							}	
+						}
+					});
+				}
+				function saveTTN(orderId,value) {				
+					$.ajax({
+						url: 'index.php?route=sale/order/saveTTN&user_token={{ user_token }}',
+						type: 'post',
+						data: '&order_id=' + orderId + '&text_ttn=' + value,
+						dataType: 'json',
+						success: function(json) {
+							$('.success, .warning, .attention, .information, .error').remove();
+							if (json['success']) {
+							}	
+						}
+					});
+				}
+				function sendTTN(orderId) {	
+				
+					var number_ttn = $('#number_ttn_' + orderId).val();
+					var email_user = $('#email_' + orderId).val();	
+					$.ajax({
+						url: 'index.php?route=sale/order/sendTTN&user_token={{ user_token }}',
+						type: 'post',
+						data: '&order_id=' + orderId + '&number_ttn=' + number_ttn + '&email_user=' + email_user,
+						dataType: 'json',
+						beforeSend: function() {
+							$('#button-customer_'+ orderId).button('loading');
+						},
+						complete: function() {
+							$('#button-customer_'+ orderId).button('reset');
+						},
+						success: function(json) {
+							$('.success, .warning, .attention, .information, .error').remove();
+							if (json['success']) {
+							$('#form-order').before('<div class="alert alert-success"><i class="fa fa-check-circle"></i> ' + json['success'] + ' <button type="button" class="close" data-dismiss="alert">&times;</button></div>');
+							}	
+						}
+					});
+				}
+				
+				function savePriceZak(orderId,value, product_id) {
+				var arr = new Array();
+						var sum_price_zak = 0;
+						$('.price_zak_' + orderId).each(function() {
+							  sum_price_zak+=parseFloat($(this).val()*$(this).attr('sum'));
+						});	
+						$('.delivery_price_' + orderId).each(function() {
+							delivery_price_val = $(this).val();
+							if(delivery_price_val ==''){
+								delivery_price = '0';
+							} else { 
+								delivery_price = delivery_price_val;
+							}
+						});	
+						var build_price = $('.build_price_' + orderId).val();
+					    var build_price_prefix = $('.build_price_prefix_' + orderId).val();							
+						
+						$('.rise_product_price_' + orderId).each(function() {
+							rise_product_price_val = $(this).val();
+							if(rise_product_price_val ==''){
+								rise_product_price = '0';
+							} else { 
+								rise_product_price = rise_product_price_val;
+							}
+						});	
+						
+						$('.rise_product_price_prefix_' + orderId).each(function() {
+							rise_product_price_prefix = $(this).val();							
+						});	
+										
+					$.ajax({
+						url: 'index.php?route=sale/order/savePriceZak&user_token={{ user_token }}',
+						type: 'post',						
+						data: '&order_id=' + orderId + '&price_zak=' + value + '&product_id=' + product_id + '&sum_price_zak=' + sum_price_zak + '&delivery_price=' + delivery_price + '&build_price=' + build_price + '&build_price_prefix=' +  encodeURIComponent(build_price_prefix) + '&rise_product_price=' + rise_product_price + '&rise_product_price_prefix=' + encodeURIComponent(rise_product_price_prefix),
+						dataType: 'json',
+						success: function(json) {
+							$('.success, .warning, .attention, .information, .error').remove();
+							if (json['success']) {
+							}
+							if (json['calculated_summ']) {
+								$('#calculated_summ_' + orderId).text(json['calculated_summ']);
+							}							
+						}
+					});
+				}
+				function saveManagerUser(orderId,value) {				
+					$.ajax({
+						url: 'index.php?route=sale/order/saveManagerUser&user_token={{ user_token }}',
+						type: 'post',
+						data: '&order_id=' + orderId + '&manager_user=' + value,
+						dataType: 'json',
+						success: function(json) {
+							$('.success, .warning, .attention, .information, .error').remove();
+							if (json['success']) {
+							}	
+						}
+					});
+				}
+				function updateBuild(orderId,build_price_yes_no) {				
+					$.ajax({
+						url: 'index.php?route=sale/order/updateBuild&user_token={{ user_token }}',
+						type: 'post',
+						data: '&order_id=' + orderId + '&build_price_yes_no=' + build_price_yes_no,
+						dataType: 'json',
+						success: function(json) {
+							$('.success, .warning, .attention, .information, .error').remove();
+							if (json['success']) {
+							}	
+						}
+					});
+				}
+				function updateRiseProduct(orderId,rise_product_yes_no) {				
+					$.ajax({
+						url: 'index.php?route=sale/order/updateRiseProduct&user_token={{ user_token }}',
+						type: 'post',
+						data: '&order_id=' + orderId + '&rise_product_yes_no=' + rise_product_yes_no,
+						dataType: 'json',
+						success: function(json) {
+							$('.success, .warning, .attention, .information, .error').remove();
+							if (json['success']) {
+							}	
+						}
+					});
+				}
+</script>
+		]]>
+      </add>
+    </operation>
+  </file>
+  <file path="admin/language/en-gb/catalog/product.php">
+	<operation>
+		<search><![CDATA[
+		$_['entry_price']
+		]]></search>
+		<add position="before"><![CDATA[
+		$_['entry_price_zak']            = 'Purchase Price';
+		]]></add>
+	</operation>
+  </file>
+  <file path="admin/language/ru-ru/catalog/product.php">
+	<operation>
+		<search><![CDATA[
+		$_['entry_price']
+		]]></search>
+		<add position="before"><![CDATA[
+		$_['entry_price_zak']            = 'Цена Закупки';
+		]]></add>
+	</operation>
+  </file>
+  <file path="admin/controller/catalog/product.php">
+	<operation>
+		<search><![CDATA[
+				if (isset($this->request->post['price'])) {
+			]]></search>
+		<add position="before"><![CDATA[
+		
+		$data['entry_price_zak'] = $this->language->get('entry_price_zak');
+		if (isset($this->request->post['price_zak'])) {
+			$data['price_zak'] = $this->request->post['price_zak'];
+		} elseif (!empty($product_info)) {
+			$data['price_zak'] = $product_info['price_zak'];
+		} else {
+			$data['price_zak'] = '';
+		}
+		]]></add>
+		</operation>
+  </file>
+  <file path="admin/view/template/catalog/product_form.twig">
+	<operation>
+		<search><![CDATA[
+				 <label class="col-sm-2 control-label" for="input-price">{{ entry_price }}</label>
+			]]></search>
+		<add position="before"><![CDATA[
+				<label class="col-sm-2 control-label" for="input-price-zak">{{ entry_price_zak }}</label>
+                <div class="col-sm-10" style="margin-bottom:10px;">
+                <input type="text" name="price_zak" value="{{ price_zak }}" id="input-price-zak" class="form-control" />
+                </div>
+		]]></add>
+		</operation>
+  </file>
+  <file path="admin/model/catalog/product.php">
+	<operation>
+		<search><![CDATA[price = '" . (float)$data['price'] . "',]]></search>
+		<add position="replace"><![CDATA[price = '" . (float)$data['price'] . "', price_zak = '" . (float)$data['price_zak'] . "',]]></add>
+	</operation>
+  </file>
+  <file path="admin/language/ru-ru/sale/order.php">
+		<operation>
+			<search>
+			<![CDATA[$_['text_list']]]>
+			</search>
+			<add position="before" >
+			<![CDATA[
+				$_['text_ttn_sendmail']                    = 'Письмо Успешно отправлено на почту';
+				$_['text_column_products']                  = 'Товар';
+				$_['text_column_comment_manager']           = 'Комментарий менеджера';
+				$_['text_column_price_purchase']           	= 'Цена Закупки';
+				$_['text_column_total_profit']           	= 'Прибыль';
+				$_['text_column_manager_process_orders']    = 'Менеджер';
+				$_['text_column_rise_product']    			= 'Подъем';
+				$_['text_column_build_price']    			= 'Сборка';
+				$_['text_column_delivery_price']    		= 'Стоимость Доставки';
+				$_['text_column_send_ttn_email']    		= 'Отправка ТТН на почту клиенту';
+				$_['text_btn_send_ttn']    					= 'Отправить';
+				$_['text_product_model']    				= 'Модель';
+				$_['text_product_sku']    					= 'SKU';
+				$_['text_product_upc']    					= 'UPC';
+				$_['entry_build_yes_no']    				= 'Сборка';
+				$_['entry_rise_yes_no']    					= 'Подъем';
+				$_['entry_delivery_price']    				= 'Стоимость Доставки';
+				$_['entry_calculated_summ']    				= 'Прибыль';
+				$_['entry_manager_process_orders']    		= 'Менеджер';
+				$_['text_yes']    							= 'Да';
+				$_['text_no']    							= 'Нет';
+				$_['entry_date_added_start']    			= 'Дата добавления - c';
+				$_['entry_date_added_end']    				= 'Дату добавления - по';
+			]]>
+			</add>
+		</operation>
+	</file>
+	<file path="admin/language/en-gb/sale/order.php">
+		<operation>
+			<search>
+			<![CDATA[$_['text_list']]]>
+			</search>
+			<add position="before" >
+			<![CDATA[
+				$_['text_ttn_sendmail']                     = 'Letter Successfully sent to the mail';
+				$_['text_column_products']                  = 'Products';
+				$_['text_column_comment_manager']           = 'Comment Manager';
+				$_['text_column_price_purchase']           	= 'Purchase Price';
+				$_['text_column_total_profit']           	= 'Total Profit';
+				$_['text_column_rise_product']   			= 'Rise Product';
+				$_['text_column_build_price']   			= 'Build Price';
+				$_['text_column_delivery_price']   			= 'Delivery Price';
+				$_['text_column_manager_process_orders']    = 'Manager process orders';
+				$_['text_column_send_ttn_email']    		= 'Sending TTN mail client';
+				$_['text_btn_send_ttn']    					= 'Send';
+				$_['text_product_model']    				= 'Model';
+				$_['text_product_sku']    					= 'SKU';
+				$_['text_product_upc']    					= 'UPC';
+				$_['entry_build_yes_no']    				= 'Build';
+				$_['entry_rise_yes_no']    					= 'Rise Product';
+				$_['entry_delivery_price']    				= 'Delivery Price';
+				$_['entry_calculated_summ']    				= 'Profit';
+				$_['entry_manager_process_orders']    		= 'Manager';
+				$_['text_yes']    							= 'Yes';
+				$_['text_no']    							= 'No';
+				$_['entry_date_added_start']    			= 'Date Added Start';
+				$_['entry_date_added_end']    				= 'Date Added End';
+			]]>
+			</add>
+		</operation>
+	</file>
+  <file path="admin/controller/sale/order.php">
+  <!--FILTER ORDER ADD-->
+  <operation>
+      <search>
+        <![CDATA[function getList() {]]>
+      </search>
+      <add position="after" >
+        <![CDATA[
+		// API login
+			$this->load->model('user/api');
+
+			$api_info = $this->model_user_api->getApi($this->config->get('config_api_id'));
+
+			if ($api_info && $this->user->hasPermission('modify', 'sale/order')) {
+				$session = new Session($this->config->get('session_engine'), $this->registry);
+				
+				$session->start();
+				
+				$this->model_user_api->deleteApiSessionBySessonId($session->getId());
+				
+				$this->model_user_api->addApiSession($api_info['api_id'], $session->getId(), $this->request->server['REMOTE_ADDR']);
+				
+				$session->data['api_id'] = $api_info['api_id'];
+
+				$data['api_token'] = $session->getId();
+			} else {
+				$data['api_token'] = '';
+			}
+		$data['catalog'] = $this->request->server['HTTPS'] ? HTTPS_CATALOG : HTTP_CATALOG;
+		$data['entry_notify'] = $this->language->get('entry_notify');
+		$data['text_column_products'] = $this->language->get('text_column_products');
+		$data['text_column_comment_manager'] = $this->language->get('text_column_comment_manager');
+		$data['text_column_price_purchase'] = $this->language->get('text_column_price_purchase');
+		$data['text_column_total_profit'] = $this->language->get('text_column_total_profit');
+		$data['text_column_rise_product'] = $this->language->get('text_column_rise_product');
+		$data['text_column_build_price'] = $this->language->get('text_column_build_price');
+		$data['text_column_delivery_price'] = $this->language->get('text_column_delivery_price');
+		$data['text_column_manager_process_orders'] = $this->language->get('text_column_manager_process_orders');
+		$data['text_column_send_ttn_email'] = $this->language->get('text_column_send_ttn_email');
+		$data['text_btn_send_ttn'] = $this->language->get('text_btn_send_ttn');
+		$data['text_loading'] = $this->language->get('text_loading');
+		$data['text_product_model'] = $this->language->get('text_product_model');
+		$data['text_product_sku'] = $this->language->get('text_product_sku');
+		$data['text_product_upc'] = $this->language->get('text_product_upc');
+		$data['entry_build_yes_no'] = $this->language->get('entry_build_yes_no');
+		$data['entry_rise_yes_no'] = $this->language->get('entry_rise_yes_no');
+		$data['entry_delivery_price'] = $this->language->get('entry_delivery_price');
+		$data['entry_calculated_summ'] = $this->language->get('entry_calculated_summ');
+		$data['entry_manager_process_orders'] = $this->language->get('entry_manager_process_orders');
+		$data['text_yes'] = $this->language->get('text_yes');
+		$data['text_no'] = $this->language->get('text_no');
+		$data['entry_date_added_start'] = $this->language->get('entry_date_added_start');
+		$data['entry_date_added_end'] = $this->language->get('entry_date_added_end');
+		
+		$config_on_off_model_product = $this->config->get('config_on_off_model_product');
+		if (isset($config_on_off_model_product)) {
+			$data['on_off_model_product'] = $this->config->get('config_on_off_model_product');
+		} else {
+			$data['on_off_model_product'] = '0';
+		}
+		$config_on_off_sku_product = $this->config->get('config_on_off_sku_product');
+		if (isset($config_on_off_sku_product)) {
+			$data['on_off_sku_product'] = $this->config->get('config_on_off_sku_product');
+		} else {
+			$data['on_off_sku_product'] = '0';
+		}
+		$config_on_off_upc_product = $this->config->get('config_on_off_upc_product');
+		if (isset($config_on_off_upc_product)) {
+			$data['on_off_upc_product'] = $this->config->get('config_on_off_upc_product');
+		} else {
+			$data['on_off_upc_product'] = '0';
+		}
+		$config_on_off_order_payment_method = $this->config->get('config_on_off_order_payment_method');
+		if (isset($config_on_off_order_payment_method)) {
+			$data['on_off_order_payment_method'] = $this->config->get('config_on_off_order_payment_method');
+		} else {
+			$data['on_off_order_payment_method'] = '0';
+		}
+		$config_on_off_order_shipping_method = $this->config->get('config_on_off_order_shipping_method');
+		if (isset($config_on_off_order_shipping_method)) {
+			$data['on_off_order_shipping_method'] = $this->config->get('config_on_off_order_shipping_method');
+		} else {
+			$data['on_off_order_shipping_method'] = '0';
+		}		
+		$config_on_off_column_product = $this->config->get('config_on_off_column_product');
+		if (isset($config_on_off_column_product)) {
+			$data['on_off_column_product'] = $this->config->get('config_on_off_column_product');
+		} else {
+			$data['on_off_column_product'] = '0';
+		}
+		$config_on_off_column_delivery_price = $this->config->get('config_on_off_column_delivery_price');
+		if (isset($config_on_off_column_delivery_price)) {
+			$data['on_off_column_delivery_price'] = $this->config->get('config_on_off_column_delivery_price');
+		} else {
+			$data['on_off_column_delivery_price'] = '0';
+		}
+		$config_on_off_column_build = $this->config->get('config_on_off_column_build');
+		if (isset($config_on_off_column_build)) {
+			$data['on_off_column_build'] = $this->config->get('config_on_off_column_build');
+		} else {
+			$data['on_off_column_build'] = '0';
+		}
+		$config_on_off_column_rise_product = $this->config->get('config_on_off_column_rise_product');
+		if (isset($config_on_off_column_rise_product)) {
+			$data['on_off_column_rise_product'] = $this->config->get('config_on_off_column_rise_product');
+		} else {
+			$data['on_off_column_rise_product'] = '0';
+		}
+		$config_on_off_column_comment_manager = $this->config->get('config_on_off_column_comment_manager');
+		if (isset($config_on_off_column_comment_manager)) {
+			$data['on_off_column_comment_manager'] = $this->config->get('config_on_off_column_comment_manager');
+		} else {
+			$data['on_off_column_comment_manager'] = '0';
+		}
+		$config_on_off_column_send_ttn_email = $this->config->get('config_on_off_column_send_ttn_email');
+		if (isset($config_on_off_column_send_ttn_email)) {
+			$data['on_off_column_send_ttn_email'] = $this->config->get('config_on_off_column_send_ttn_email');
+		} else {
+			$data['on_off_column_send_ttn_email'] = '0';
+		}
+		$config_on_off_column_price_purchase = $this->config->get('config_on_off_column_price_purchase');
+		if (isset($config_on_off_column_price_purchase)) {
+			$data['on_off_column_price_purchase'] = $this->config->get('config_on_off_column_price_purchase');
+		} else {
+			$data['on_off_column_price_purchase'] = '0';
+		}
+		$config_on_off_column_total_profit = $this->config->get('config_on_off_column_total_profit');
+		if (isset($config_on_off_column_total_profit)) {
+			$data['on_off_column_total_profit'] = $this->config->get('config_on_off_column_total_profit');
+		} else {
+			$data['on_off_column_total_profit'] = '0';
+		}
+		$config_on_off_column_manager_process_orders = $this->config->get('config_on_off_column_manager_process_orders');
+		if (isset($config_on_off_column_manager_process_orders)) {
+			$data['on_off_column_manager_process_orders'] = $this->config->get('config_on_off_column_manager_process_orders');
+		} else {
+			$data['on_off_column_manager_process_orders'] = '0';
+		}
+		
+		
+		$this->language->load('user/user');
+		$this->load->model('user/user');
+		$this->language->load('common/header');
+		$data['logged'] = $this->user->getUserName();
+		
+		$results_get_user = $this->model_user_user->getUsers();
+		foreach ($results_get_user as $result) {
+      		$data['users'][] = array(
+				'user_id'    => $result['user_id'],
+				'username'   => $result['username'],
+			);
+		}
+	
+		]]>
+      </add>
+    </operation>
+  <operation>
+      <search index="0">
+        <![CDATA[foreach ($results as $result) {]]>
+      </search>
+      <add position="after">
+        <![CDATA[
+			
+			$this->load->model('tool/image');
+			
+			$this->load->model('tool/upload');
+
+			$data['products'] = array();
+			$products = $this->model_sale_order->getOrderProductsList($result['order_id']);
+			foreach ($products as $product){ 
+				$option_data = array();
+
+					$options = $this->model_sale_order->getOrderOptions($result['order_id'], $product['order_product_id']);
+					foreach ($options as $option) {
+						if ($option['type'] != 'file') {
+							$option_data[] = array(
+								'name'  => $option['name'],
+								'value' => $option['value'],
+								'type'  => $option['type']
+							);
+						} else {
+							$upload_info = $this->model_tool_upload->getUploadByCode($option['value']);
+
+							if ($upload_info) {
+								$option_data[] = array(
+									'name'  => $option['name'],
+									'value' => $upload_info['name'],
+									'type'  => $option['type'],
+									'href'  => $this->url->link('tool/upload/download', 'token=' . $this->session->data['user_token'] . '&code=' . $upload_info['code'], 'SSL')
+								);
+							}
+						}
+					}
+				$data['products'][] = array(
+						'order_product_id' => $product['order_product_id'],
+						'order_id'         => $product['order_id'],
+						'product_id'       => $product['product_id'],
+						'name'    	 	   => $product['name'],
+						'price_zak'    	   => $product['price_zak'],
+						'popup'    	 	   => $this->model_tool_image->resize($product['image'], 500, 500),
+						'thumb'    	 	   => $this->model_tool_image->resize($product['image'], 50, 50),
+						'model'    		   => $product['model'],
+						'sku'    		   => $product['sku'],
+						'upc'    		   => $product['upc'],
+						'option'   		   => $option_data,
+						'quantity'		   => $product['quantity'],
+						'price'    		   => $this->currency->format($product['price'] + ($this->config->get('config_tax') ? $product['tax'] : 0), $result['currency_code'], $result['currency_value']),
+						'href'     		   => $this->url->link('catalog/product/edit', 'token=' . $this->session->data['user_token'] . '&product_id=' . $product['product_id'], 'SSL')
+					);
+			}
+			
+			$price_zak_sum_all_product=0;
+			foreach($data['products'] as $sum_zak){
+				$price_zak_sum_all_product+=($sum_zak['price_zak']*$sum_zak['quantity']);
+			}
+			$calculated_summ2 = $result['total']-$price_zak_sum_all_product-$result['delivery_price'].$result['build_price_prefix'].$result['build_price'].$result['rise_product_price_prefix'].$result['rise_product_price'];
+			
+		]]>
+      </add>
+    </operation>
+	<operation>
+      <search>
+        <![CDATA['shipping_code' => $result['shipping_code'],]]>
+      </search>
+      <add position="after">
+        <![CDATA[
+			'row_color'      			=> $result['row_color'],
+			'row_color_text'      		=> $result['row_color_text'],
+			'firstname'      			=> $result['firstname'],
+			'lastname'      			=> $result['lastname'],
+			'telephone'      			=> $result['telephone'],
+			'shipping_city'     		=> $result['shipping_city'],
+			'shipping_address_1'     	=> $result['shipping_address_1'],
+			'email'     				=> $result['email'],
+			'order_status_id'			=> $result['order_status_id'],
+			'products'     				=> $data['products'],
+			'comment_manager'     		=> $result['comment_manager'],
+			'manager_process_orders'    => $result['manager_process_orders'],
+			'build_price'    			=> $result['build_price'],
+			'build_price_yes_no'    	=> $result['build_price_yes_no'],
+			'build_price_prefix'    	=> $result['build_price_prefix'],
+			'rise_product_price'    	=> $result['rise_product_price'],
+			'rise_product_yes_no'    	=> $result['rise_product_yes_no'],
+			'rise_product_price_prefix' => $result['rise_product_price_prefix'],
+			'delivery_price'    		=> $result['delivery_price'],
+			'payment_method'    		=> $result['payment_method'],
+			'shipping_method'    		=> $result['shipping_method'],
+			'text_ttn'    				=> $result['text_ttn'],
+			'time_date_added'    		=> date($this->language->get('datetime_format'), strtotime($result['date_added'])),
+			'calculated_summ'     		=> $this->currency->format(eval('return '.$calculated_summ2.';'), $result['currency_code'], '', true, $result['currency_code'], $result['currency_value']),
+		]]>
+      </add>
+    </operation>
+	<operation>
+      <search>
+        <![CDATA[public function index() {]]>
+      </search>
+      <add position="before">
+        <![CDATA[
+				public function setOrderStatus() {
+					$json = array();
+
+					$this->language->load('sale/order');
+
+					$this->load->model('sale/order');
+
+					if (isset($this->request->post['order_id'])) {
+						$order_id = $this->request->post['order_id'];
+					} else {
+						$order_id = -1;
+						$json['error']['order'] = $this->language->get('error_order');
+					}
+
+					if (isset($this->request->post['order_status_id'])) {
+						$order_status_id = $this->request->post['order_status_id'];
+					} else {
+						$order_status_id = -1;
+						$json['error']['order_status_id'] = $this->language->get('error_order_status');
+					}
+					if (isset($this->request->post['user_change'])) {
+						$user_change = $this->request->post['user_change'];
+					} else {
+						$user_change = '';
+					}
+					
+					if (!$json) {									
+						$res = $this->model_sale_order->setOrderStatus($order_id, $order_status_id);
+						$this->model_sale_order->updateManagerUser($order_id, $user_change);
+						$this->load->model('extension/module/ordersetting');		
+						$status_info = $this->model_extension_module_ordersetting->getStatusSendOnOff($order_status_id);
+						if(($status_info['status_send_on_off'] !='N') && ($status_info['order_status_subject'] !='') && ($status_info['os_email_template'] !='')){
+							$this->sendMailOrderStatus($order_id, $order_status_id);
+						}
+						
+						if ($res < 0) {
+							$json['error']['order_status_id'] = $this->language->get('error_order_status_not_found') + $res;
+						} else {
+							$json['background_color'] = $res[0]['row_color'];
+							$json['color_text'] = $res[0]['row_color_text'];
+						}
+					} 
+					
+					$this->response->addHeader('Content-Type: application/json');
+					$this->response->setOutput(json_encode($json));	
+				}
+				
+				private function sendMailOrderStatus($order_id, $order_status_id) {
+					$text 	= "";
+					$this->load->model('sale/order');
+					$this->load->model('extension/module/ordersetting');	
+					
+					$order_info = $this->model_extension_module_ordersetting->getOrderStatusSendMail($order_id);
+					$subject_info = $this->model_sale_order->getOrderStatusSubject($order_status_id, $order_info['language_id']);
+					if(empty($subject_info)){
+					$subject  = $order_info['order_status_name'];
+					} else { 
+					$subject  = $this->model_extension_module_ordersetting->getCustomFields($order_info, $subject_info);
+					}	
+					
+					$html_message_info = $this->model_sale_order->getOrderStatusTemplates($order_status_id, $order_info['language_id']);		
+					
+					if(empty($html_message_info)){
+					$html_message_info  = $order_info['order_status_name'];
+					} else { 
+					$html_message  = $this->model_extension_module_ordersetting->getCustomFields($order_info, $html_message_info);
+					}
+					$mail = new Mail($this->config->get('config_mail_engine'));
+					$mail->parameter = $this->config->get('config_mail_parameter');
+					$mail->smtp_hostname = $this->config->get('config_mail_smtp_hostname');
+					$mail->smtp_username = $this->config->get('config_mail_smtp_username');
+					$mail->smtp_password = html_entity_decode($this->config->get('config_mail_smtp_password'), ENT_QUOTES, 'UTF-8');
+					$mail->smtp_port = $this->config->get('config_mail_smtp_port');
+					$mail->smtp_timeout = $this->config->get('config_mail_smtp_timeout');
+
+					$mail->setTo($order_info['email']);
+					$mail->setFrom($this->config->get('config_email'));
+					$mail->setSender($order_info['store_name'], ENT_QUOTES, 'UTF-8');
+					$mail->setSubject(html_entity_decode($subject, ENT_QUOTES, 'UTF-8'));
+					$mail->setHtml(html_entity_decode($html_message, ENT_QUOTES, 'UTF-8'));
+					$mail->setText($text);
+					$mail->send();
+				}
+				
+				public function saveCommentManager() {
+					$this->language->load('sale/order');
+					
+					$json = array();
+					$order_id = null;
+					$comment_manager = "";
+		
+					if (isset($this->request->post['order_id'])) {
+						$order_id = $this->request->post['order_id'];
+					} else {
+						$order_id = null;
+					}
+					if (isset($this->request->post['comment_manager'])) {
+						$comment_manager = $this->request->post['comment_manager'];
+					} else {
+						$comment_manager = "";
+					}
+					
+					$this->load->model('sale/order');
+									
+					$this->model_sale_order->updateCommentManager($order_id, $comment_manager);
+					
+					if (!$json) {
+						$json['success'] = sprintf($order_id);
+					} else {
+						$json['redirect'] = "bad";
+					}
+		
+					$this->response->addHeader('Content-Type: application/json');
+					$this->response->setOutput(json_encode($json));		
+				}
+				public function saveTTN() {
+					$this->language->load('sale/order');
+					
+					$json = array();
+					$order_id = null;
+					$text_ttn = "";
+		
+					if (isset($this->request->post['order_id'])) {
+						$order_id = $this->request->post['order_id'];
+					} else {
+						$order_id = null;
+					}
+					if (isset($this->request->post['text_ttn'])) {
+						$text_ttn = $this->request->post['text_ttn'];
+					} else {
+						$text_ttn = "";
+					}
+					
+					$this->load->model('sale/order');
+									
+					$this->model_sale_order->updateTTN($order_id, $text_ttn);
+					
+					$this->response->addHeader('Content-Type: application/json');
+					$this->response->setOutput(json_encode($json));		
+				}
+				
+				public function sendTTN() {
+					$this->language->load('sale/order');
+					
+					$json = array();
+					$order_id = null;
+					$number_ttn = "";
+		
+					if (isset($this->request->post['order_id'])) {
+						$order_id = $this->request->post['order_id'];
+					} else {
+						$order_id = null;
+					}
+					if (isset($this->request->post['number_ttn'])) {
+						$number_ttn = $this->request->post['number_ttn'];
+					} else {
+						$number_ttn = '';
+					}
+					if (isset($this->request->post['email_user'])) {
+						$email_user = $this->request->post['email_user'];
+					} else {
+						$email_user = '';
+					}
+					
+					
+					$this->load->model('sale/order');
+					$this->load->model('extension/module/ordersetting');	
+					$order_info = $this->model_extension_module_ordersetting->getOrderStatusSendMail($order_id);
+					
+					$subjuct = $this->config->get('ttn_subject_ut');
+					$html_message = $this->config->get('ttn_description_ut');
+					$html_message_count = strlen($html_message[$order_info['language_id']]['text']);
+					
+					if(($subjuct[$order_info['language_id']]['text'] !='') && ($html_message_count >='20')) { 
+						$this->sendMail($number_ttn, $email_user, $order_id);
+					} else {
+						$json['redirect'] = "bad1";
+					}
+					if (!$json) {
+						$json['success'] = $this->language->get('text_ttn_sendmail');
+					} else {
+						$json['redirect'] = "bad2";
+					}
+		
+					$this->response->addHeader('Content-Type: application/json');
+					$this->response->setOutput(json_encode($json));	
+				}
+				private function sendMail($number_ttn, $email_user, $order_id) {
+					
+					$this->load->model('extension/module/ordersetting');	
+					$order_info = $this->model_extension_module_ordersetting->getOrderStatusSendMail($order_id);
+					$subject_text = $this->config->get('ttn_subject_ut');
+					$html_message_text = $this->config->get('ttn_description_ut');
+					$subject = $this->model_extension_module_ordersetting->getCustomFields($order_info, $subject_text[$order_info['language_id']]['text']);
+					$html_message  = $this->model_extension_module_ordersetting->getCustomFields($order_info, $html_message_text[$order_info['language_id']]['text']);
+					
+					$mail = new Mail($this->config->get('config_mail_engine'));
+					$mail->parameter = $this->config->get('config_mail_parameter');
+					$mail->smtp_hostname = $this->config->get('config_mail_smtp_hostname');
+					$mail->smtp_username = $this->config->get('config_mail_smtp_username');
+					$mail->smtp_password = html_entity_decode($this->config->get('config_mail_smtp_password'), ENT_QUOTES, 'UTF-8');
+					$mail->smtp_port = $this->config->get('config_mail_smtp_port');
+					$mail->smtp_timeout = $this->config->get('config_mail_smtp_timeout');
+
+					$mail->setTo($order_info['email']);
+					$mail->setFrom($this->config->get('config_email'));
+					$mail->setSender($order_info['store_name'], ENT_QUOTES, 'UTF-8');
+					$mail->setSubject(html_entity_decode($subject, ENT_QUOTES, 'UTF-8'));
+					$mail->setHtml(html_entity_decode($html_message, ENT_QUOTES, 'UTF-8'));
+					$mail->send();
+				}
+				
+				public function savePriceZak() {
+					$this->language->load('sale/order');
+					
+					$json = array();
+					$order_id = null;
+					$price_zak = "";
+		
+					if (isset($this->request->post['order_id'])) {
+						$order_id = $this->request->post['order_id'];
+					} else {
+						$order_id = null;
+					}
+					if (isset($this->request->post['price_zak'])) {
+						$price_zak = $this->request->post['price_zak'];
+					} else {
+						$price_zak = "";
+					}
+					if (isset($this->request->post['delivery_price'])) {
+						$delivery_price = $this->request->post['delivery_price'];
+					} else {
+						$delivery_price = '0.0000';
+					}
+					if (isset($this->request->post['build_price'])) {
+						$build_price = $this->request->post['build_price'];
+					} else {
+						$build_price = '0.0000';
+					}
+					
+					if (isset($this->request->post['product_id'])) {
+						$product_id = $this->request->post['product_id'];
+					} else {
+						$product_id = '';
+					}
+					if (isset($this->request->post['build_price_prefix'])) {
+						$build_price_prefix = $this->request->post['build_price_prefix'];
+					} else {
+						$build_price_prefix = '+';
+					}
+					
+					if (isset($this->request->post['sum_price_zak'])) {
+						$sum_price_zak = $this->request->post['sum_price_zak'];
+					} else {
+						$sum_price_zak = '0.0000';
+					}
+					
+					if (isset($this->request->post['rise_product_price'])) {
+						$rise_product_price = $this->request->post['rise_product_price'];
+					} else {
+						$rise_product_price = '0.0000';
+					}
+					if (isset($this->request->post['rise_product_price_prefix'])) {
+						$rise_product_price_prefix = $this->request->post['rise_product_price_prefix'];
+					} else {
+						$rise_product_price_prefix = '+';
+					}
+					$this->load->model('sale/order');
+					
+					if (!$json) {			
+						$calculated_summ = $this->model_sale_order->updatePriceZak($order_id, $price_zak, $product_id, $sum_price_zak, $delivery_price, $build_price, $build_price_prefix, $rise_product_price, $rise_product_price_prefix);
+						if(!$calculated_summ) {
+							$json['error']['calculated_summ'] = $this->language->get('error_price_1');
+						} else {
+							$json['calculated_summ'] = $calculated_summ;
+							$json['success'] = $this->language->get('success_calculated_summ_update');
+						}
+					} 
+					$this->response->addHeader('Content-Type: application/json');
+					$this->response->setOutput(json_encode($json));		
+				}
+				public function saveManagerUser() {
+					$this->language->load('sale/order');
+					
+					$json = array();
+					$order_id = null;
+					$manager_user = "";
+		
+					if (isset($this->request->post['order_id'])) {
+						$order_id = $this->request->post['order_id'];
+					} else {
+						$order_id = null;
+					}
+					if (isset($this->request->post['manager_user'])) {
+						$manager_user = $this->request->post['manager_user'];
+					} else {
+						$manager_user = "";
+					}
+					
+					$this->load->model('sale/order');
+									
+					$this->model_sale_order->updateManagerUser($order_id, $manager_user);
+		
+					$this->response->addHeader('Content-Type: application/json');
+					$this->response->setOutput(json_encode($json));		
+				}
+				public function updateBuild() {
+
+					$json = array();
+
+					$this->language->load('sale/order');
+
+					$this->load->model('sale/order');
+
+					if (isset($this->request->post['order_id'])) {
+						$order_id = $this->request->post['order_id'];
+					} else {
+						$order_id = -1;
+						
+					}
+
+					if (isset($this->request->post['build_price_yes_no']) && ($this->request->post['build_price_yes_no'] == "Y" || $this->request->post['build_price_yes_no'] == "N")) {
+						$build_price_yes_no = $this->request->post['build_price_yes_no'];
+					} else {
+						$build_price_yes_no = -1;
+					}
+
+					if (!$json) {									
+						$this->model_sale_order->updateBuild($order_id, $build_price_yes_no);
+						$json['success'] = $this->language->get('success_adservice_update');
+					} 
+					
+					$this->response->addHeader('Content-Type: application/json');
+					$this->response->setOutput(json_encode($json));	
+				}
+				public function updateRiseProduct() {
+
+					$json = array();
+
+					$this->language->load('sale/order');
+
+					$this->load->model('sale/order');
+
+					if (isset($this->request->post['order_id'])) {
+						$order_id = $this->request->post['order_id'];
+					} else {
+						$order_id = -1;
+						
+					}
+
+					if (isset($this->request->post['rise_product_yes_no']) && ($this->request->post['rise_product_yes_no'] == "Y" || $this->request->post['rise_product_yes_no'] == "N")) {
+						$rise_product_yes_no = $this->request->post['rise_product_yes_no'];
+					} else {
+						$rise_product_yes_no = -1;
+					}
+
+					if (!$json) {									
+						$this->model_sale_order->updateRiseProduct($order_id, $rise_product_yes_no);
+						$json['success'] = $this->language->get('success_adservice_update');
+					} 
+					
+					$this->response->addHeader('Content-Type: application/json');
+					$this->response->setOutput(json_encode($json));	
+				}
+		]]>
+      </add>
+    </operation>
+	<operation>
+      <search index="1">
+        <![CDATA[if (isset($this->request->get['filter_order_id'])) {]]>
+      </search>
+      <add position="before">
+        <![CDATA[ 
+		if (isset($this->request->get['filter_build_price_yes_no'])) {
+			$filter_build_price_yes_no = $this->request->get['filter_build_price_yes_no'];
+		} else {
+			$filter_build_price_yes_no = null;
+		}
+		if (isset($this->request->get['filter_rise_product_yes_no'])) {
+			$filter_rise_product_yes_no = $this->request->get['filter_rise_product_yes_no'];
+		} else {
+			$filter_rise_product_yes_no = null;
+		}
+		if (isset($this->request->get['filter_delivery_price'])) {
+			$filter_delivery_price = $this->request->get['filter_delivery_price'];
+		} else {
+			$filter_delivery_price = null;
+		}
+		if (isset($this->request->get['filter_calculated_summ'])) {
+			$filter_calculated_summ = $this->request->get['filter_calculated_summ'];
+		} else {
+			$filter_calculated_summ = null;
+		}
+		if (isset($this->request->get['filter_manager_process_orders'])) {
+			$filter_manager_process_orders = $this->request->get['filter_manager_process_orders'];
+		} else {
+			$filter_manager_process_orders = null;
+		}
+		if (isset($this->request->get['filter_date_added_start'])) {
+			$filter_date_added_start = $this->request->get['filter_date_added_start'];
+		} else {
+			$filter_date_added_start = null;
+		}
+		if (isset($this->request->get['filter_date_added_end'])) {
+			$filter_date_added_end = $this->request->get['filter_date_added_end'];
+		} else {
+			$filter_date_added_end = null;
+		}
+		]]>
+      </add>
+    </operation>
+	<operation>
+      <search index="2,3,4">
+        <![CDATA[if (isset($this->request->get['filter_order_id'])) {]]>
+      </search>
+      <add position="before">
+        <![CDATA[ 
+		if (isset($this->request->get['filter_build_price_yes_no'])) {
+			$url .= '&filter_build_price_yes_no=' . $this->request->get['filter_build_price_yes_no'];
+		}
+		if (isset($this->request->get['filter_rise_product_yes_no'])) {
+			$url .= '&filter_rise_product_yes_no=' . $this->request->get['filter_rise_product_yes_no'];
+		}
+		if (isset($this->request->get['filter_delivery_price'])) {
+			$url .= '&filter_delivery_price=' . $this->request->get['filter_delivery_price'];
+		}
+		if (isset($this->request->get['filter_calculated_summ'])) {
+			$url .= '&filter_calculated_summ=' . $this->request->get['filter_calculated_summ'];
+		}
+		if (isset($this->request->get['filter_manager_process_orders'])) {
+			$url .= '&filter_manager_process_orders=' . $this->request->get['filter_manager_process_orders'];
+		}
+		if (isset($this->request->get['filter_date_added_start'])) {
+			$url .= '&filter_date_added_start=' . $this->request->get['filter_date_added_start'];
+		}
+		if (isset($this->request->get['filter_date_added_end'])) {
+			$url .= '&filter_date_added_end=' . $this->request->get['filter_date_added_end'];
+		}
+		]]>
+      </add>
+    </operation>
+	<operation>
+      <search index="0">
+        <![CDATA['filter_order_id'      => $filter_order_id,]]>
+      </search>
+      <add position="before">
+        <![CDATA[ 
+		'filter_build_price_yes_no'      	=> $filter_build_price_yes_no,
+		'filter_rise_product_yes_no'      	=> $filter_rise_product_yes_no,
+		'filter_delivery_price'      		=> $filter_delivery_price,
+		'filter_calculated_summ'      		=> $filter_calculated_summ,
+		'filter_manager_process_orders'     => $filter_manager_process_orders,
+		'filter_date_added_start'     		=> $filter_date_added_start,
+		'filter_date_added_end'     		=> $filter_date_added_end,
+		]]>
+      </add>
+    </operation>
+	<operation>
+      <search index="0">
+        <![CDATA[$data['filter_order_id'] = $filter_order_id;]]>
+      </search>
+      <add position="before">
+        <![CDATA[ 
+		$data['filter_build_price_yes_no'] 		= $filter_build_price_yes_no;
+		$data['filter_rise_product_yes_no'] 	= $filter_rise_product_yes_no;
+		$data['filter_delivery_price'] 			= $filter_delivery_price;
+		$data['filter_calculated_summ'] 		= $filter_calculated_summ;
+		$data['filter_manager_process_orders'] 	= $filter_manager_process_orders;
+		$data['filter_date_added_start'] 		= $filter_date_added_start;
+		$data['filter_date_added_end'] 			= $filter_date_added_end;
+		]]>
+      </add>
+    </operation>
+  
+  </file>  
+  <file path="admin/model/sale/order.php">
+	<operation>
+		<search index="0"><![CDATA[if (!empty($data['filter_order_id'])) {]]></search>
+		<add position="before"><![CDATA[
+		if (!empty($data['filter_build_price_yes_no'])) {
+			$sql .= " AND o.build_price_yes_no = '" . $data['filter_build_price_yes_no'] . "'";
+		}
+		if (!empty($data['filter_rise_product_yes_no'])) {
+			$sql .= " AND o.rise_product_yes_no = '" . $data['filter_rise_product_yes_no'] . "'";
+		}
+		if (!empty($data['filter_delivery_price'])) {
+			$sql .= " AND o.delivery_price = '" . $data['filter_delivery_price'] . "'";
+		}
+		if (!empty($data['filter_calculated_summ'])) {
+			$sql .= " AND o.calculated_summ = '" . $data['filter_calculated_summ'] . "'";
+		}
+		if (!empty($data['filter_manager_process_orders'])) {
+			$sql .= " AND o.manager_process_orders = '" . $data['filter_manager_process_orders'] . "'";
+		}
+		if (!empty($data['filter_date_added_start'])) {
+			$sql .= " AND DATE(o.date_added) >= DATE('" . $this->db->escape($data['filter_date_added_start']) . "') AND DATE(o.date_added) <=DATE('" . $this->db->escape($data['filter_date_added_end']) . "')";	
+		}
+		]]></add>
+	</operation>
+	
+	<operation>
+		<search><![CDATA[
+				function getOrderProducts
+			]]></search>
+		<add position="before"><![CDATA[
+				public function getOrderProductsList($order_id) {
+					$query = $this->db->query("SELECT op.*, p.image, p.sku, p.upc, p.price_zak FROM " . DB_PREFIX . "order_product op LEFT JOIN " . DB_PREFIX . "product p ON op.product_id = p.product_id WHERE op.order_id = '" . (int)$order_id . "'");
+						
+					return $query->rows;
+				}
+				public function setOrderStatus($order_id, $order_status_id) {
+						$order_status = $this->db->query("SELECT * FROM `" . DB_PREFIX . "order_status` os WHERE os.order_status_id = " . (int)$order_status_id);
+				
+						if($order_status->num_rows) {
+							$this->db->query("UPDATE `" . DB_PREFIX . "order` SET order_status_id = " . (int)$order_status_id . " WHERE order_id = '" . (int)$order_id . "'");
+
+							if(!$this->db->countAffected()) {
+								return -1;
+							} else {
+								return $order_status->rows;
+								
+							}
+						}
+						return -2;
+				}
+				public function updateCommentManager($order_id, $comment_manager) {
+					$this->db->query("UPDATE `" . DB_PREFIX . "order` SET  comment_manager = '" . $comment_manager . "' WHERE order_id = '" . (int) $order_id . "'");
+				}
+				public function updateTTN($order_id, $text_ttn) {
+					$this->db->query("UPDATE `" . DB_PREFIX . "order` SET  text_ttn = '" . $text_ttn . "' WHERE order_id = '" . (int) $order_id . "'");
+				}
+				public function getOrderStatusTemplates($order_status_id, $language_id) {
+					$query = $this->db->query("SELECT os_email_template FROM " . DB_PREFIX . "order_status WHERE language_id = '" . (int)$language_id . "' AND order_status_id = '" .(int)$order_status_id. "'");
+						
+						return $query->row['os_email_template'];
+					}
+				public function getOrderStatusSubject($order_status_id, $language_id) {
+					$query = $this->db->query("SELECT order_status_subject FROM " . DB_PREFIX . "order_status WHERE language_id = '" . (int)$language_id . "' AND order_status_id = '" .(int)$order_status_id. "'");
+						
+						return $query->row['order_status_subject'];
+					}
+				public function updatePriceZak($order_id, $price_zak, $product_id, $sum_price_zak, $delivery_price, $build_price, $build_price_prefix, $rise_product_price, $rise_product_price_prefix) {
+
+					$this->db->query("UPDATE `" . DB_PREFIX . "product` SET price_zak = '". htmlspecialchars_decode($price_zak) ."' WHERE product_id = '" . (int) $product_id . "'");
+						
+					if(!$this->db->query("UPDATE `" . DB_PREFIX . "order` SET rise_product_price_prefix = '" . htmlspecialchars_decode($rise_product_price_prefix) . "', build_price_prefix = '" . htmlspecialchars_decode($build_price_prefix) . "', rise_product_price = '" . (int)$rise_product_price . "', build_price = '" . (int)$build_price . "', delivery_price = '" . (int)$delivery_price . "', calculated_summ = (total - ". $sum_price_zak ." - ". $delivery_price ." ". $build_price_prefix ." ". $build_price ." ".$rise_product_price_prefix." ". $rise_product_price .") WHERE order_id = '" . (int) $order_id . "'")) {
+						return false;
+					}
+					
+					$result = $this->db->query("SELECT o.calculated_summ FROM `" . DB_PREFIX . "order` o WHERE o.order_id = " . (int)$order_id);
+					return $result->row['calculated_summ'];
+					
+				}
+				public function updateBuild($order_id, $build_price_yes_no) {
+					$this->db->query("UPDATE `" . DB_PREFIX . "order` SET build_price_yes_no = '" . $build_price_yes_no . "' WHERE order_id = '" . (int) $order_id . "'");
+				}
+				public function updateRiseProduct($order_id, $rise_product_yes_no) {
+					$this->db->query("UPDATE `" . DB_PREFIX . "order` SET rise_product_yes_no = '" . $rise_product_yes_no . "' WHERE order_id = '" . (int) $order_id . "'");
+				}
+				public function updateManagerUser($order_id, $manager_user) {
+					$this->db->query("UPDATE `" . DB_PREFIX . "order` SET  manager_process_orders = '" . $manager_user . "' WHERE order_id = '" . (int) $order_id . "'");
+				}
+		]]></add>
+		</operation>
+	<operation>
+      <search>
+        <![CDATA[
+		$sql = "SELECT o.order_id, CONCAT(o.firstname, ' ', o.lastname) AS customer, (SELECT os.name FROM " . DB_PREFIX . "order_status os WHERE os.order_status_id = o.order_status_id AND os.language_id = '" . (int)$this->config->get('config_language_id') . "') AS order_status, o.shipping_code, o.total, o.currency_code, o.currency_value, o.date_added, o.date_modified FROM `" . DB_PREFIX . "order` o";		
+		]]>
+      </search>
+      <add position="replace">
+        <![CDATA[ 
+				$sql = "SELECT o.order_id, o.firstname, o.lastname, o.telephone, o.shipping_city, o.shipping_address_1, o.email, o.comment_manager, o.calculated_summ, o.manager_process_orders,  o.delivery_price, o.build_price, o.build_price_yes_no, o.build_price_prefix, o.rise_product_price, o.rise_product_yes_no, o.rise_product_price_prefix, o.payment_method, o.shipping_method, o.text_ttn, CONCAT(o.firstname, ' ', o.lastname) AS customer,(SELECT os.row_color FROM " . DB_PREFIX . "order_status os WHERE os.order_status_id = o.order_status_id AND os.language_id = '" . (int)$this->config->get('config_language_id') . "') AS row_color, o.order_status_id,(SELECT os.row_color_text FROM " . DB_PREFIX . "order_status os WHERE os.order_status_id = o.order_status_id AND os.language_id = '" . (int)$this->config->get('config_language_id') . "') AS row_color_text, (SELECT os.name FROM " . DB_PREFIX . "order_status os WHERE os.order_status_id = o.order_status_id AND os.language_id = '" . (int)$this->config->get('config_language_id') . "') AS order_status, o.shipping_code, o.total, o.currency_code, o.currency_value, o.date_added, o.date_modified FROM `" . DB_PREFIX . "order` o";
+		]]>
+      </add>
+    </operation>
+	<operation>
+      <search>
+        <![CDATA[$sql .= " AND CONCAT(o.firstname, ' ', o.lastname) LIKE '%" . $this->db->escape($data['filter_customer']) . "%'";]]>
+      </search>
+      <add position="replace">
+        <![CDATA[ 
+			$sql .= " AND CONCAT(o.firstname, ' ', o.lastname, ' ', o.telephone, ' ', o.email, ' ', o.shipping_city, ' ', o.shipping_address_1, ' ', o.payment_method, ' ', o.shipping_method) LIKE '%" . $this->db->escape($data['filter_customer']) . "%'";
+		]]>
+      </add>
+    </operation>
+  </file>
+</modification>

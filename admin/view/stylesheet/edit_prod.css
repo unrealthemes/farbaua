@@ -1,0 +1,28 @@
+		input.hidden_input[type="checkbox"] {
+				display:none;
+			}
+			input.hidden_input[type="checkbox"] + label span {
+				display:inline-block;
+				width:19px;
+				height:19px;
+				margin:-1px 4px 0 0;
+				vertical-align:middle;
+				background:url(../image/check_radio_sheet.png) left top no-repeat;
+				cursor:pointer;
+				
+			}
+			input.hidden_input[type="checkbox"]:checked + label span {
+				background:url(../image/check_radio_sheet.png) -19px top no-repeat;
+				
+			}
+			input.hidden_input[type="checkbox"] + label.lable_edit{
+				color:red;
+			}
+			input.hidden_input[type="checkbox"]:checked + label.lable_edit{
+				color:green;
+			}
+			.lable_edit {
+				display: inline-block;
+				margin-bottom: 5px;
+				font-size:14px;
+			}

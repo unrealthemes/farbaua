@@ -1,0 +1,775 @@
+{% if (verdeals == 1) %}
+<style>
+.block-slidedeals-v1 .dealsslider-countdown .num-time {
+	background:{{ bg_timer }};
+}
+</style>
+<div class="block-slidedeals-v1 bg-sliderdeals">
+{% set gcdealsslider = random(1000) %}
+	<div class="sm-dealsslider theme1 dealsslider{{ gcdealsslider }}">
+		<div id="sync1" class="sync1{{ gcdealsslider }} col-xs-12 col-sm-9 col-md-10 ds-items-detail carousel_numb_dealsslider{{ gcdealsslider }}">
+			{% for product in products %} 
+				<div class="dealsslider-item">
+					<div class="dealsslider-item-inner row">
+						<div class="dealsslider-datetime col-xs-12 col-sm-12 col-md-3">
+							<div class="box-title">
+								<div class="dealsslider-title-text">
+									<h3 class="ds-title">{{ title}}</h3>
+								</div>
+								
+								<div class="pre_text">{{ description[lang_id]['text']}}</div>
+							</div>
+							{% if (status_timer_special == '1' and product['special']) %} 
+								<div class="dealsslider-countdown" data-timer="{{ product['date_end'] }}"></div>
+							{% endif %}	
+							
+						</div>
+						<div class="dealsslider-wrappper col-xs-12 col-sm-12 col-md-9">
+							<div class="dealsslider-info product-thumb">
+								<div class="dealsslider-image col-xs-12 col-sm-12 col-md-5">
+									<div class="image">	
+										<div class="stickers-ns">
+											{% if (product['special']) %} 
+												<div class="sticker-ns procent-skidka"><i class="fa fa-tag"></i> {{ product['skidka'] }} %</div>
+											{% endif %} 
+											{% if ((on_off_sticker_special == '1') and product['special']) %} 
+												<div class="sticker-ns special">
+													<i class="fa {{ config_change_icon_sticker_special }} "></i>					
+													<span>{{ text_sticker_special[lang_id]['config_change_text_sticker_special'] }}</span>	
+												</div>
+											{% endif %} 
+											{% if ((on_off_sticker_topbestseller == '1') and (product['top_bestsellers'] >= config_limit_order_product_topbestseller)) %} 
+												<div class="sticker-ns bestseller">
+													<i class="fa {{ config_change_icon_sticker_topbestseller }} "></i>
+													<span>{{ text_sticker_topbestseller[lang_id]['config_change_text_sticker_topbestseller'] }}</span>	
+												</div>
+											{% endif %} 
+											{% if ((on_off_sticker_popular == '1') and (product['viewed']>=config_min_quantity_popular)) %} 
+												<div class="sticker-ns popular">
+													<i class="fa {{ config_change_icon_sticker_popular }} "></i>
+													<span>{{ text_sticker_popular[lang_id]['config_change_text_sticker_popular'] }}</span>								
+												</div>
+											{% endif %} 
+											{% if ((on_off_sticker_newproduct == '1') and product.sticker_new_prod ) %}
+												<div class="sticker-ns newproduct">
+													<i class="fa {{ config_change_icon_sticker_newproduct }}"></i>
+													{{ text_sticker_newproduct[lang_id].config_change_text_sticker_newproduct }}	
+												</div>
+											{% endif %} 
+										</div>
+										{% if (on_off_slider_additional_image == '1') %}		
+											<div class="image-carousel">			
+												<a href="{{ product['href'] }}"><img {% if (product['product_quantity'] <= 0 and show_stock_status) %}data-status="{{ product['stock_status'] }}"{% endif %} src="{{ product['thumb'] }}" alt="{{ product['name'] }}" title="{{ product['name'] }}" class="img-responsive" /></a>		
+											{% for img in product['additional_img'] %}			
+												<a class="additional-image hidden" href="{{ product['href'] }}"><img src="{{ img }}" alt="{{ product['name'] }}" title="{{ product['name'] }}" class="img-responsive" /></a>			
+											{% endfor %} 
+											</div>
+										{% elseif (on_off_slider_additional_image == '2') %} 
+											<a href="{{ product['href'] }}"><img {% if (product['product_quantity'] <= 0 and show_stock_status) %}data-status="{{ product['stock_status'] }}"{% endif %} {% if (product['additional_image_hover']) %}data-additional-hover="{{ product['additional_image_hover'] }}"{% endif %} src="{{ product['thumb'] }}" alt="{{ product['name'] }}" title="{{ product['name'] }}" class="img-responsive" /></a>		
+										{% else %} 
+											<a href="{{ product['href'] }}"><img {% if (product['product_quantity'] <= 0 and show_stock_status) %}data-status="{{ product['stock_status'] }}"{% endif %} src="{{ product['thumb'] }}" alt="{{ product['name'] }}" title="{{ product['name'] }}" class="img-responsive" /></a>	
+										{% endif %} 	
+									</div>
+								</div>
+								<div class="dealsslider-content col-xs-12 col-sm-12 col-md-7">
+									<div class="product-name"><a href="{{ product['href'] }}">{{ product['name'] }}</a></div>
+									{% if (on_off_model_product != '0') %} 
+										<div class="product-model">{{ product['model']}}</div>
+									{% endif %} 
+									{% if (on_off_rating != '0') %} 
+										<div class="rating">
+											<span class="rating-box">
+												{% set i = 1 %}{% for i in i..5 %} 
+													{% if (product['rating'] < i) %} 
+														<span class="fa fa-stack"><i class="fa fa-star-o fa-stack-2x"></i></span>
+													{% else %} 
+														<span class="fa fa-stack"><i class="fa fa-star fa-stack-2x"></i><i class="fa fa-star-o fa-stack-2x"></i></span>
+													{% endif %} 
+												{% endfor %} 
+											{% if (on_off_quantity_reviews != '0') %} 
+												<span class="quantity-reviews"><a data-placement="right"  data-toggle="tooltip" title="{{ text_reviews_title }}" href="{{ product['href'] }}/#tab-review">{{ product['reviews'] }}</a></span>
+											{% endif %} 
+											</span>
+										</div>
+									{% endif %}	
+									{% if (on_off_description != '0') %} 
+										<div class="product-description">{{ product['description'] }}</div>
+									{% endif %} 
+							
+								{% if (show_options) %} 
+									<div id="option_dealsslider{{ gcdealsslider }}_{{ product['product_id'] }}" class="option dealsslider-opt">
+										{% for key,option in product['options'] %} 
+											{% if (option['type'] == 'select') %} 
+												<div class="form-group">
+													<label class="control-label" for="input-option{{ option['product_option_id'] }}">
+														{% if (option['required']) %}<i class="fa fa-exclamation-triangle required" data-toggle="tooltip" data-placement="left" title="{{ required_text_option }}"></i>{% endif %} 
+														{{ option['name'] }} 
+													</label>
+													<div id="input-option-dealsslider{{ gcdealsslider }}{{ option['product_option_id'] }}">
+														<select onchange="recalc_quantity({{ product['product_id'] }},{{ product['minimum'] }},{{ product['price_no_format'] }},'{{ product['special_no_format'] }}','.carousel_numb_dealsslider{{ gcdealsslider }}','dealsslider{{ gcdealsslider }}');" name="option[{{ option['product_option_id'] }}]" id="input-value-{{ option['product_option_id'] }}_dealsslider" class="form-control">
+															<option value="">{{ text_select }}</option>
+															{% for option_value in option['product_option_value'] %} 
+															<option data-option-prefix="{{ option_value['price_prefix'] }}" data-option-price="{{ option_value['price_value'] }}" value="{{ option_value['product_option_value_id'] }}">{{ option_value['name'] }} 
+															{% if (option_value['price']) %} 
+															({{ option_value['price_prefix'] }}{{ option_value['price'] }})
+															{% endif %} 
+															</option>
+															{% endfor %} 
+														</select>
+												  </div>
+												</div>
+											{% endif %}	
+											{% if (option['type'] == 'radio') %} 
+												<div class="form-group">
+													<label class="control-label" for="input-option{{ option['product_option_id'] }}">
+														{% if (option['required']) %}<i class="fa fa-exclamation-triangle required" data-toggle="tooltip" data-placement="left" title="{{ required_text_option }}"></i>{% endif %} 
+														{{ option['name'] }} 
+													</label>
+													<div id="input-option-dealsslider{{ gcdealsslider }}{{ option['product_option_id'] }}">
+													{% for option_value in option['product_option_value'] %} 
+														{% if (option_value['image'] or option_value['color']) %} 
+															{% if (option['status_color_type'] == '1') %} 
+																<div class="image-radio">
+																  <label>
+																	<input data-option-prefix="{{ option_value['price_prefix'] }}" data-option-price="{{ option_value['price_value'] }}" onchange="recalc_quantity({{ product['product_id'] }},{{ product['minimum'] }},{{ product['price_no_format'] }},'{{ product['special_no_format'] }}','.carousel_numb_dealsslider{{ gcdealsslider }}','dealsslider{{ gcdealsslider }}');" type="radio" name="option[{{ option['product_option_id'] }}]" value="{{ option_value['product_option_value_id'] }}" id="input-value-{{ gcdealsslider }}{{ option['product_option_id'] }}_{{ option_value['product_option_value_id'] }}_dealsslider" />
+																	<span for="input-value-{{ gcdealsslider }}{{ option['product_option_id'] }}_{{ option_value['product_option_value_id'] }}_productany" class="color-option" data-toggle="tooltip" title="{{ option_value['name'] ~ option_value['price'] ? ' ' ~ option_value['price_prefix'] ~ option_value['price'] : '' }}" style="background-color:{{ option_value['color']}}"></span>						
+																  </label>
+																</div>
+															{% else %} 
+																<div class="image-radio">
+																  <label>
+																	<input data-option-prefix="{{ option_value['price_prefix'] }}" data-option-price="{{ option_value['price_value'] }}" onchange="recalc_quantity({{ product['product_id'] }},{{ product['minimum'] }},{{ product['price_no_format'] }},'{{ product['special_no_format'] }}','.carousel_numb_dealsslider{{ gcdealsslider }}','dealsslider{{ gcdealsslider }}');" type="radio" name="option[{{ option['product_option_id'] }}]" value="{{ option_value['product_option_value_id'] }}" id="input-value-{{ gcdealsslider }}{{ option['product_option_id'] }}_{{ option_value['product_option_value_id'] }}_dealsslider" />
+																	<img for="input-value-{{ gcdealsslider }}{{ option['product_option_id'] }}_{{ option_value['product_option_value_id'] }}_productany" src="{{ option_value['image'] }}" alt="{{ option_value['name'] ~ option_value['price'] ? ' ' ~ option_value['price_prefix'] ~ option_value['price'] : '' }}" class="img-thumbnail" data-toggle="tooltip" title="{{ option_value['name'] ~ option_value['price'] ? ' ' ~ option_value['price_prefix'] ~ option_value['price'] : '' }}" /> 						
+																  </label>
+																</div>
+															{% endif %} 
+														{% else %} 
+															<div class="radio-checbox-options">
+																<input data-option-prefix="{{ option_value['price_prefix'] }}" data-option-price="{{ option_value['price_value'] }}" onchange="recalc_quantity({{ product['product_id'] }},{{ product['minimum'] }},{{ product['price_no_format'] }},'{{ product['special_no_format'] }}','.carousel_numb_dealsslider{{ gcdealsslider }}','dealsslider{{ gcdealsslider }}');" type="radio" name="option[{{ option['product_option_id'] }}]" value="{{ option_value['product_option_value_id'] }}" id="input-value-{{ gcdealsslider }}{{ option['product_option_id'] }}_{{ option_value['product_option_value_id'] }}_dealsslider" />
+																<label for="input-value-{{ gcdealsslider }}{{ option['product_option_id'] }}_{{ option_value['product_option_value_id'] }}_dealsslider">
+																	<span class="option-name">{{ option_value['name'] }}</span>
+																	{% if (option_value['price']) %} 
+																	<span class="option-price">{{ option_value['price_prefix'] }}{{ option_value['price'] }}</span>
+																	{% endif %} 
+																</label>
+															</div>
+														{% endif %}											
+													{% endfor %} 
+												  </div>
+												</div>
+											{% endif %}	
+											{% if (option['type'] == 'checkbox') %} 
+												<div class="form-group">
+												  <label class="control-label" for="input-option{{ option['product_option_id'] }}">
+														{% if (option['required']) %}<i class="fa fa-exclamation-triangle required" data-toggle="tooltip" data-placement="left" title="{{ required_text_option }}"></i>{% endif %} 
+														{{ option['name'] }} 
+													</label>
+												  <div id="input-option-dealsslider{{ gcdealsslider }}{{ option['product_option_id'] }}">
+													{% for option_value in option['product_option_value'] %} 
+														{% if (option_value['image'] or option_value['color']) %} 
+															{% if (option['status_color_type'] == '1') %} 
+																<div class="image-radio">
+																  <label>
+																	<input data-option-prefix="{{ option_value['price_prefix'] }}" data-option-price="{{ option_value['price_value'] }}" onchange="recalc_quantity({{ product['product_id'] }},{{ product['minimum'] }},{{ product['price_no_format'] }},'{{ product['special_no_format'] }}','.carousel_numb_dealsslider{{ gcdealsslider }}','dealsslider{{ gcdealsslider }}');" type="checkbox" name="option[{{ option['product_option_id'] }}][]" value="{{ option_value['product_option_value_id'] }}" id="input-value-{{ gcdealsslider }}{{ option['product_option_id'] }}_{{ option_value['product_option_value_id'] }}_dealsslider" />
+																	<span for="input-value-{{ gcdealsslider }}{{ option['product_option_id'] }}_{{ option_value['product_option_value_id'] }}_productany" class="color-option" data-toggle="tooltip" title="{{ option_value['name'] ~ option_value['price'] ? ' ' ~ option_value['price_prefix'] ~ option_value['price'] : '' }}" style="background-color:{{ option_value['color']}}"></span>						
+																  </label>
+																</div>
+															{% else %} 
+																<div class="image-radio">
+																  <label>
+																	<input data-option-prefix="{{ option_value['price_prefix'] }}" data-option-price="{{ option_value['price_value'] }}" onchange="recalc_quantity({{ product['product_id'] }},{{ product['minimum'] }},{{ product['price_no_format'] }},'{{ product['special_no_format'] }}','.carousel_numb_dealsslider{{ gcdealsslider }}','dealsslider{{ gcdealsslider }}');" type="checkbox" name="option[{{ option['product_option_id'] }}][]" value="{{ option_value['product_option_value_id'] }}" id="input-value-{{ gcdealsslider }}{{ option['product_option_id'] }}_{{ option_value['product_option_value_id'] }}_dealsslider" />
+																	<img for="input-value-{{ gcdealsslider }}{{ option['product_option_id'] }}_{{ option_value['product_option_value_id'] }}_productany" src="{{ option_value['image'] }}" alt="{{ option_value['name'] ~ option_value['price'] ? ' ' ~ option_value['price_prefix'] ~ option_value['price'] : '' }}" class="img-thumbnail" data-toggle="tooltip" title="{{ option_value['name'] ~ option_value['price'] ? ' ' ~ option_value['price_prefix'] ~ option_value['price'] : '' }}" /> 						
+																  </label>
+																</div>
+															{% endif %} 
+														{% else %} 
+															<div class="radio-checbox-options">
+															  <input data-option-prefix="{{ option_value['price_prefix'] }}" data-option-price="{{ option_value['price_value'] }}" onchange="recalc_quantity({{ product['product_id'] }},{{ product['minimum'] }},{{ product['price_no_format'] }},'{{ product['special_no_format'] }}','.carousel_numb_dealsslider{{ gcdealsslider }}','dealsslider{{ gcdealsslider }}');" type="checkbox" name="option[{{ option['product_option_id'] }}][]" value="{{ option_value['product_option_value_id'] }}" id="input-value-{{ gcdealsslider }}{{ option['product_option_id'] }}_{{ option_value['product_option_value_id'] }}_dealsslider" />
+																<label for="input-value-{{ gcdealsslider }}{{ option['product_option_id'] }}_{{ option_value['product_option_value_id'] }}_dealsslider">
+																<span class="option-name">{{ option_value['name'] }}</span>
+																	{% if (option_value['price']) %} 
+																	<span class="option-price">{{ option_value['price_prefix'] }}{{ option_value['price'] }}</span>
+																	{% endif %} 
+															  </label>
+															</div>
+														{% endif %}												
+													{% endfor %} 
+												  </div>
+												</div>
+												{% endif %} 
+												
+										{% endfor %} 
+									</div>
+								{% endif %} 
+								{% if (product['price']) %} 
+								<div class="price">
+								  {% if (not product['special']) %} 
+								  <span class="price_no_format_{{ product['product_id'] }}">{{ product['price'] }}</span>
+								  {% else %} 
+								  <span class="price-old"><span class="price_no_format_{{ product['product_id'] }}">{{ product['price'] }}</span></span> <span class="price-new"><span class="special_no_format_{{ product['product_id'] }}">{{ product['special'] }}</span></span>
+								  {% endif %} 
+								  {% if (product['tax']) %} 
+								  <span class="price-tax">{{ text_tax }} {{ product['tax'] }}</span>
+								  {% endif %} 
+								</div>
+								{% endif %} 
+								{% if (config_additional_settings_newstore['quantity_btn_module'] is defined and (config_additional_settings_newstore['quantity_btn_module'] == '1')) %}
+								<div class="quantity_plus_minus">
+									<div class="quantity_cont">
+										<div class="input-group">
+											<span class="input-group-btn">
+												<button class="btn btn-quantity-minus" onclick="btnminus_cat_price_dealsslider{{ gcdealsslider }}_{{ product['product_id'] }}('{% if (config_additional_settings_newstore['quantity_multiple'] is defined and (config_additional_settings_newstore['quantity_multiple'] == '1')) %}{{ product['minimum'] }}{% else %}1{% endif %}');" type="button">-</button>
+											</span>
+												<input <input {% if (config_additional_settings_newstore['quantity_multiple'] is defined and (config_additional_settings_newstore['quantity_multiple'] == '1') and product['minimum'] > 1) %}disabled{% endif %} id="input_quantity_mod_dealsslider{{ gcdealsslider }}_{{ product['product_id'] }}" class="form-control input-number-quantity{{ product['product_id'] }}" name="quantity" onkeyup="validate_quantity(this,'{{ product['minimum'] }}')" oninput="recalc_quantity({{ product['product_id'] }},{{ product['minimum'] }}, {{ product['price_no_format'] }},'{{ product['special_no_format'] }}','.carousel_numb_dealsslider{{ gcdealsslider }}','dealsslider{{ gcdealsslider }}');" size="2" value="{{ product['minimum'] }}">
+											<span class="input-group-btn">
+												<button class="btn btn-quantity-plus" onclick="btnplus_cat_price_dealsslider{{ gcdealsslider }}_{{ product['product_id'] }}('{% if (config_additional_settings_newstore['quantity_multiple'] is defined and (config_additional_settings_newstore['quantity_multiple'] == '1')) %}{{ product['minimum'] }}{% else %}1{% endif %}');" type="button" >+</button>
+											</span>
+										</div>	
+									</div>
+								</div>
+								<script>
+									$(window).load(function() {
+									recalc_quantity('{{ product['product_id'] }}','{{ product['minimum'] }}','{{ product['price_no_format'] }}','{{ product['special_no_format'] }}','.carousel_numb_dealsslider{{ gcdealsslider }}','dealsslider{{ gcdealsslider }}');						
+									});
+									function btnminus_cat_price_dealsslider{{ gcdealsslider }}_{{ product['product_id'] }}(minimum){
+										var $input = $('#input_quantity_mod_dealsslider{{ gcdealsslider }}_{{ product['product_id'] }}');
+										var count = parseInt($input.val()) - parseInt(minimum);
+										count = count < parseInt({{ product['minimum'] }}) ? parseInt({{ product['minimum'] }}) : count;
+										$input.val(count);
+										$input.change();										
+										recalc_quantity({{ product['product_id'] }},count,{{ product['price_no_format'] }},'{{ product['special_no_format'] }}','.carousel_numb_dealsslider{{ gcdealsslider }}','dealsslider{{ gcdealsslider }}');						
+									}
+									function btnplus_cat_price_dealsslider{{ gcdealsslider }}_{{ product['product_id'] }}(minimum){
+										var $input = $('#input_quantity_mod_dealsslider{{ gcdealsslider }}_{{ product['product_id'] }}');
+										var count = parseInt($input.val()) + parseInt(minimum);
+										$input.val(count);
+										$input.change();
+										recalc_quantity({{ product['product_id'] }},count,{{ product['price_no_format'] }},'{{ product['special_no_format'] }}','.carousel_numb_dealsslider{{ gcdealsslider }}','dealsslider{{ gcdealsslider }}');					
+									};																				
+							</script>		
+								{% endif %} 
+								<div class="actions">						
+									{% if ((product['product_quantity'] <= 0) and disable_cart_button) %} 
+										<div class="cart"><button class="btn btn-general" type="button" disabled>{% if (change_text_cart_button_out_of_stock == 1) %}<span>{{ disable_cart_button_text }}</span>{% else %}<i class="fa fa-shopping-basket"></i> <span>{{ button_cart }}</span>{% endif %}</button></div>
+									{% else %} 
+										<div class="cart"><button class="btn btn-general" type="button" onclick="cart.add('{{ product['product_id'] }}','dealsslider{{ gcdealsslider }}', get_cart_quantity('{{ product['product_id'] }}','.carousel_numb_dealsslider{{ gcdealsslider }}'));">{% if (change_text_cart_button_out_of_stock == 1 and product['product_quantity'] <= 0) %}<span>{{ disable_cart_button_text }}</span>{% else %}<i class="fa fa-shopping-basket"></i> <span>{{ button_cart }}</span>{% endif %}</button></div>
+									{% endif %} 
+									<div class="actions-quick-order">
+										<div class="quick-order">
+										{% if (on_off_fastorder != '0') %} 
+										<button class="btn btn-fastorder {% if ((product['product_quantity'] <= 0) and disable_fastorder_button) %}hidden-quick-order{% endif %}" type="button" data-toggle="tooltip" onclick="fastorder_open({{ product['product_id']}});" title="{{ config_text_open_form_send_order[lang_id]['config_text_open_form_send_order'] }}" {% if ((product['product_quantity'] <= 0) and disable_fastorder_button) %}disabled{% endif %}>
+											{% if (icon_open_form_send_order != '') %} 
+												<i class="{{ icon_open_form_send_order }} fa-fw"></i>
+											{% else %} 
+												<i class="fa fa-shopping-bag fa-fw"></i>
+											{% endif %} 
+											{{ config_text_open_form_send_order[lang_id]['config_text_open_form_send_order'] }}		
+										</button>
+										{% endif %} 
+									  </div>
+									</div>
+									{% if (on_off_wishlist != '0') %} 
+									<div class="wishlist"><button class="btn btn-wishlist" type="button" data-toggle="tooltip" title="{{ button_wishlist }}" onclick="wishlist.add('{{ product['product_id'] }}');"><i class="fa fa-heart"></i></button></div>	
+									{% endif %}	
+									{% if (on_off_compare != '0') %} 
+									<div class="compare"><button class="btn btn-compare" type="button" data-toggle="tooltip" title="{{ button_compare }}" onclick="compare.add('{{ product['product_id'] }}');"><i class="fa fa-exchange"></i></button></div>	
+									{% endif %} 
+								</div>		
+						</div>
+					</div>
+						</div>
+					
+						
+					</div>
+				</div>
+			{% endfor %} 
+		</div>
+		
+		
+		<div id="sync2" class="sync2{{ gcdealsslider }} ds-items col-sm-3 col-md-2 hidden-xs">
+			{% for product in products %} 
+				<div class="ds-image-thumb cf"><img src="{{ product['image_thumb']}}" /></div>
+			{% endfor %} 
+		</div>
+	</div>
+<script>
+$(window).load(function() {
+$(".dealsslider{{ gcdealsslider }} .additional-image").removeClass('hidden');
+{% if (on_off_slider_additional_image == '1') %} 
+	$(".dealsslider{{ gcdealsslider }} .image-carousel").owlCarousel({
+	navigation : true, 
+	slideSpeed : 300,
+	pagination:false,
+	navigationText: ['<div class="btn btn-carousel-image-additional next-prod"><i class="fa fa-angle-left arrow"></i></div>', '<div class="btn btn-carousel-image-additional prev-prod"><i class="fa fa-angle-right arrow"></i></div>'],		
+	paginationSpeed : 400,
+	singleItem:true,
+	transitionStyle: '{{ additional_animate_method }}'
+	});	 
+{% endif %} 
+});
+$(".sync1{{ gcdealsslider }} .dealsslider-countdown").each(function () {
+	var timer = $(this).data('timer');
+	var parts_date = timer.split('-');
+	var ts = new Date(parts_date[0], parts_date[1] - 1, parts_date[2]); 
+	if((new Date()) > ts){
+		ts = (new Date()).getTime() + 10*24*60*60*1000;
+	}
+	$(this).countdown({
+		timestamp : ts,
+	});
+});
+
+	$(".sync1{{ gcdealsslider }}").slick({
+		slidesToShow: 1,
+		slidesToScroll: 1,
+		infinite: true,
+		arrows: true,
+		prevArrow: "<button class=\"slick-prev slick-arrow\"><i class=\"fa fa-arrow-right\"></i></button>",
+		nextArrow: "<button class=\"slick-next slick-arrow\"><i class=\"fa fa-arrow-left\"></i></button>",
+		initialSlide: 0,
+		fade: true,
+		cssEase: 'linear',
+		adaptiveHeight: true,
+		asNavFor: '.sync2{{ gcdealsslider }}'
+	});
+	$(".sync2{{ gcdealsslider }}").slick({
+		vertical:true,
+		arrows: false,
+		autoplay: false,
+		slidesToShow: 3,
+		slidesToScroll: 1,
+		infinite: true,
+		initialSlide: 0,
+		speed: 800,
+		autoplaySpeed: 7000,
+		asNavFor: '.sync1{{ gcdealsslider }}',
+		pauseOnHover: true,
+		dots: false,
+		centerMode: true,
+		focusOnSelect: true,
+		responsive: [
+			{
+				breakpoint: 1199,
+				settings: {
+					slidesToShow: 3,
+					slidesToScroll: 1								}
+			},
+			{
+				breakpoint: 991,
+				settings: {
+					slidesToShow: 3,
+					slidesToScroll: 1								}
+			},
+			{
+				breakpoint: 767,
+				settings: {
+					slidesToShow: 3,
+					slidesToScroll: 1								}
+			},
+			{
+				breakpoint: 479,
+				settings: {
+					slidesToShow: 3,
+					slidesToScroll: 1								}
+			},
+			{
+				breakpoint: 320,
+				settings: {
+					slidesToShow: 3,
+					slidesToScroll: 1								}
+			}
+		]
+	});
+
+
+
+
+</script>
+</div>
+{% endif %} 
+
+
+
+{% if (verdeals == 0) %}
+{% if (bg_timer is defined and (bg_timer != '')) %}
+<style>
+.block-slidedeals-v4 .dealsslider-countdown {
+	background-color:{{ bg_timer }} !important;
+}
+</style>
+{% endif %} 
+<div class="block-slidedeals-v4">
+{% set gcdealsslider = random(1000) %}
+<div class="sm-dealsslider theme3 dealsslider{{ gcdealsslider }}">
+	<div id="sync2" class="sync2{{ gcdealsslider }} col-sm-2 col-md-2 col-lg-2 ds-items hidden-xs">
+	  {% for product in products %} 
+		<div class="ds-image-thumb"><img src="{{ product['image_thumb']}}" /></div>
+	  {% endfor %} 
+	</div>
+	<div id="sync1" class="sync1{{ gcdealsslider }} col-xs-12 col-sm-10 col-md-10 col-lg-10 ds-items-detail carousel_numb_dealsslider{{ gcdealsslider }}">
+		{% for product in products %} 
+			<div class="dealsslider-item">
+				<div class="dealsslider-item-inner">
+					<div class="dealsslider-info product-thumb">
+						<div class="dealsslider-image col-xs-12 col-sm-12 col-md-6">
+							<div class="image">	
+								<div class="stickers-ns">
+									{% if (product['special']) %} 
+										<div class="sticker-ns procent-skidka"><i class="fa fa-tag"></i> {{ product['skidka'] }} %</div>
+									{% endif %} 
+									{% if ((on_off_sticker_special == '1') and product['special']) %} 
+										<div class="sticker-ns special">
+											<i class="fa {{ config_change_icon_sticker_special }} "></i>					
+											<span>{{ text_sticker_special[lang_id]['config_change_text_sticker_special'] }}</span>	
+										</div>
+									{% endif %} 
+									{% if ((on_off_sticker_topbestseller == '1') and (product['top_bestsellers'] >= config_limit_order_product_topbestseller)) %} 
+										<div class="sticker-ns bestseller">
+											<i class="fa {{ config_change_icon_sticker_topbestseller }} "></i>
+											<span>{{ text_sticker_topbestseller[lang_id]['config_change_text_sticker_topbestseller'] }}</span>	
+										</div>
+									{% endif %} 
+									{% if ((on_off_sticker_popular == '1') and (product['viewed']>=config_min_quantity_popular)) %} 
+										<div class="sticker-ns popular">
+											<i class="fa {{ config_change_icon_sticker_popular }} "></i>
+											<span>{{ text_sticker_popular[lang_id]['config_change_text_sticker_popular'] }}</span>								
+										</div>
+									{% endif %} 
+									{% if ((on_off_sticker_newproduct == '1') and product.sticker_new_prod ) %}
+									<div class="sticker-ns newproduct">
+										<i class="fa {{ config_change_icon_sticker_newproduct }}"></i>
+										{{ text_sticker_newproduct[lang_id].config_change_text_sticker_newproduct }}	
+									</div>
+								{% endif %} 
+								</div>
+								{% if (on_off_slider_additional_image == '1') %}		
+									<div class="image-carousel">			
+										<a href="{{ product['href'] }}"><img {% if (product['product_quantity'] <= 0 and show_stock_status) %}data-status="{{ product['stock_status'] }}"{% endif %} src="{{ product['thumb'] }}" alt="{{ product['name'] }}" title="{{ product['name'] }}" class="img-responsive" /></a>		
+									{% for img in product['additional_img'] %}			
+										<a class="additional-image hidden" href="{{ product['href'] }}"><img src="{{ img }}" alt="{{ product['name'] }}" title="{{ product['name'] }}" class="img-responsive" /></a>			
+									{% endfor %} 
+									</div>
+								{% elseif (on_off_slider_additional_image == '2') %} 
+									<a href="{{ product['href'] }}"><img {% if (product['product_quantity'] <= 0 and show_stock_status) %}data-status="{{ product['stock_status'] }}"{% endif %} {% if (product['additional_image_hover']) %}data-additional-hover="{{ product['additional_image_hover'] }}"{% endif %} src="{{ product['thumb'] }}" alt="{{ product['name'] }}" title="{{ product['name'] }}" class="img-responsive" /></a>		
+								{% else %} 
+									<a href="{{ product['href'] }}"><img {% if (product['product_quantity'] <= 0 and show_stock_status) %}data-status="{{ product['stock_status'] }}"{% endif %} src="{{ product['thumb'] }}" alt="{{ product['name'] }}" title="{{ product['name'] }}" class="img-responsive" /></a>	
+								{% endif %} 	
+							</div>
+						</div>
+						<div class="dealsslider-content col-xs-12 col-sm-12 col-md-6">
+							<div class="product-name"><a href="{{ product['href'] }}">{{ product['name'] }}</a></div>
+							{% if (on_off_model_product != '0') %} 
+								<div class="product-model">{{ product['model']}}</div>
+							{% endif %} 
+							{% if (on_off_rating != '0') %} 
+								<div class="rating">
+									<span class="rating-box">
+										{% set i = 1 %}{% for i in i..5 %} 
+											{% if (product['rating'] < i) %} 
+												<span class="fa fa-stack"><i class="fa fa-star-o fa-stack-2x"></i></span>
+											{% else %} 
+												<span class="fa fa-stack"><i class="fa fa-star fa-stack-2x"></i><i class="fa fa-star-o fa-stack-2x"></i></span>
+											{% endif %} 
+										{% endfor %} 
+									{% if (on_off_quantity_reviews != '0') %} 
+										<span class="quantity-reviews"><a data-placement="right"  data-toggle="tooltip" title="{{ text_reviews_title }}" href="{{ product['href'] }}/#tab-review">{{ product['reviews'] }}</a></span>
+									{% endif %} 
+									</span>
+								</div>
+							{% endif %}	
+							{% if (on_off_description != '0') %} 
+								<div class="product-description">{{ product['description'] }}</div>
+							{% endif %} 
+							
+							{% if (show_options) %} 
+								<div id="option_dealsslider{{ gcdealsslider }}_{{ product['product_id'] }}" class="option dealsslider-opt">
+									{% for key,option in product['options'] %} 
+										{% if (option['type'] == 'select') %} 
+											<div class="form-group">
+												<label class="control-label" for="input-option{{ option['product_option_id'] }}">
+													{% if (option['required']) %}<i class="fa fa-exclamation-triangle required" data-toggle="tooltip" data-placement="left" title="{{ required_text_option }}"></i>{% endif %} 
+													{{ option['name'] }} 
+												</label>
+												<div id="input-option-dealsslider{{ gcdealsslider }}{{ option['product_option_id'] }}">
+													<select onchange="recalc_quantity({{ product['product_id'] }},{{ product['minimum'] }},{{ product['price_no_format'] }},'{{ product['special_no_format'] }}','.carousel_numb_dealsslider{{ gcdealsslider }}','dealsslider{{ gcdealsslider }}');" name="option[{{ option['product_option_id'] }}]" id="input-value-{{ option['product_option_id'] }}_dealsslider" class="form-control">
+														<option value="">{{ text_select }}</option>
+														{% for option_value in option['product_option_value'] %} 
+														<option data-option-prefix="{{ option_value['price_prefix'] }}" data-option-price="{{ option_value['price_value'] }}" value="{{ option_value['product_option_value_id'] }}">{{ option_value['name'] }} 
+														{% if (option_value['price']) %} 
+														({{ option_value['price_prefix'] }}{{ option_value['price'] }})
+														{% endif %} 
+														</option>
+														{% endfor %} 
+													</select>
+											  </div>
+											</div>
+										{% endif %}	
+										{% if (option['type'] == 'radio') %} 
+											<div class="form-group">
+												<label class="control-label" for="input-option{{ option['product_option_id'] }}">
+													{% if (option['required']) %}<i class="fa fa-exclamation-triangle required" data-toggle="tooltip" data-placement="left" title="{{ required_text_option }}"></i>{% endif %} 
+													{{ option['name'] }} 
+												</label>
+												<div id="input-option-dealsslider{{ gcdealsslider }}{{ option['product_option_id'] }}">
+												{% for option_value in option['product_option_value'] %} 
+													{% if (option_value['image'] or option_value['color']) %} 
+														{% if (option['status_color_type'] == '1') %} 
+															<div class="image-radio">
+															  <label>
+																<input data-option-prefix="{{ option_value['price_prefix'] }}" data-option-price="{{ option_value['price_value'] }}" onchange="recalc_quantity({{ product['product_id'] }},{{ product['minimum'] }},{{ product['price_no_format'] }},'{{ product['special_no_format'] }}','.carousel_numb_dealsslider{{ gcdealsslider }}','dealsslider{{ gcdealsslider }}');" type="radio" name="option[{{ option['product_option_id'] }}]" value="{{ option_value['product_option_value_id'] }}" id="input-value-{{ gcdealsslider }}{{ option['product_option_id'] }}_{{ option_value['product_option_value_id'] }}_dealsslider" />
+																<span for="input-value-{{ gcdealsslider }}{{ option['product_option_id'] }}_{{ option_value['product_option_value_id'] }}_productany" class="color-option" data-toggle="tooltip" title="{{ option_value['name'] ~ option_value['price'] ? ' ' ~ option_value['price_prefix'] ~ option_value['price'] : '' }}" style="background-color:{{ option_value['color']}}"></span>						
+															  </label>
+															</div>
+														{% else %} 
+															<div class="image-radio">
+															  <label>
+																<input data-option-prefix="{{ option_value['price_prefix'] }}" data-option-price="{{ option_value['price_value'] }}" onchange="recalc_quantity({{ product['product_id'] }},{{ product['minimum'] }},{{ product['price_no_format'] }},'{{ product['special_no_format'] }}','.carousel_numb_dealsslider{{ gcdealsslider }}','dealsslider{{ gcdealsslider }}');" type="radio" name="option[{{ option['product_option_id'] }}]" value="{{ option_value['product_option_value_id'] }}" id="input-value-{{ gcdealsslider }}{{ option['product_option_id'] }}_{{ option_value['product_option_value_id'] }}_dealsslider" />
+																<img for="input-value-{{ gcdealsslider }}{{ option['product_option_id'] }}_{{ option_value['product_option_value_id'] }}_productany" src="{{ option_value['image'] }}" alt="{{ option_value['name'] ~ option_value['price'] ? ' ' ~ option_value['price_prefix'] ~ option_value['price'] : '' }}" class="img-thumbnail" data-toggle="tooltip" title="{{ option_value['name'] ~ option_value['price'] ? ' ' ~ option_value['price_prefix'] ~ option_value['price'] : '' }}" /> 						
+															  </label>
+															</div>
+														{% endif %} 
+													{% else %} 
+														<div class="radio-checbox-options">
+															<input data-option-prefix="{{ option_value['price_prefix'] }}" data-option-price="{{ option_value['price_value'] }}" onchange="recalc_quantity({{ product['product_id'] }},{{ product['minimum'] }},{{ product['price_no_format'] }},'{{ product['special_no_format'] }}','.carousel_numb_dealsslider{{ gcdealsslider }}','dealsslider{{ gcdealsslider }}');" type="radio" name="option[{{ option['product_option_id'] }}]" value="{{ option_value['product_option_value_id'] }}" id="input-value-{{ gcdealsslider }}{{ option['product_option_id'] }}_{{ option_value['product_option_value_id'] }}_dealsslider" />
+															<label for="input-value-{{ gcdealsslider }}{{ option['product_option_id'] }}_{{ option_value['product_option_value_id'] }}_dealsslider">
+																<span class="option-name">{{ option_value['name'] }}</span>
+																{% if (option_value['price']) %} 
+																<span class="option-price">{{ option_value['price_prefix'] }}{{ option_value['price'] }}</span>
+																{% endif %} 
+															</label>
+														</div>
+													{% endif %}											
+												{% endfor %} 
+											  </div>
+											</div>
+										{% endif %}	
+										{% if (option['type'] == 'checkbox') %} 
+											<div class="form-group">
+											  <label class="control-label" for="input-option{{ option['product_option_id'] }}">
+													{% if (option['required']) %}<i class="fa fa-exclamation-triangle required" data-toggle="tooltip" data-placement="left" title="{{ required_text_option }}"></i>{% endif %} 
+													{{ option['name'] }} 
+												</label>
+											  <div id="input-option-dealsslider{{ gcdealsslider }}{{ option['product_option_id'] }}">
+												{% for option_value in option['product_option_value'] %} 
+													{% if (option_value['image'] or option_value['color']) %} 
+														{% if (option['status_color_type'] == '1') %} 
+															<div class="image-radio">
+															  <label>
+																<input data-option-prefix="{{ option_value['price_prefix'] }}" data-option-price="{{ option_value['price_value'] }}" onchange="recalc_quantity({{ product['product_id'] }},{{ product['minimum'] }},{{ product['price_no_format'] }},'{{ product['special_no_format'] }}','.carousel_numb_dealsslider{{ gcdealsslider }}','dealsslider{{ gcdealsslider }}');" type="checkbox" name="option[{{ option['product_option_id'] }}][]" value="{{ option_value['product_option_value_id'] }}" id="input-value-{{ gcdealsslider }}{{ option['product_option_id'] }}_{{ option_value['product_option_value_id'] }}_dealsslider" />
+																<span for="input-value-{{ gcdealsslider }}{{ option['product_option_id'] }}_{{ option_value['product_option_value_id'] }}_productany" class="color-option" data-toggle="tooltip" title="{{ option_value['name'] ~ option_value['price'] ? ' ' ~ option_value['price_prefix'] ~ option_value['price'] : '' }}" style="background-color:{{ option_value['color']}}"></span>						
+															  </label>
+															</div>
+														{% else %} 
+															<div class="image-radio">
+															  <label>
+																<input data-option-prefix="{{ option_value['price_prefix'] }}" data-option-price="{{ option_value['price_value'] }}" onchange="recalc_quantity({{ product['product_id'] }},{{ product['minimum'] }},{{ product['price_no_format'] }},'{{ product['special_no_format'] }}','.carousel_numb_dealsslider{{ gcdealsslider }}','dealsslider{{ gcdealsslider }}');" type="checkbox" name="option[{{ option['product_option_id'] }}][]" value="{{ option_value['product_option_value_id'] }}" id="input-value-{{ gcdealsslider }}{{ option['product_option_id'] }}_{{ option_value['product_option_value_id'] }}_dealsslider" />
+																<img for="input-value-{{ gcdealsslider }}{{ option['product_option_id'] }}_{{ option_value['product_option_value_id'] }}_productany" src="{{ option_value['image'] }}" alt="{{ option_value['name'] ~ option_value['price'] ? ' ' ~ option_value['price_prefix'] ~ option_value['price'] : '' }}" class="img-thumbnail" data-toggle="tooltip" title="{{ option_value['name'] ~ option_value['price'] ? ' ' ~ option_value['price_prefix'] ~ option_value['price'] : '' }}" /> 						
+															  </label>
+															</div>
+														{% endif %} 
+													{% else %} 
+														<div class="radio-checbox-options">
+														  <input data-option-prefix="{{ option_value['price_prefix'] }}" data-option-price="{{ option_value['price_value'] }}" onchange="recalc_quantity({{ product['product_id'] }},{{ product['minimum'] }},{{ product['price_no_format'] }},'{{ product['special_no_format'] }}','.carousel_numb_dealsslider{{ gcdealsslider }}','dealsslider{{ gcdealsslider }}');" type="checkbox" name="option[{{ option['product_option_id'] }}][]" value="{{ option_value['product_option_value_id'] }}" id="input-value-{{ gcdealsslider }}{{ option['product_option_id'] }}_{{ option_value['product_option_value_id'] }}_dealsslider" />
+															<label for="input-value-{{ gcdealsslider }}{{ option['product_option_id'] }}_{{ option_value['product_option_value_id'] }}_dealsslider">
+															<span class="option-name">{{ option_value['name'] }}</span>
+																{% if (option_value['price']) %} 
+																<span class="option-price">{{ option_value['price_prefix'] }}{{ option_value['price'] }}</span>
+																{% endif %} 
+														  </label>
+														</div>
+													{% endif %}												
+												{% endfor %} 
+											  </div>
+											</div>
+											{% endif %} 
+											
+									{% endfor %} 
+								</div>
+							{% endif %} 
+							
+							
+							
+								{% if (product['price']) %} 
+								<div class="price">
+								  {% if (not product['special']) %} 
+								  <span class="price_no_format_{{ product['product_id'] }}">{{ product['price'] }}</span>
+								  {% else %} 
+								  <span class="price-old"><span class="price_no_format_{{ product['product_id'] }}">{{ product['price'] }}</span></span> <span class="price-new"><span class="special_no_format_{{ product['product_id'] }}">{{ product['special'] }}</span></span>
+								  {% endif %} 
+								  {% if (product['tax']) %} 
+								  <span class="price-tax">{{ text_tax }} {{ product['tax'] }}</span>
+								  {% endif %} 
+								</div>
+								{% endif %} 
+								{% if (config_additional_settings_newstore['quantity_btn_module'] is defined and (config_additional_settings_newstore['quantity_btn_module'] == '1')) %}
+								<div class="quantity_plus_minus">
+									<div class="quantity_cont">
+										<div class="input-group">
+											<span class="input-group-btn">
+												<button class="btn btn-quantity-minus" onclick="btnminus_cat_price_dealsslider{{ gcdealsslider }}_{{ product['product_id'] }}('{% if (config_additional_settings_newstore['quantity_multiple'] is defined and (config_additional_settings_newstore['quantity_multiple'] == '1')) %}{{ product['minimum'] }}{% else %}1{% endif %}');" type="button">-</button>
+											</span>
+												<input <input {% if (config_additional_settings_newstore['quantity_multiple'] is defined and (config_additional_settings_newstore['quantity_multiple'] == '1') and product['minimum'] > 1) %}disabled{% endif %} id="input_quantity_mod_dealsslider{{ gcdealsslider }}_{{ product['product_id'] }}" class="form-control input-number-quantity{{ product['product_id'] }}" name="quantity" onkeyup="validate_quantity(this,'{{ product['minimum'] }}')" oninput="recalc_quantity({{ product['product_id'] }},{{ product['minimum'] }}, {{ product['price_no_format'] }},'{{ product['special_no_format'] }}','.carousel_numb_dealsslider{{ gcdealsslider }}','dealsslider{{ gcdealsslider }}');" size="2" value="{{ product['minimum'] }}">
+											<span class="input-group-btn">
+												<button class="btn btn-quantity-plus" onclick="btnplus_cat_price_dealsslider{{ gcdealsslider }}_{{ product['product_id'] }}('{% if (config_additional_settings_newstore['quantity_multiple'] is defined and (config_additional_settings_newstore['quantity_multiple'] == '1')) %}{{ product['minimum'] }}{% else %}1{% endif %}');" type="button" >+</button>
+											</span>
+										</div>	
+									</div>
+								</div>
+								<script>
+									$(window).load(function() {
+									recalc_quantity('{{ product['product_id'] }}','{{ product['minimum'] }}','{{ product['price_no_format'] }}','{{ product['special_no_format'] }}','.carousel_numb_dealsslider{{ gcdealsslider }}','dealsslider{{ gcdealsslider }}');						
+									});
+									function btnminus_cat_price_dealsslider{{ gcdealsslider }}_{{ product['product_id'] }}(minimum){
+										var $input = $('#input_quantity_mod_dealsslider{{ gcdealsslider }}_{{ product['product_id'] }}');
+										var count = parseInt($input.val()) - parseInt(minimum);
+										count = count < parseInt({{ product['minimum'] }}) ? parseInt({{ product['minimum'] }}) : count;
+										$input.val(count);
+										$input.change();										
+										recalc_quantity({{ product['product_id'] }},count,{{ product['price_no_format'] }},'{{ product['special_no_format'] }}','.carousel_numb_dealsslider{{ gcdealsslider }}','dealsslider{{ gcdealsslider }}');						
+									}
+									function btnplus_cat_price_dealsslider{{ gcdealsslider }}_{{ product['product_id'] }}(minimum){
+										var $input = $('#input_quantity_mod_dealsslider{{ gcdealsslider }}_{{ product['product_id'] }}');
+										var count = parseInt($input.val()) + parseInt(minimum);
+										$input.val(count);
+										$input.change();
+										recalc_quantity({{ product['product_id'] }},count,{{ product['price_no_format'] }},'{{ product['special_no_format'] }}','.carousel_numb_dealsslider{{ gcdealsslider }}','dealsslider{{ gcdealsslider }}');					
+									};																				
+							</script>		
+								{% endif %} 
+								<div class="actions">						
+									{% if ((product['product_quantity'] <= 0) and disable_cart_button) %} 
+										<div class="cart"><button class="btn btn-general" type="button" disabled>{% if (change_text_cart_button_out_of_stock == 1) %}<span>{{ disable_cart_button_text }}</span>{% else %}<i class="fa fa-shopping-basket"></i> <span>{{ button_cart }}</span>{% endif %}</button></div>
+									{% else %} 
+										<div class="cart"><button class="btn btn-general" type="button" onclick="cart.add('{{ product['product_id'] }}','dealsslider{{ gcdealsslider }}', get_cart_quantity('{{ product['product_id'] }}','.carousel_numb_dealsslider{{ gcdealsslider }}'));">{% if (change_text_cart_button_out_of_stock == 1 and product['product_quantity'] <= 0) %}<span>{{ disable_cart_button_text }}</span>{% else %}<i class="fa fa-shopping-basket"></i> <span>{{ button_cart }}</span>{% endif %}</button></div>
+									{% endif %} 
+									<div class="actions-quick-order">
+										<div class="quick-order">
+										{% if (on_off_fastorder != '0') %} 
+										<button class="btn btn-fastorder {% if ((product['product_quantity'] <= 0) and disable_fastorder_button) %}hidden-quick-order{% endif %}" type="button" data-toggle="tooltip" onclick="fastorder_open({{ product['product_id']}});" title="{{ config_text_open_form_send_order[lang_id]['config_text_open_form_send_order'] }}" {% if ((product['product_quantity'] <= 0) and disable_fastorder_button) %}disabled{% endif %}>
+											{% if (icon_open_form_send_order != '') %} 
+												<i class="{{ icon_open_form_send_order }} fa-fw"></i>
+											{% else %} 
+												<i class="fa fa-shopping-bag fa-fw"></i>
+											{% endif %} 
+											{{ config_text_open_form_send_order[lang_id]['config_text_open_form_send_order'] }}		
+										</button>
+										{% endif %} 
+									  </div>
+									</div>
+									{% if (on_off_wishlist != '0') %} 
+									<div class="wishlist"><button class="btn btn-wishlist" type="button" data-toggle="tooltip" title="{{ button_wishlist }}" onclick="wishlist.add('{{ product['product_id'] }}');"><i class="fa fa-heart"></i></button></div>	
+									{% endif %}	
+									{% if (on_off_compare != '0') %} 
+									<div class="compare"><button class="btn btn-compare" type="button" data-toggle="tooltip" title="{{ button_compare }}" onclick="compare.add('{{ product['product_id'] }}');"><i class="fa fa-exchange"></i></button></div>	
+									{% endif %} 
+								</div>
+								
+								
+						</div>
+						
+						{% if (status_timer_special == '1' and product['special']) %} 
+						<div class="dealsslider-countdown" data-timer="{{ product['date_end'] }}"></div>
+						{% endif %}	
+						
+					</div>
+				</div>
+			</div>
+		{% endfor %} 
+	</div>
+
+<script>
+$(window).load(function() {
+$(".dealsslider{{ gcdealsslider }} .additional-image").removeClass('hidden');
+{% if (on_off_slider_additional_image == '1') %} 
+	$(".dealsslider{{ gcdealsslider }} .image-carousel").owlCarousel({
+	navigation : true, 
+	slideSpeed : 300,
+	pagination:false,
+	navigationText: ['<div class="btn btn-carousel-image-additional next-prod"><i class="fa fa-angle-left arrow"></i></div>', '<div class="btn btn-carousel-image-additional prev-prod"><i class="fa fa-angle-right arrow"></i></div>'],		
+	paginationSpeed : 400,
+	singleItem:true,
+	transitionStyle: '{{ additional_animate_method }}'
+	});	 
+{% endif %} 
+});
+
+	$(".sync1{{ gcdealsslider }} .dealsslider-countdown").each(function () {
+		var timer = $(this).data('timer');
+		var parts_date = timer.split('-');
+		var ts = new Date(parts_date[0], parts_date[1] - 1, parts_date[2]); 
+		if((new Date()) > ts){
+			ts = (new Date()).getTime() + 10*24*60*60*1000;
+		}
+		$(this).countdown({
+			timestamp	: ts,
+		});
+	});
+
+
+	$(".sync1{{ gcdealsslider }}").slick({
+		slidesToShow: 1,
+		slidesToScroll: 1,
+		infinite: true,
+		arrows: true,
+		prevArrow: "<button class=\"slick-prev slick-arrow\"><i class=\"fa fa-arrow-right\"></i></button>",
+		nextArrow: "<button class=\"slick-next slick-arrow\"><i class=\"fa fa-arrow-left\"></i></button>",
+		initialSlide: 0,
+		fade: true,
+		cssEase: 'linear',
+		adaptiveHeight: true,
+		asNavFor: '.sync2{{ gcdealsslider }}'
+		
+	});
+	$(".sync2{{ gcdealsslider }}").slick({
+		adaptiveHeight: true,
+		vertical:true,
+		arrows: false,
+		autoplay: false,
+		slidesToShow: 3,
+		slidesToScroll: 1,
+		infinite: true,
+		initialSlide: 0,
+		speed: 800,
+		autoplaySpeed: 7000,
+		asNavFor: '.sync1{{ gcdealsslider }}',
+		pauseOnHover: true,
+		dots: false,
+		centerMode: true,
+		focusOnSelect: true,
+		responsive: [
+			{
+				breakpoint: 1199,
+				settings: {
+					slidesToShow: 3,
+					slidesToScroll: 1								}
+			},
+			{
+				breakpoint: 991,
+				settings: {
+					slidesToShow: 3,
+					slidesToScroll: 1								}
+			},
+			{
+				breakpoint: 767,
+				settings: {
+					slidesToShow: 3,
+					slidesToScroll: 1								}
+			},
+			{
+				breakpoint: 479,
+				settings: {
+					slidesToShow: 3,
+					slidesToScroll: 1								}
+			},
+			{
+				breakpoint: 320,
+				settings: {
+					slidesToShow: 3,
+					slidesToScroll: 1								}
+			}
+		]
+	});
+</script>
+</div>
+</div>
+{% endif %} 

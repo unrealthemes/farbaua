@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<modification>
+  <name>NS->EDITPRODUCT_PRO</name>
+  <code>NS->EDITPRODUCT_PRO</code>
+  <version>2.6.1</version>
+  <author>Alex.Konushin(29aleksey)</author>
+	<file path="catalog/controller/product/product.php">
+		<operation>
+			<search index="0"><![CDATA[$data['header'] = $this->load->controller('common/header');]]></search>
+			<add position="after"><![CDATA[
+				$data['editorplus'] = $this->load->controller('extension/module/editorplus');
+			]]></add>
+		</operation>
+	</file>
+	<file path="catalog/view/theme/*/template/product/product.twig">
+		<operation>
+			<search><![CDATA[{{ content_top }}]]></search>
+			<add position="after"><![CDATA[
+				{{ editorplus }}
+			]]></add>
+		</operation>
+	</file>
+	<file path="catalog/controller/product/category.php">
+		<operation>
+			<search index="0"><![CDATA[$data['header'] = $this->load->controller('common/header');]]></search>
+			<add position="after"><![CDATA[
+				$data['editorplus'] = $this->load->controller('extension/module/editorplus');
+			]]></add>
+		</operation>
+	</file>
+	<file path="catalog/view/theme/*/template/product/category.twig">
+		<operation>
+			<search><![CDATA[{{ content_top }}]]></search>
+			<add position="after"><![CDATA[
+				{{ editorplus }}
+			]]></add>
+		</operation>
+	</file>
+</modification>

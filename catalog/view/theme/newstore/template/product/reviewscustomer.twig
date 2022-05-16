@@ -1,0 +1,81 @@
+{{ header }} 
+<div class="container">
+	<ul class="breadcrumb">
+    {% for i,breadcrumb in breadcrumbs %} 
+		{% if (i+1 < breadcrumbs|length) %} <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li> {% else %}<li>{{ breadcrumb.text }}</li>{% endif %} 
+	{% endfor %} 
+  </ul>
+  <div class="row">{{ column_left }} 
+    {% if (column_left and column_right) %} 
+    {% set class = 'col-sm-6' %} 
+    {% elseif (column_left or column_right) %} 
+    {% set class = 'col-sm-9' %} 
+    {% else %} 
+    {% set class = 'col-sm-12' %} 
+    {% endif %} 
+    <div id="content" class="{{ class }}">{{ content_top }} 
+      <h1 class="heading_title_reviews"><span>{{ heading_title }}</span></h1>
+      {% if (reviews) %} 
+      <div class="row">
+        {% for review in reviews %} 
+        <div class="product-layout product-list col-xs-12">
+         <div class="product-thumb transition">
+            <div class="image"><a href="{{ review['prod_href'] }}"><img src="{{ review.prod_thumb }}" alt="{{ review.prod_name }}" title="{{ review.prod_name }}" class="img-responsive" /></a></div>
+            <div class="caption">
+              <div class="product-name"><h4><a href="{{ review.prod_href }}">{{ review.prod_name }}</a></h4></div>
+              {% if (review.rating) %} 
+              <div class="rating">
+                {% set i = 1 %}{% for i in i..5 %} 
+                {% if (review.rating < i) %} 
+                <span class="fa fa-stack"><i class="fa fa-star-o fa-stack-2x"></i></span>
+                {% else %} 
+                <span class="fa fa-stack"><i class="fa fa-star fa-stack-2x"></i></span>
+                {% endif %} 
+                {% endfor %} 
+              </div>
+              {% endif %} 
+              <p class="reviews-description">{{ review.description }}</p>
+			  {% if (show_review_plus and review.plus) %} 
+					<div class="review_plus">
+						<div><span><i class="fa fa-plus" aria-hidden="true"></i> {{ text_plus }}</span>
+						{{ review.plus }} 
+						</div>
+					</div>
+				{% endif %} 
+				{% if (show_review_minus and review.minus) %} 
+				<div class="review_minus">
+					<div><span><i class="fa fa-minus" aria-hidden="true"></i> {{ text_minus }}</span>
+					{{ review.minus }} 
+				</div>
+				</div>
+				{% endif %} 
+				
+				{% if (review['admin_reply'] is defined and review.admin_reply != '') %} 
+					<div class="admin_reply">
+						<span><i class="fa fa-reply fa-rotate-180" aria-hidden="true"></i> {{ text_admin_reply }}</span>
+						{{ review.admin_reply }} 
+					</div>
+				{% endif %} 
+              <div class="reviews-sign">
+                <div class="reviews-author">
+				<i class="fa fa-user" aria-hidden="true"></i> {{ review.author }} 
+				{% if (review.purchased) %}<span class="purchased"><i class="fa fa-cart-plus" aria-hidden="true"></i> {{ text_purchased}}</span>{% endif %} 
+				</div>
+                <div class="reviews-date">{{ review.date_added }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endfor %} 
+      </div>
+      <div class="row">
+        <div class="col-sm-6 text-left">{{ pagination }}</div>
+        <div class="col-sm-6 text-right">{{ results }}</div>
+      </div>
+      {% else %} 
+      <p>{{ text_empty }}</p>
+      {% endif %} 
+      {{ content_bottom }}</div>
+    {{ column_right }}</div>
+</div>
+{{ footer }}

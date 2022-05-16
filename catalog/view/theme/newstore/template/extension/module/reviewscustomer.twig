@@ -1,0 +1,59 @@
+<div class="container-module">
+{% set gen_reviews = random(100) %}
+{% if module_header %} 
+<div class="title-module"><span>{{ module_header }}</span></div>
+{% endif %}	
+	<div class="product-slider">
+		<div class="container-modules reviews carousel_reviews{{ gen_reviews }} owl-carousel">
+			{% for review in reviews %} 
+			<div class="item">
+				<div class="product-thumb transition">
+					<div class="image">
+						<a href="{{ review['prod_href'] }}"><img src="{{ review.prod_thumb }}" alt="{{ review.prod_name }}" title="{{ review.prod_name }}" class="img-responsive" /></a>
+					</div>
+					<div class="caption">
+					 <div class="product-name"><h4><a href="{{ review.prod_href }}">{{ review.prod_name }}</a></h4></div>
+						<div class="product-description">{{ review.description }}</div>
+						<div class="rating">
+							<span class="rating-box">
+								{% set i = 1 %}{% for i in i..5 %} 
+									{% if (review.rating < i) %} 
+									<span class="fa fa-stack"><i class="fa fa-star-o fa-stack-2x"></i></span>
+									{% else %} 
+									<span class="fa fa-stack"><i class="fa fa-star fa-stack-2x"></i><i class="fa fa-star-o fa-stack-2x"></i></span>
+									{% endif %} 
+								{% endfor %} 
+							</span>
+						</div>
+						<div class="reviews-sign row">
+							<div class="reviews-author col-xs-6 text-left"><i class="fa fa-user" aria-hidden="true"></i>  {{ review.author }}</div>
+							<div class="reviews-date col-xs-6 text-right">{{ review.date_added }}</div>
+						</div>
+				   {% if (show_all_button) %} 
+					<div class="button-more">
+						<button class="btn btn-more" type="button" onclick="window.location.href='{{ link_all_reviews }}'">{{ text_all_reviews }}</button>
+					</div>
+				{% endif %} 
+					</div>
+				</div>
+			</div>
+			{% endfor %}	
+		</div>
+	</div>
+<script>
+$('.carousel_reviews{{ gen_reviews }}').owlCarousel({
+	responsiveBaseWidth: ".carousel_reviews{{ gen_reviews }}",
+	itemsCustom: [[0, 1], [500, 2], [750, 3], [1000,4]],
+	slideSpeed: 200,
+	paginationSpeed: 300,
+	navigation: true,
+	stopOnHover: true,		
+	mouseDrag: false,
+	pagination: false,
+	autoPlay: false,
+	navigationText: ['<div class="btn btn-carousel-module next-prod"><i class="fa fa-angle-left arrow"></i></div>', '<div class="btn btn-carousel-module prev-prod"><i class="fa fa-angle-right arrow"></i></div>'],	
+});
+</script>
+</div>
+
+

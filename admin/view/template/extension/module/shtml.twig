@@ -1,0 +1,1000 @@
+{{ header }}{{ column_left }}
+<div id="content">
+  <div class="page-header">
+    <div class="container-fluid">
+      <div class="pull-right">
+        <button type="submit" form="form-module" data-toggle="tooltip" title="{{ button_save }}" class="btn btn-primary"><i class="fa fa-save"></i></button>
+        <a href="{{ cancel }}" data-toggle="tooltip" title="{{ button_cancel }}" class="btn btn-default"><i class="fa fa-reply"></i></a></div>
+      <h1>{{ heading_title }}</h1>
+      <ul class="breadcrumb">
+        {% for breadcrumb in breadcrumbs %}
+        <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  <div class="container-fluid">
+  <style>
+	.label45 {
+		height: 45px;
+		overflow: hidden;
+	}
+	.block > div, .sharedblock > div  {
+		margin: 0px!important;		
+	}
+	.details-image {
+		max-width: 100%;
+		max-height: 768px;
+	}
+	.details-comment {
+		max-height: 200px;
+		overflow-y: auto;
+	}
+	.condition_sign {
+		padding-left: 5px;
+		padding-right: 5px;
+	}
+  </style>
+    {% if error_warning %}
+    <div class="alert alert-danger alert-dismissible"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+    </div>
+    {% endif %}
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title"><i class="fa fa-pencil"></i> {{ text_edit }}</h3>
+      </div>
+	  {% if success %}
+	  <div class="alert alert-success">{{ success }}<button type="button" class="close" data-dismiss="alert">&times;</button></div>
+	  {% endif %}
+	  {% if error %}
+	  <div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i>{{ error }}<button type="button" class="close" data-dismiss="alert">&times;</button></div>
+	  {% endif %}	  
+      <div class="panel-body">	  
+        <form action="{{ action }}" method="post" enctype="multipart/form-data" id="form-module" class="form-horizontal">
+		 <div class="row">
+		  <div class="col-sm-4">
+			  <div class="form-group">
+				<label class="col-sm-2 control-label" for="input-name">{{ entry_name }}</label>
+				<div class="col-sm-10">
+				  <input type="text" name="name" value="{{ name }}" placeholder="{{ entry_name }}" id="input-name" class="form-control" />
+				  {% if error_name %}
+				  <div class="text-danger">{{ error_name }}</div>
+				  {% endif %}
+				</div>
+			  </div>		  
+		  </div>
+		  <div class="col-sm-3">
+		   <div class="form-group">
+			<label class="col-sm-2 control-label" for="input-status">{{ entry_status }}</label>
+			<div class="col-sm-10">
+			  <select name="status" id="input-status" class="form-control">
+				{% if status %}
+				<option value="1" selected="selected">{{ text_enabled }}</option>
+				<option value="0">{{ text_disabled }}</option>
+				{% else %}
+				<option value="1">{{ text_enabled }}</option>
+				<option value="0" selected="selected">{{ text_disabled }}</option>
+				{% endif %}
+			  </select>
+			</div>
+		   </div>		  
+		  </div>
+		  <div class="col-sm-5">
+		   <div class="form-group">
+			<label class="col-sm-3 control-label" for="input-copy-from">{{ entry_copy_from }}</label>
+			<div class="col-sm-5">
+			  <select name="copy_from" id="input-copy-from" class="form-control">
+				<option value="">{{ text_none }}</option>
+				{% for other_module in other_modules %}
+				 <option value="{{ other_module.module_id }}">{{ other_module.name }}</option>
+				{% endfor %}
+			  </select>
+			</div>
+			<div class="col-sm-2">
+			 <button type="submit" form="form-module" class="btn btn-primary" data-toggle="tooltip" title="{{ button_copy_from }}"><i class="fa fa-clone"></i></button>
+			</div>
+			<div class="col-sm-2">
+			 {% if new_copy %}
+			  <a class="btn btn-primary" href="{{ new_copy }}" target="_blank" data-toggle="tooltip" title="{{ button_new_copy }}"><i class="fa fa-paste"></i></a>
+			 {% endif %}
+			</div>			
+		   </div>		  
+		  </div>		  
+		 </div>
+		  <div class="form-group"> 
+			<div class="col-sm-4 col-lg-2">
+				<label class="control-label label45"><a class="btn btn-default add_value" data-value="[c]" >{{ entry_category }}{# Andrey Bondarenko 03/03/2020 #}{% if is_ukrmap %}<br />(<input type="checkbox" name="regional" value="1"> {{ entry_including_regional }}){% endif %}{# Andrey Bondarenko end 03/03/2020 #}</a></label>
+				<input type="text" name="category" value="" placeholder="{{ entry_category }}" id="input-category" class="form-control" />
+				<div id="category" class="well well-sm" style="height: 150px; overflow: auto;">
+					{% for  category in controllers.categories %}
+						<div id="category{{ category.category_id }}"><i class="fa fa-minus-circle"></i> {{ category.name }}
+							<input type="hidden" name="category[]" value="{{ category.category_id }}" />
+						</div>
+					{% endfor %}
+				</div>
+			</div>
+			<div class="col-sm-4 col-lg-2">
+				<label class="control-label label45"><a class="btn btn-default add_value" data-value="[m]" >{{ entry_manufacturer }}</a></label>
+				<input type="text" name="manufacturer" value="" placeholder="{{ entry_manufacturer }}" id="input-manufacturer" class="form-control" />
+				<div id="manufacturer" class="well well-sm" style="height: 150px; overflow: auto;">
+				{% for manufacturer in controllers.manufacturers %}
+						<div id="manufacturer{{ manufacturer.manufacturer_id }}"><i class="fa fa-minus-circle"></i> {{ manufacturer.name }}
+							<input type="hidden" name="manufacturer[]" value="{{ manufacturer.manufacturer_id }}" />
+						</div>
+				{% endfor %}
+				</div>
+			</div>
+			<div class="col-sm-4 col-lg-2">
+				<label class="control-label label45"><a class="btn btn-default add_value" data-value="[p]" >{{ entry_product }}</a></label>
+				<input type="text" name="product" value="" placeholder="{{ entry_product }}" id="input-manufacturer" class="form-control" />
+				<div id="product" class="well well-sm" style="height: 150px; overflow: auto;">
+				{% for product in controllers.products %}
+						<div id="product{{ product.product_id }}"><i class="fa fa-minus-circle"></i> {{ product.name }}
+							<input type="hidden" name="product[]" value="{{ product.product_id }}" />
+						</div>
+				{% endfor %}
+				</div>
+			</div>
+
+
+		<!-- Andrey Bondarenko 29/11/2019 -->			
+		 
+			<div class="col-sm-4 col-lg-2">
+				<label class="control-label label45"><a class="btn btn-default add_value" data-value="[pc]" >{{ entry_product_categories }}</a></label>
+				<input type="text" name="product_category" value="" placeholder="{{ entry_category }}" id="input-product-categories" class="form-control" />
+				<div id="product-category" class="well well-sm" style="height: 150px; overflow: auto;">
+					{% for category in controllers.product_categories %}
+						<div id="product-category{{ category.category_id }}"><i class="fa fa-minus-circle"></i> {{ category.name }}
+							<input type="hidden" name="product_category[]" value="{{ category.category_id }}" />
+						</div>
+					{% endfor %}
+				</div>
+			</div>
+			<div class="col-sm-4 col-lg-2">
+				<label class="control-label label45"><a class="btn btn-default add_value" data-value="[pm]" >{{ entry_product_manufacturers }}</a></label>
+				<input type="text" name="product_manufacturer" value="" placeholder="{{ entry_manufacturer }}" id="input-manufacturer" class="form-control" />
+				<div id="product-manufacturer" class="well well-sm" style="height: 150px; overflow: auto;">
+				{% for manufacturer in controllers.product_manufacturers %}
+						<div id="product-manufacturer{{ manufacturer.manufacturer_id }}"><i class="fa fa-minus-circle"></i> {{ manufacturer.name }}
+							<input type="hidden" name="product_manufacturer[]" value="{{ manufacturer.manufacturer_id }}" />
+						</div>
+				{% endfor %}
+				</div>
+			</div>
+			<div class="col-sm-4 col-lg-2">
+				<label class="control-label label45"><a class="btn btn-default add_value" data-value="[l]" >{{ entry_layouts }}</a></label>
+				<select name="layout" class="form-control">
+					<option value="0">{{ ms_entry_none }}</option>
+					<option value="clear">{{ ms_entry_clear }}</option>
+					<option value="all">{{ ms_entry_all }}</option>
+					{% for layout in layout_list %}
+						<option value="{{ layout.layout_id }}">{{ layout.name }}</option>
+					{% endfor %}
+				</select>
+				<div id="layouts" class="well well-sm" style="height: 150px; overflow: auto;">
+					{% for layout in controllers.layouts %}
+					<div id="layout{{ layout.layout_id }}"><i class="fa fa-minus-circle"></i> {{ layout.name }}
+						<input type="hidden" name="layout[]" value="{{ layout.layout_id }}" />
+					</div>				
+					{% endfor %}
+				</div>
+			</div>						
+		</div>
+		<!-- Andrey Bondarenko 21/12/2020 -->
+		<div class="form-group">
+		 <div class="col-sm-12 col-lg-6">
+		  <label class="control-label"><span data-toggle="tooltip" title="{{ help_condition }}">{{ entry_condition }}</span></label>
+		  <div class="condition_constructor">{{ constructor }}</div>
+		  <a class="btn btn-default add_value" data-value="(" >(</a>
+		  <a class="btn btn-default add_value" data-value=")" >)</a>
+		  <a class="btn btn-default add_value" data-value="&&" >{{ text_and }}</a>
+		  <a class="btn btn-default add_value" data-value="||" >{{ text_or }}</a>
+		  <a class="btn btn-default add_value" data-value="!" >{{ text_not }}</a>
+		  <a class="btn btn-default backspace" onclick="backspace();" ><i class="fa fa-chevron-left"></i></a>
+		  <input name="condition" type="hidden" value="{{ condition }}">
+		 </div>
+		 <!-- Andrey Bondarenko 10/05/2021 -->
+		 <div class="col-sm-4 col-lg-2">
+		  <label class="control-label label45">{{ entry_apply }}</label>		  
+		   <select name="admin" class="form-control">
+		    <option value="1" {% if admin %}selected{% endif %} >{{ entry_admin }}</option>
+			<option value="0" {% if not admin %}selected{% endif %} >{{ entry_catalog }}</option> 
+		   </select>		  
+		 </div>
+		 <!-- Andrey Bondarenko end 10/05/2021 -->
+		 <div class="col-sm-4 col-lg-2">
+		  <label class="control-label label45">{{ entry_limit }}</label>
+		  <input type="text" name="limit" value="{{ limit }}" class="form-control">		  
+		 </div>
+		 <div class="col-sm-4 col-lg-2">
+		  <label class="control-label label45"><a class="btn btn-default add_value" data-value="[u]" >{{ entry_url }}</a></label>
+		  <input type="text" name="url" value="{{ url }}" class="form-control">
+		 </div>		 
+		</div>
+		<div class="form-group">
+		 <label class="col-sm-12 control-label">{{ text_vars_info }}</label>
+		</div>		
+		<!-- Andrey Bondarenko 21/12/2020 end -->
+		<!-- Andrey Bondarenko 29/06/2021 -->
+		<div class="form-group">
+		 <label class="col-sm-2 control-label">{{ text_preloader }}</label>
+		 <div class="col-sm-3">
+		  <select name="preloader_enabled" class="form-control">
+		   <option value="1" {% if preloader_enabled %}selected{% endif %}>{{ text_enabled }}</option>
+		   <option value="0" {% if not preloader_enabled %}selected{% endif %}>{{ text_disabled }}</option>
+		  </select>
+		 </div>
+		 <div class="col-sm-5">
+          <div class="tab-pane">
+            <ul class="nav nav-tabs" id="preloader_language">
+              {% for language in languages %}
+              <li {% if loop.first %}class="active"{% endif %}><a href="#preloader_language{{ language.language_id }}" data-toggle="tab"><img src="language/{{ language.code }}/{{ language.code }}.png" title="{{ language.name }}" /></a></li>
+              {% endfor %}
+            </ul>
+            <div class="tab-content">
+              {% for language in languages %}
+              <div class="tab-pane {% if loop.first %}active{% endif %}" id="preloader_language{{ language.language_id }}">
+               <div class="col-sm-10">
+                <textarea name="preloader[{{ language.code }}]" placeholder="{{ entry_preloader }}" id="input-preloader{{ language.language_id }}" class="form-control preloader_code">{{ preloader[language.code] }}</textarea>
+               </div>
+              </div>
+              {% endfor %}
+            </div>
+          </div>		  
+		 </div>
+		 <div class="col-sm-2">
+		  <a class="btn btn-success" id="add_standard_preloader" onclick="addStandardPreloader();">{{ button_add_standard }}</a>
+		  <textarea id="standard_preloader" style="display:none;">{{ standard_preloader }}</textarea>
+		 </div>
+		</div>
+		<!-- Andrey Bondarenko 29/06/2021 end -->
+		<!-- Andrey Bondarenko 28/04/2020 -->
+		<div class="blocks">
+			<div class="row bordered">
+			 <div class="col-sm-2">
+			  <label class="control-label">{{ text_language }}</label>
+			 </div>
+			 <div class="col-sm-2">	
+			  <label class="control-label">{{ text_block_name }}</label>
+			 </div>
+			 <div class="col-sm-3">	
+			  <label class="control-label">{{ text_block_code }}</label>
+			 </div>			 
+			 <div class="col-sm-2">	
+			  <label class="control-label">{{ text_block_location }}</label>
+			 </div>
+			 <div class="col-sm-2">	
+			  <label class="control-label">{{ text_block_position }}</label>
+			 </div>
+			 <div class="col-sm-1">			  
+			 </div>			 
+			</div>		
+		{% for block in blocks %}
+			<div class="row table-bordered block" data-block-id="{{ block.shtml_block_id }}">
+			 <div class="col-sm-2 form-group">			  		  
+			 {% for language in languages %}
+				<a class="btn block-change-language{% if loop.first %} btn-primary{% endif %}" data-language-code="{{ language.code }}" onclick="changeBlockLanguage(this)" data-toggle="tooltip" title="{{ language.name }}"><img src="language/{{ language.code }}/{{ language.code }}.png" title="{{ language.name }}" /></a>
+			 {% endfor %}			  		  
+			 </div>
+			 <div class="col-sm-2 form-group">
+			{% for language in languages %}
+			  <input type="text" name="block[{{ block.shtml_block_id }}][shtml_block_name][{{ language.code }}]" data-language-code="{{ language.code }}" class="form-control{% if not loop.first %} hide{% endif %}" value="{{ block.shtml_block_name[language.code]?block.shtml_block_name[language.code]:'' }}">
+			{% endfor %}
+			 </div>
+			 <div class="col-sm-3 form-group">	
+			{% for language in languages %}
+			  <textarea name="block[{{ block.shtml_block_id }}][shtml_block_code][{{ language.code }}]" data-language-code="{{ language.code }}" class="form-control{% if not loop.first %} hide{% endif %}" >{{ block.shtml_block_code[language.code]?block.shtml_block_code[language.code]:'' }}</textarea>
+			{% endfor %}
+			 </div>			 
+			 <div class="col-sm-2 form-group">	
+			  <textarea name="block[{{ block.shtml_block_id }}][location]" class="form-control">{{ block.location }}</textarea>
+			 </div>
+			 <div class="col-sm-2 form-group">	
+				<select name="block[{{ block.shtml_block_id }}][position]" class="form-control">
+					<option value="1" {{ block.position==1?"selected":"" }}>{{ entry_before }}</option>
+					<option value="2" {{ block.position==2?"selected":"" }}>{{ entry_after }}</option>
+					<option value="3" {{ block.position==3?"selected":"" }}>{{ entry_contents }}</option>
+					<option value="4" {{ block.position==4?"selected":"" }}>{{ entry_replace }}</option>
+				</select>
+			 </div>
+			 <div class="col-sm-1 form-group">
+			  <a class="btn btn-success copy-block" onclick="copyBlock(this)" data-toggle="tooltip" title="{{ text_copy }}"><i class="fa fa-copy"></i></a>
+			  <a class="btn btn-danger remove-block" data-toggle="tooltip" title="{{ text_remove }}"><i class="fa fa-trash-o"></i></a>
+			  <a class="btn btn-primary open-upload-form" onclick="openUploadForm(this)" data-toggle="tooltip" title="{{ text_upload_block }}"><i class="fa fa-upload"></i></a>
+			 </div>			 
+			</div>
+		{% endfor %}
+		</div>
+		<div class="row table-bordered">
+		 <div class="col-sm-11 form-group">			 
+		 </div>	
+		 <div class="col-sm-1 form-group">
+		  <a class="btn btn-primary" onclick="newBlock()" data-toggle="tooltip" title="{{ text_new }}"><i class="fa fa-plus"></i></a>
+
+		 </div>			 
+		</div>
+		<div class="shared-blocks-header">
+			<div class="row table-bordered">
+			 <div class="col-sm-12">
+			  <h3>{{ text_shared_blocks }}</h3>
+			 </div>			 
+			</div>
+			<div class="row table-bordered">
+			 <div class="col-sm-2">
+			  <label class="control-label">{{ text_language }}</label>
+			 </div>
+			 <div class="col-sm-2">	
+			  <label class="control-label"><a href="javascript:toggleSort('shtml_block_name');">{{ text_block_name }}</a></label>
+			 </div>
+			 <div class="col-sm-3">	
+			  <label class="control-label"><a href="javascript:toggleSort('author');">{{ text_block_author }}</a></label>
+			 </div>
+			 <div class="col-sm-1">	
+			  <label class="control-label">{{ text_block_image }}</label>
+			 </div>
+			 <div class="col-sm-3">	
+			  <label class="control-label"><a href="javascript:toggleSort('comment');">{{ text_block_comment }}</a></label>
+			 </div>
+			 <div class="col-sm-1">
+			 </div>			 
+			</div>
+			<div class="row table-bordered">
+			 <div class="col-sm-2">
+			  <a class="btn btn-primary" onclick="loadSharedBlocks()"><i class="fa fa-filter"></i></a>
+			 </div>
+			 <div class="col-sm-2">	
+			  <input type="text" class="form-control" name="filter[shtml_block_name]">
+			 </div>
+			 <div class="col-sm-2">	
+			  <input type="text" class="form-control" name="filter[author]">
+			 </div>
+			 <div class="col-sm-2">			  
+			 </div>
+			 <div class="col-sm-3">	
+			  <input type="text" class="form-control" name="filter[comment]">
+			 </div>
+			 <div class="col-sm-1">
+			 {# Andrey Bondarenko 25/03/2020 #}
+			  {% for default_module in default_modules %}
+			   <input type="hidden" name="selected[]" value="{{ default_module }}">
+			  {% endfor %}
+			 {# Andrey Bondarenko 25/03/2020 end #}
+			 </div>			 
+			</div>			
+		</div>
+		<div class="shared-blocks">
+		
+		</div>
+		
+		<!-- Andrey Bondarenko 28/04/2020 end -->
+		<!-- Andrey Bondarenko 29/11/2019 end -->		
+        </form>
+      </div>
+    </div>
+  </div>
+  <!-- Andrey Bondarenko 05/05/2020 modal upload block -->
+  <div class="modal fade in" id="uploadBlock" tabindex="-1" role="dialog" style=" z-index:1042;overflow-y:auto;">
+   <form action="" enctype="multipart/form-data" id="frm-upload" class="form-horizontal">
+	<input type="hidden" name="SERVER_NAME" value="{{ SERVER_NAME }}">
+	<input type="hidden" name="location" value="">
+	<input type="hidden" name="position" value="">
+{% for language in languages %}
+	<input type="hidden" name="shtml_block_name[{{ language.code }}]" value="">
+	<input type="hidden" name="shtml_block_code[{{ language.code }}]" value="">	
+{% endfor %}
+    <div class="modal-dialog" style="width:90%!important;">
+	 <div class="modal-content">
+	  <div class="modal-header"><button class="close" type="button" data-dismiss="modal">x</button>
+	  <h4 class="modal-title" id="myModalLabel">{{ text_upload_block }}</h4>
+	  </div>
+	  <div class="modal-body">
+	   <div id="alerts"></div>
+	   <div class="form-group required">
+	    <div class="col-sm-4">
+		 <label class="control-label" for="input-author">{{ entry_author }}</label>		 
+		</div>
+	    <div class="col-sm-8">
+		 <input type="text" name="author" id="input-author" class="form-control" value="">		 
+		</div>		
+	   </div>
+	   <div class="form-group required">
+	    <div class="col-sm-4">
+		 <label class="control-label" for="input-email">{{ entry_email }}</label>		 
+		</div>
+	    <div class="col-sm-8">
+		 <input type="email" name="email" id="input-email" class="form-control" value="">		 
+		</div>		
+	   </div>
+	   <div class="form-group">
+	    <div class="col-sm-4">
+		 <label class="control-label" for="input-comment">{{ entry_comment }}</label>		 
+		</div>
+	    <div class="col-sm-8">
+		 <textarea name="comment" class="form-control" id="input-comment"></textarea>		 
+		</div>		
+	   </div>
+	   <div class="form-group">
+	    <div class="col-sm-4">
+		 <label class="control-label" for="input-link">{{ entry_link }}</label> 
+		</div>
+	    <div class="col-sm-8">
+		 <input type="text" name="link" class="form-control" id="input-link">	 
+		</div>		
+	   </div>
+	   <div class="form-group">
+	    <div class="col-sm-4">
+		 <label class="control-label" for="input-image">{{ entry_image }}</label> 
+		</div>
+	    <div class="col-sm-8">
+		 <input type="file" name="image" class="form-control" id="input-image">	 
+		</div>		
+	   </div>
+	  </div>
+	  <div class="modal-footer">
+	   <div class="form-group">
+	    <div class="col-sm-12 text-right">
+		 <a class="btn btn-primary upload-button" onclick="uploadBlock()">{{ entry_upload }}</a>
+		</div>
+	   </div>
+	  </div>
+	 </div>
+    </div>
+   </form>
+  </div>		
+  <!-- Andrey Bondarenko 05/05/2020 modal upload block end -->
+  <!-- Andrey Bondarenko 06/05/2020 modal block details -->
+  <div class="modal fade in" id="blockDetails" tabindex="-1" role="dialog" style="z-index: 1043; overflow-y: auto;">
+    <input type="hidden" name="shared_block_id" value="">
+    <div class="modal-dialog" style="width:90%!important;">
+	 <div class="modal-content">
+	  <div class="modal-header"><button class="close" type="button" data-dismiss="modal">x</button>
+	  <h4 class="modal-title" id="myModalLabel">{{ text_block_details }}</h4>
+	  </div>
+	  <div class="modal-body">
+	   <div class="row">
+	    <div class="col-sm-6">
+		 <a href="" class="details-image" target="_blank"><img class="details-image" src=""></a>
+		</div>
+	    <div class="col-sm-6">
+		 <div class="row">
+		  <div class="col-sm-12 form-group">			  		  
+		  {% for language in languages %}
+			<a class="btn block-change-language{% if loop.first %} btn-primary{% endif %}" data-language-code="{{ language.code }}" onclick="changeBlockLanguage(this)"><img src="language/{{ language.code }}/{{ language.code }}.png" title="{{ language.name }}" /></a>
+		  {% endfor %}			  		  
+		  </div>	
+		 </div>
+		 <div class="row">
+		  <div class="col-sm-12 form-group">
+		 {% for language in languages %}
+		   <h4><span class="details-name-{{ language.code }}{% if not loop.first %} hide{% endif %}" data-language-code="{{ language.code }}"></span></h4>
+		 {% endfor %}
+		  </div>
+		 </div>
+		 <div class="row">
+		  <div class="col-sm-4">
+		   <label>{{ entry_author }}</label>
+		  </div>
+		  <div class="col-sm-8">
+		   <span class="details-author"></span>
+		  </div>		  
+		 </div>
+		 <div class="row">
+		  <div class="col-sm-4">
+		   <label>{{ entry_email }}</label>
+		  </div>
+		  <div class="col-sm-8">
+		   <a href="" target="_blank" class="details-email"><span class="details-email"></span></a>
+		  </div>		  
+		 </div>
+		 <div class="row">
+		  <div class="col-sm-4">
+		   <label>{{ entry_link }}</label>
+		  </div>
+		  <div class="col-sm-8">
+		   <a class="details-link" href="" target="_blank"><span class="details-link"></span></a>
+		  </div>		  
+		 </div>
+		 <div class="row">
+		  <div class="col-sm-12">
+		   <h4>{{ entry_comment }}</h4>
+		  </div>
+		 </div>
+	     <div class="row">
+	      <div class="col-sm-12">
+		   <div class="details-comment"></div>
+		  </div>
+	     </div>		 
+		</div>		
+	   </div>
+	   
+	  </div>
+	  <div class="modal-footer">
+	   <div class="row">
+	    <div class="col-sm-12 text-right">
+		 <a class="btn btn-success copy-block" onclick="copySharedBlock(this)"><i class="fa fa-check"></i> {{ text_add }}</a>		
+		</div>
+	   </div>
+	  </div>
+	 </div>
+    </div>
+  </div>		
+  <!-- Andrey Bondarenko 05/05/2020 modal block details end -->
+  <script type="text/javascript" src="view/javascript/summernote/summernote.js"></script>
+  <link href="view/javascript/summernote/summernote.css" rel="stylesheet" />
+  <script type="text/javascript" src="view/javascript/summernote/opencart.js"></script>  
+  <script type="text/javascript"><!--
+$('#language a:first').tab('show');
+//--></script></div>
+
+<script>
+var page=1;
+// Manufacturer
+$('input[name=\'manufacturer\']').autocomplete({
+	'source': function(request, response) {
+		$.ajax({
+			url: 'index.php?route=catalog/manufacturer/autocomplete&user_token={{ user_token  }}&filter_name=' +  encodeURIComponent(request),
+			dataType: 'json',
+			success: function(json) {
+				json.unshift({
+					manufacturer_id: 0,
+					name: '{{ text_none }}'
+				});
+
+				response($.map(json, function(item) {
+					return {
+						label: item['name'],
+						value: item['manufacturer_id']
+					}
+				}));
+			}
+		});
+	},
+	'select': function(item) {
+		$('input[name=\'manufacturer\']').val('');
+		$('#manufacturer' + item['value']).remove();
+		$('#manufacturer').append('<div id="manufacturer' + item['value'] + '"><i class="fa fa-minus-circle"></i> ' + item['label'] + '<input type="hidden" name="manufacturer[]" value="' + item['value'] + '" /></div>');
+	}
+});
+// Andrey Bondarenko 28/04/2020 Product Manufacturer
+$('input[name=\'product_manufacturer\']').autocomplete({
+	'source': function(request, response) {
+		$.ajax({
+			url: 'index.php?route=catalog/manufacturer/autocomplete&user_token={{ user_token  }}&filter_name=' +  encodeURIComponent(request),
+			dataType: 'json',
+			success: function(json) {
+				json.unshift({
+					manufacturer_id: 0,
+					name: '{{ text_none }}'
+				});
+
+				response($.map(json, function(item) {
+					return {
+						label: item['name'],
+						value: item['manufacturer_id']
+					}
+				}));
+			}
+		});
+	},
+	'select': function(item) {
+		$('input[name=\'product_manufacturer\']').val('');
+		$('#product-manufacturer' + item['value']).remove();
+		$('#product-manufacturer').append('<div id="product-manufacturer' + item['value'] + '"><i class="fa fa-minus-circle"></i> ' + item['label'] + '<input type="hidden" name="product_manufacturer[]" value="' + item['value'] + '" /></div>');
+	}
+});
+// Andrey Bondarenko 28/04/2020 Product Manufacturer end
+$('#manufacturer, #product-manufacturer').delegate('.fa-minus-circle', 'click', function() {
+	$(this).parent().remove();
+});
+// Category
+$('input[name=\'category\']').autocomplete({
+	'source': function(request, response) {
+		$.ajax({
+			url: 'index.php?route=catalog/category/autocomplete&user_token={{ user_token }}&filter_name=' +  encodeURIComponent(request) + '&regional=' + $('input[name="regional"]:checked').length,
+			dataType: 'json',
+			success: function(json) {
+				response($.map(json, function(item) {
+					return {
+						label: item['name'],
+						value: item['category_id']
+					}
+				}));
+			}
+		});
+	},
+	'select': function(item) {
+		$('input[name=\'category\']').val('');
+		$('#category' + item['value']).remove();
+		$('#category').append('<div id="category' + item['value'] + '"><i class="fa fa-minus-circle"></i> ' + item['label'] + '<input type="hidden" name="category[]" value="' + item['value'] + '" /></div>');
+	}
+});
+// Andrey Bondarenko 28/04/2020 Product Category
+$('input[name=\'product_category\']').autocomplete({
+	'source': function(request, response) {
+		$.ajax({
+			url: 'index.php?route=catalog/category/autocomplete&user_token={{ user_token }}&filter_name=' +  encodeURIComponent(request) + '&regional=' + $('input[name="regional"]:checked').length,
+			dataType: 'json',
+			success: function(json) {
+				response($.map(json, function(item) {
+					return {
+						label: item['name'],
+						value: item['category_id']
+					}
+				}));
+			}
+		});
+	},
+	'select': function(item) {
+		$('input[name=\'product_category\']').val('');
+		$('#product-category' + item['value']).remove();
+		$('#product-category').append('<div id="product-category' + item['value'] + '"><i class="fa fa-minus-circle"></i> ' + item['label'] + '<input type="hidden" name="product_category[]" value="' + item['value'] + '" /></div>');
+	}
+});
+// Andrey Bondarenko 28/04/2020 Product Category end
+$('#category, #product-category').delegate('.fa-minus-circle', 'click', function() {
+	$(this).parent().remove();
+});
+// Related
+$('input[name=\'product\']').autocomplete({
+	'source': function(request, response) {
+		$.ajax({
+			url: 'index.php?route=catalog/product/autocomplete&user_token={{ user_token }}&filter_name=' +  encodeURIComponent(request),
+			dataType: 'json',
+			success: function(json) {
+				response($.map(json, function(item) {
+					return {
+						label: item['name'],
+						value: item['product_id']
+					}
+				}));
+			}
+		});
+	},
+	'select': function(item) {
+		$('input[name=\'product\']').val('');
+		$('#product' + item['value']).remove();
+		$('#product').append('<div id="product' + item['value'] + '"><i class="fa fa-minus-circle"></i> ' + item['label'] + '<input type="hidden" name="product[]" value="' + item['value'] + '" /></div>');
+	}
+});
+$('#product').delegate('.fa-minus-circle', 'click', function() {
+	$(this).parent().remove();
+});
+/*Andrey Bondarenko 29/11/2019 */
+// Получение списка товаров
+$('select[name="category_products"], select[name="manufacturer_products"]').on('input',
+function getProductsByCategory(obj) {
+	if(obj.target.value=='clear') {
+		obj.target.form.querySelector('div#product').innerHTML='';
+		return false;
+	} else if(obj.value=='0') {
+		return false;
+	}
+	var xhr=new XMLHttpRequest();
+	xhr.open('POST', 'index.php?route=extension/module/shtml/autocomplete&user_token={{ user_token }}', true);
+	xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+	var inputs=obj.target.form.querySelectorAll('[name="product[]"]');
+	var ids='';
+	for(var i=0; i<inputs.length; i++) {
+		ids+=inputs[i].value+',';
+	}
+	if(ids.length) {
+		ids=ids.substring(0, ids.length-1);
+	}
+	var input_name=$(obj.target).attr('name').replace(new RegExp('_products', 'g'),'');
+	console.log(input_name);
+	var data=JSON.parse('{"name":"", "'+input_name+'":"'+obj.target.value+'", "except": "'+ids+'"}');
+	console.log(data);
+	xhr.send('data='+JSON.stringify(data));
+	xhr.onreadystatechange=function() {		
+		if (xhr.readyState!=4) {
+			return;
+		}
+		console.log(xhr.status);		
+		if (xhr.status==200) {
+			console.log(xhr.responseText);
+			var data=JSON.parse(xhr.responseText);
+			console.dir(data);
+			var html='';
+			for(var i=0; i<data.length; i++) {
+				html+='<div id="product'+data[i]['product_id']+'"><i class="fa fa-minus-circle"></i>'+data[i]['name']+'<input type="hidden" name="product[]" value="'+data[i]['product_id']+'" /></div>';
+			}
+			//console.log(html);
+			//console.dir(obj.target.form.querySelector('input[name="product"]'));
+			obj.target.form.querySelector('div#product').insertAdjacentHTML('beforeEnd', html);			
+		}
+	}
+});
+/*Andrey Bondarenko end 29/11/2019 */
+/*Andrey Bondarenko 17/12/2019 */
+$('select[name="layout"]').on('change', 
+function()
+{
+	var val=$(this).val();
+	if($('#layout'+val).length==0)
+	{
+		if(val=='clear')
+		{
+			$('#layouts').html('');
+		} else if(val=='all' || val>0) {		
+			var layout_name=$(this).children('option[value="'+val+'"]').first().html();
+			var html='<div id="layout'+val+'"><i class="fa fa-minus-circle"></i> '+layout_name;
+			html+='<input type="hidden" name="layout[]" value="'+val+'" /></div>';
+			$('#layouts').append(html);			
+		}
+
+	}
+});
+$('#layouts').delegate('.fa-minus-circle', 'click', function() {
+	$(this).parent().remove();
+});
+/*Andrey Bondarenko end 17/12/2019 */
+/*Andrey Bondarenko 28/04/2020 */
+$(document).ready(function(){
+	loadSharedBlocks();  
+});
+
+function getMaxBlockId() {
+	ids=[];	
+	$('.block[data-block-id]').each(function(index){
+		ids[index]=parseInt($(this).attr('data-block-id'));
+	});
+	if(!ids.length) {ids[0]=-1;}
+	return Math.max.apply(null, ids);
+}
+
+function newBlock(data) {
+	var block_id=getMaxBlockId()+1;
+	var shtml_block_name={};
+	var block_location='';
+	var block_position='';
+	var shtml_block_code={};
+	
+		 
+{% for language in languages %}	
+		if(typeof data!='undefined' && typeof data['shtml_block_name']!='undefined' && typeof data['shtml_block_name']['{{ language.code }}']!='undefined') {
+			shtml_block_name['{{ language.code }}']=data['shtml_block_name']['{{ language.code }}'];
+		} else {
+			shtml_block_name['{{ language.code }}']='';
+		}
+		if(typeof data!='undefined' && typeof data['shtml_block_code']!='undefined' && typeof data['shtml_block_code']['{{ language.code }}']!='undefined') {
+			shtml_block_code['{{ language.code }}']=data['shtml_block_code']['{{ language.code }}'];
+		} else {
+			shtml_block_code['{{ language.code }}']='';
+		}		
+{% endfor %}
+		if(typeof data!='undefined' && typeof data['location']!='undefined') {
+			block_location=data['location'];
+		} else {
+			block_location='';
+		}
+		if(typeof data!='undefined' && typeof data['position']!='undefined') {
+			block_position=data['position'];
+		} else {
+			block_position='1';
+		}		
+	
+	
+	console.dir(shtml_block_name);
+	
+	var html='';
+	html+='<div class="row table-bordered block" data-block-id="'+block_id+'">';
+	html+='		 <div class="col-sm-2 form-group">';
+{% for language in languages %}
+	html+='<a class="btn block-change-language{% if loop.first %} btn-primary{% endif %}" data-language-code="{{ language.code }}" onclick="changeBlockLanguage(this)" data-toggle="tooltip" title="{{ language.name }}"><img src="language/{{ language.code }}/{{ language.code }}.png" title="{{ language.name }}" /></a>';
+{% endfor %}	
+	html+='		 </div>';
+	html+='		 <div class="col-sm-2 form-group">';
+{% for language in languages %}
+	html+='		  <input type="text" name="block['+block_id+'][shtml_block_name][{{ language.code }}]" data-language-code="{{ language.code }}" class="form-control{% if not loop.first %} hide{% endif %}" value="'+shtml_block_name['{{ language.code }}']+'">';
+{% endfor %}
+	html+='		 </div>';
+	html+='		 <div class="col-sm-3 form-group">';
+{% for language in languages %}
+	html+='		  <textarea name="block['+block_id+'][shtml_block_code][{{ language.code }}]" data-language-code="{{ language.code }}" class="form-control{% if not loop.first %} hide{% endif %}" >'+shtml_block_code['{{ language.code }}']+'</textarea>';
+{% endfor %}
+	html+='		 </div>';	
+	html+='		 <div class="col-sm-2 form-group">';
+	html+='		  <textarea name="block['+block_id+'][location]" class="form-control">'+block_location+'</textarea>';
+	html+='		 </div>';
+	html+='		 <div class="col-sm-2 form-group">';
+	html+='			<select name="block['+block_id+'][position]" class="form-control">';
+	html+='				<option value="1" '+(block_position==1?'selected':'')+'>{{ entry_before }}</option>';
+	html+='				<option value="2" '+(block_position==2?'selected':'')+'>{{ entry_after }}</option>';
+	html+='				<option value="3" '+(block_position==3?'selected':'')+'>{{ entry_contents }}</option>';
+	html+='				<option value="4" '+(block_position==3?'selected':'')+'>{{ entry_replace }}</option>';
+	html+='			</select>';
+	html+='		 </div>';
+	html+='		 <div class="col-sm-1 form-group">';
+	html+='		  <a class="btn btn-success copy-block" onclick="copyBlock(this)" data-toggle="tooltip" title="{{ text_copy }}"><i class="fa fa-copy"></i></a>';
+	html+='		  <a class="btn btn-danger remove-block" data-toggle="tooltip" title="{{ text_remove }}"><i class="fa fa-trash-o"></i></a>';
+	html+='		  <a class="btn btn-primary open-upload-form" onclick="openUploadForm(this)" data-toggle="tooltip" title="{{ text_upload_block }}"><i class="fa fa-upload"></i></a>';
+	html+='		 </div>';		 
+	html+='		</div>';
+	$('.blocks').append(html);
+}
+
+function copyBlock(element) {
+	var block=$(element).closest('.block');
+	var clone=block.clone(true);
+	var old_block_id=parseInt(block.attr('data-block-id'));
+	var new_block_id=getMaxBlockId()+1;
+	clone.attr('data-block-id', new_block_id);
+	clone.find('[name^="block['+old_block_id+']"]').each(function(){
+		$(this).attr('name', $(this).attr('name').replace('block['+old_block_id+']', 'block['+new_block_id+']'));
+	});
+	pos=block.find('select[name$="[position]"] option:selected').val();
+	clone.find('select[name$="[position]"] option[value="'+pos+'"]').prop('selected', true);
+	block.after(clone);
+}
+
+function changeBlockLanguage(element) {
+	var language_code=$(element).attr('data-language-code');
+	var block=$(element).closest('.block, .sharedblock, #blockDetails');
+	block.find('[data-language-code][data-language-code="'+language_code+'"]:not(.block-change-language)').removeClass('hide');
+	block.find('[data-language-code][data-language-code!="'+language_code+'"]:not(.block-change-language)').addClass('hide');
+	block.find('.block-change-language').removeClass('btn-primary');
+	$(element).addClass('btn-primary');
+}
+$('.blocks').delegate('.remove-block', 'click', function() {
+	$(this).closest('.block').remove();
+});
+
+function loadSharedBlocks() {	
+	$.ajax({
+		url: 'index.php?route=extension/module/shtml/loadSharedBlocks&user_token={{ user_token }}',	
+		data: $('[name^="filter"], [name^="sort"], [name="page"], [name="selected[]"]'),
+		success: function(response) {
+			$('.shared-blocks').html(response);
+			$('[name="filter[shtml_block_id][]"]').remove();
+		}
+	});
+}
+
+function copySharedBlock(element) {
+	if(!$(element).closest('.sharedblock').length) {
+		var block_id=$('#blockDetails').find('[name="shared_block_id"]').val();
+		var block_element=$('.sharedblock[data-block-id="'+block_id+'"]').first();
+	} else {
+		var block_element=element;
+	}
+	eval('var block_json='+$(block_element).closest('.sharedblock').find('[name$="[block_json]"]').html()+';');
+	newBlock(block_json);
+	$('#blockDetails').modal('hide');
+}
+
+function shareBlocksPage(page_number) {
+	if(typeof(page_number)=='undefined') page_number=1;
+	if(typeof(page_number.page)!='undefined') page_number=page_number.page;
+	$('[name="page"]').val(page_number);
+	loadSharedBlocks();
+}
+
+function toggleSort(field_name) {
+	if(typeof(field_name)=='undefined') {field_name='shtml_block_name';}
+	$('[name="sort_field"]').val(field_name);
+	var sort_order=$('[name="sort_order"]').val();	
+	if(typeof sort_order=='undefined' || !sort_order || sort_order=='ASC') {
+		sort_order='DESC';
+	} else {
+		sort_order='ASC';
+	}
+	$('[name="sort_order"]').val(sort_order);
+	loadSharedBlocks();
+}
+
+function openUploadForm(element) {
+	$('#uploadBlock .modal-body #alerts').html('');
+	var block=$(element).closest('.block');
+	var block_id=block.attr('data-block-id');
+{% for language in languages %}
+	var value=block.find('[name="block['+block_id+'][shtml_block_name][{{ language.code }}]"]').val();
+	if(typeof value!='undefined') {
+		$('#frm-upload [name="shtml_block_name[{{ language.code }}]"]').val(value);
+	}
+	value=block.find('[name="block['+block_id+'][shtml_block_code][{{ language.code }}]"]').val();
+	if(typeof value!='undefined') {
+		$('#frm-upload [name="shtml_block_code[{{ language.code }}]"]').val(value);
+	}	
+{% endfor %}		
+	value=block.find('[name="block['+block_id+'][location]"]').val();
+	if(typeof value!='undefined') {
+		$('#frm-upload [name="location"]').val(value);
+	}
+	value=block.find('[name="block['+block_id+'][position]"]').val();
+	if(typeof value!='undefined') {
+		$('#frm-upload [name="position"]').val(value);
+	}
+	$('#uploadBlock').modal();
+}
+
+function uploadBlock() {
+//debug
+//console.dir(new FormData($('#frm-upload')[0]));
+	$('#uploadBlock .modal-body #alerts').html('');
+	$.ajax({
+	  url: 'index.php?route=extension/module/shtml/uploadBlock&user_token={{ user_token }}',
+	  type: 'POST',
+	  data: new FormData($('#frm-upload')[0]),
+	  processData: false,
+	  contentType: false,
+	  dataType: 'json',
+	  beforeSend: function() {
+			$('.upload-button').button('loading');
+	  },
+	  complete: function() {
+			$('.upload-button').button('reset');
+	  },	  
+	  success: function(json) {
+		if(json['success']) {
+			$('#uploadBlock .modal-body #alerts').append('<div class="alert alert-success">{{ text_upload_success }}</div>');
+		}
+		if(json['error']) {
+			for(var error_id in json['error']) {
+				$('#uploadBlock .modal-body #alerts').append('<div class="alert alert-danger">'+json['error'][error_id]+'</div>');			
+			}
+		}		
+	  },
+      error: function(xhr, ajaxOptions, thrownError) {
+            console.log(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+      }
+	});		
+}
+
+function blockDetails(event) {
+console.dir(event);
+	var element=event.target;
+	if(element!=event.currentTarget) {return true;}
+	var block=$(element).closest('.sharedblock');
+	$('#blockDetails').find('[name="shared_block_id"]').val(block.attr('data-block-id'));
+	eval('var block_json='+block.find('[name$="[block_json]"]').html()+';');
+	for(var field in block_json) {
+		if(field=='shtml_block_name') {
+			for(lang_code in block_json[field]) {				
+				$('#blockDetails').find('.details-name-'+lang_code).html(block_json[field][lang_code]);
+			}
+		} else {			
+			$('#blockDetails').find('span.details-'+field).html(block_json[field]);
+			$('#blockDetails').find('div.details-'+field).html(block_json[field]);
+			$('#blockDetails').find('a.details-'+field).attr('href', ((field=='email')?'mailto:':'')+((field=='image')?'{{ server_url }}':'')+block_json[field]);
+			$('#blockDetails').find('img.details-'+field).attr('src', '{{ server_url }}'+block_json[field]);			
+		}
+	}
+	$('#blockDetails').modal();
+}
+$('.shared-blocks').delegate('.sharedblock, .sharedblock div', 'click', blockDetails);
+/*Andrey Bondarenko end 28/04/2020 */
+/* Andrey Bondarenko 22/12/2020 */
+function addValue(event) {
+	if(typeof event.target=='undefined') {return false;}
+	var el=$(event.target);
+	var value=el.attr('data-value');
+	if(typeof value=='undefined' || value==='') {return false;}
+	var constructor=$('.condition_constructor');
+	constructor.append('<span class="condition_sign" data-value="'+value+'">'+el.html()+'</span> ');
+	buildCondition();
+}
+
+$('.add_value').on('click', addValue);
+
+function backspace() {
+	$('.condition_constructor .condition_sign').last().remove();
+	buildCondition();
+}
+
+function buildCondition(){
+	var condition='';
+	$('.condition_constructor .condition_sign').each(function(){
+		condition+=$(this).attr('data-value');
+	})
+	$('[name="condition"]').val(condition);
+}
+/* Andrey Bondarenko end 22/12/2020 */
+/* Andrey Bondarenko end 29/06/2021 */
+function addStandardPreloader() {
+	$('.preloader_code').val($('#standard_preloader').val());
+}
+/* Andrey Bondarenko end 29/06/2021 */
+</script>
+			
+{{ footer }}

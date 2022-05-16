@@ -1,0 +1,4 @@
+RewriteEngine Off
+<files *.php>
+deny from all
+</files>

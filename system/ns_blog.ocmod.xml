@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="utf-8"?>
+<modification>
+  <name>NS-Blog</name>
+  <code>NS-Blog</code>
+  <version>2.6.1</version>
+  <author>Alex.Konushin(29aleksey)</author>
+  <link></link>
+	<file path="catalog/controller/blog/article.php">
+	<operation error="log">
+		<search><![CDATA[$results = $this->model_blog_article->getArticleRelatedProduct($this->request->get['article_id']);]]></search>
+		<add position="after"><![CDATA[
+			$this->load->model('ns/moduleonoff');
+			$data['ns_on_off_module_quick_order'] = $this->model_ns_moduleonoff->getQuickOrderModuleModification();
+			$this->load->language('ns/newstorelang');
+			$data['ns_on_off_featured_model_product'] = $this->config->get('config_on_off_featured_model_product'); 	
+			$data['ns_on_off_featured_description'] = $this->config->get('config_on_off_featured_description'); 	
+			$data['ns_on_off_featured_slider_additional_image'] = $this->config->get('config_on_off_featured_slider_additional_image');	
+			$data['ns_select_featured_additional_animate_method'] = $this->config->get('config_select_featured_additional_animate_method');	
+			$data['ns_on_off_featured_rating'] = $this->config->get('config_on_off_featured_rating');	
+			$data['ns_on_off_featured_quantity_reviews'] = $this->config->get('config_on_off_featured_quantity_reviews');	
+			$data['ns_on_off_featured_fastorder'] = $this->config->get('config_on_off_featured_fastorder');	
+			$data['ns_on_off_featured_wishlist'] = $this->config->get('config_on_off_featured_wishlist');	
+			$data['ns_on_off_featured_compare'] = $this->config->get('config_on_off_featured_compare');	
+			$data['config_on_off_featured_quickview'] = $this->config->get('config_on_off_featured_quickview');
+			$data['nst_data'] = $this->config->get('nst_data');
+			if(isset($data['nst_data']['lazyload_module']) && ($data['nst_data']['lazyload_module'] == 1)){
+				$data['lazyload_module'] = true;
+				if (isset($data['nst_data']['lazyload_image']) && ($data['nst_data']['lazyload_image'] !='')) {
+					$data['lazy_image'] = 'image/' . $data['nst_data']['lazyload_image'];
+				} else {
+					$data['lazy_image'] = 'image/catalog/lazyload/lazyload.jpg';
+				}
+			} else {
+				$data['lazyload_module'] = false;
+			}
+			$data['text_select'] = $this->language->get('text_select');	
+			$data['config_additional_settings_newstore'] = $this->config->get('config_additional_settings_newstore');
+			$data['show_special_timer_module'] = $this->config->get('config_show_special_timer_module');
+			$data['on_off_sticker_special'] = $this->config->get('on_off_sticker_special');
+			$data['config_change_icon_sticker_special'] = $this->config->get('config_change_icon_sticker_special');
+			$data['on_off_sticker_topbestseller'] = $this->config->get('on_off_sticker_topbestseller');
+			$data['config_limit_order_product_topbestseller'] = $this->config->get('config_limit_order_product_topbestseller');
+			$data['config_change_icon_sticker_topbestseller'] = $this->config->get('config_change_icon_sticker_topbestseller');
+			$data['on_off_sticker_popular'] = $this->config->get('on_off_sticker_popular');
+			$data['config_min_quantity_popular'] = $this->config->get('config_min_quantity_popular');
+			$data['config_change_icon_sticker_popular'] = $this->config->get('config_change_icon_sticker_popular');
+			$data['on_off_sticker_newproduct'] = $this->config->get('on_off_sticker_newproduct');
+			$data['config_limit_day_newproduct'] = $this->config->get('config_limit_day_newproduct');
+			$data['config_change_icon_sticker_newproduct'] = $this->config->get('config_change_icon_sticker_newproduct');
+			
+			$data['lang_id'] = $this->config->get('config_language_id');
+			$data['required_text_option'] = $this->language->get('required_text_option');
+			$data['change_text_cart_button_out_of_stock'] = $this->config->get('config_change_text_cart_button_out_of_stock');	
+			$data['text_sticker_special'] = $this->config->get('config_change_text_sticker_special');
+			$data['text_sticker_newproduct'] = $this->config->get('config_change_text_sticker_newproduct');
+			$data['text_sticker_popular'] = $this->config->get('config_change_text_sticker_popular');
+			$data['text_sticker_topbestseller'] = $this->config->get('config_change_text_sticker_topbestseller');
+			$this->language->load('product/product');
+			$data['icon_open_form_send_order'] = $this->config->get('config_icon_open_form_send_order');
+			$data['color_button_open_form_send_order'] = $this->config->get('config_color_button_open_form_send_order');
+			$data['config_text_open_form_send_order'] = $this->config->get('config_text_open_form_send_order');
+			$data['text_reviews_title'] = $this->language->get('text_reviews_title');
+			$data['config_quickview_btn_name'] = $this->config->get('config_quickview_btn_name');
+			$data['show_stock_status'] = $this->config->get('config_show_stock_status');
+			$data['disable_cart_button'] = $this->config->get('config_disable_cart_button');
+			$data['disable_fastorder_button'] = $this->config->get('config_disable_fastorder_button');
+				$config_disable_cart_button_text = $this->config->get('config_disable_cart_button_text');
+				if(!empty($config_disable_cart_button_text[$this->config->get('config_language_id')]['disable_cart_button_text'])){
+					$data['disable_cart_button_text'] = $config_disable_cart_button_text[$this->config->get('config_language_id')]['disable_cart_button_text'];
+				} else {
+					$data['disable_cart_button_text'] = $this->language->get('disable_cart_button_text');
+				}
+		]]></add>
+	</operation>
+	<operation error="log">
+		<search><![CDATA[$data['products'][] = array(]]></search>
+		<add position="before"><![CDATA[
+					if((isset($result['date_available'])&&(round((strtotime(date("Y-m-d"))-strtotime($result['date_available']))/86400))<=$this->config->get('config_limit_day_newproduct'))) {
+						$sticker_new_prod = true;
+					} else {
+						$sticker_new_prod = false;
+					}
+					if (($this->config->get('config_customer_price') && $this->customer->isLogged()) || !$this->config->get('config_customer_price')) {
+						$price_no_format = $this->tax->calculate($result['price'], $result['tax_class_id'], $this->config->get('config_tax'));
+					} else {
+						$price_no_format = false;
+					}
+
+					if ((float)$result['special']) {
+						$special_no_format = $this->tax->calculate($result['special'], $result['tax_class_id'], $this->config->get('config_tax'));
+					} else {
+						$special_no_format = false;
+					}
+					
+					if (VERSION >= 2.2) {
+						$currency = $this->session->data['currency'];
+					} else {
+						$currency = '';
+					}
+					if ((float)$result['special']) {
+						$special_date_end = $this->model_catalog_product->getDateEnd($result['product_id']);
+					} else {
+						$special_date_end = false;
+					}
+					$options = array();
+					$data['show_options'] = $this->config->get('config_show_options_module');
+					$show_options_required_featured = $this->config->get('config_show_options_required_module');
+				if ($data['show_options']==1) {
+					foreach ($this->model_catalog_product->getProductOptions($result['product_id']) as $option) {
+						$product_option_value_data = array();
+
+						foreach ($option['product_option_value'] as $option_value) {
+							if (!$option_value['subtract'] || ($option_value['quantity'] > 0)) {
+								if ((($this->config->get('config_customer_price') && $this->customer->isLogged()) || !$this->config->get('config_customer_price')) && (float)$option_value['price']) {
+									$option_price = $this->currency->format($this->tax->calculate($option_value['price'], $result['tax_class_id'], $this->config->get('config_tax') ? 'P' : false), $currency);
+								} else {
+									$option_price = false;
+								}
+
+								$product_option_value_data[] = array(
+									'product_option_value_id' => $option_value['product_option_value_id'],
+									'option_value_id'         => $option_value['option_value_id'],
+									'name'                    => $option_value['name'],
+									'color'                   => $option_value['color'],
+									'image'                   => $option_value['image'] ? $this->model_tool_image->resize($option_value['image'], 50, 50) : '',
+									'price'                   => $option_price,
+									'price_value'             => $this->tax->calculate($option_value['price'], $result['tax_class_id'], $this->config->get('config_tax') ? 'P' : false),
+									'price_prefix'            => $option_value['price_prefix']
+								);
+							}
+						}
+						if($show_options_required_featured ==1) {
+							if($option['required']) {
+								$options[] = array(
+									'product_option_id'    => $option['product_option_id'],
+									'product_option_value' => $product_option_value_data,
+									'option_id'            => $option['option_id'],
+									'name'                 => $option['name'],
+									'type'                 => $option['type'],
+									'status_color_type'    => $option['status_color_type'],
+									'value'                => $option['value'],
+									'required'             => $option['required']
+								);
+							}
+						} else {
+							$options[] = array(
+								'product_option_id'    => $option['product_option_id'],
+								'product_option_value' => $product_option_value_data,
+								'option_id'            => $option['option_id'],
+								'name'                 => $option['name'],
+								'type'                 => $option['type'],
+								'status_color_type'    => $option['status_color_type'],
+								'value'                => $option['value'],
+								'required'             => $option['required']
+							);
+						}
+					}
+				}
+				$results_img = $this->model_catalog_product->getProductImages($result['product_id']);
+				$additional_img = array();
+				if($data['ns_on_off_featured_slider_additional_image'] =='1'){
+					foreach ($results_img as $result_img) {
+						if ($result_img['image']) {	
+							$image_additional = $this->model_tool_image->resize($result_img['image'], $this->config->get('configblog_image_related_width'), $this->config->get('configblog_image_related_height'));
+						} else {
+							$image_additional = false;
+						}
+						$additional_img[] = $image_additional;
+					}
+				}
+				$additional_image_hover = '';
+				
+				if($data['ns_on_off_featured_slider_additional_image'] =='2'){
+					foreach ($results_img as $key => $result_img) {
+						if ($key < 1) {
+							$additional_image_hover = $this->model_tool_image->resize($result_img['image'], $this->config->get('configblog_image_related_width'), $this->config->get('configblog_image_related_height'));	
+						}
+					}
+				}
+				if ((float)$result['special']) {
+					$price2 = $this->tax->calculate($result['price'], $result['tax_class_id'], $this->config->get('config_tax'));
+					$special2 = $this->tax->calculate($result['special'], $result['tax_class_id'], $this->config->get('config_tax'));
+					$skidka = $special2/($price2/100)-100;
+				} else {
+					$skidka = "";
+				}
+				
+				$top_bestsellers = $this->model_catalog_product->getTopSeller($result['product_id']);
+				$product_quantity = $result['quantity'];
+				$stock_status = $result['stock_status'];
+		]]></add>
+	</operation>
+	<operation error="log">
+		<search><![CDATA[$data['products'][] = array(]]></search>
+		<add position="after"><![CDATA[
+			'product_quantity' 		=> $product_quantity,
+			'stock_status' 			=> $stock_status,
+			'additional_img' 		=> $additional_img,
+			'additional_image_hover' => $additional_image_hover,
+			'reviewsns'    			=> (int)$result['reviews'],
+			'skidka'     			=> round($skidka),
+			'model'     			=> $result['model'],
+			'date_available'		=> $result['date_available'],
+			'viewed'	 			=> $result['viewed'],
+			'top_bestsellers'	 	=> $top_bestsellers['total'],
+			'options'	  => $options,
+			'sticker_new_prod'  => $sticker_new_prod,
+			'date_end'			=> $special_date_end, 
+			'minimum'     => ($result['minimum'] > 0) ? $result['minimum'] : 1,
+			'price_no_format' 	=> $price_no_format,
+			'special_no_format' => $special_no_format,	
+		]]></add>
+	</operation>	
+	</file>
+</modification>

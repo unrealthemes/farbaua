@@ -1,0 +1,42 @@
+.stickers-ns {
+	left: 5px;
+	position: absolute;
+	top: 5px;
+	transition: all 0.15s ease 0s;
+	z-index:99;
+}
+.stickers-ns .fa{
+	font-size: 14px;
+	vertical-align: middle;
+}
+.stickers-ns > .sticker-ns {
+	margin-bottom: 5px;
+}
+.sticker-ns {
+	clear: left;
+	float: left;
+	font-size: 12px;
+	font-weight: 600;
+	padding:2px 6px;
+	position: relative;
+	text-transform: uppercase;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+.product-item:hover .stickers-ns, .product-block:hover .stickers-ns , .thumbnails:hover .stickers-ns{
+	opacity:0;
+	transition: all 0.15s  ease 0s;
+	z-index:-1;
+}
+.product-thumb:hover .stickers-ns{
+	opacity:0;
+	transition: all 0.15s  ease 0s;
+	z-index:-1;
+}
+.sticker-ns.procent-skidka {
+	background: #e55b4c none repeat scroll 0 0;
+	color: #fff;
+	font-weight: 600;
+	opacity: 0.75;
+	z-index: 99;
+	transition: all 0.15s  ease 0s;
+}

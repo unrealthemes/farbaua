@@ -1,0 +1,1 @@
+<div class="alert alert-danger">Данная функция пока не доступна</div>

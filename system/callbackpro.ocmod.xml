@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+<modification>
+  <name>CALLBACK</name>
+  <code>CALLBACK</code>
+  <version>2.6.1</version>
+  <author>Konushin.Alex</author>
+  <link>https://opencartforum.com/files/file/2254-%D1%83%D0%BF%D1%80%D0%B0%D0%B2%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5-%D1%82%D0%BE%D1%80%D0%B3%D0%BE%D0%B2%D0%BB%D0%B5%D0%B9-%D0%BE%D0%B1%D1%80%D0%B0%D1%82%D0%BD%D1%8B%D0%B9-%D0%B7%D0%B2%D0%BE%D0%BD%D0%BE%D0%BA/</link>	
+	<file path="catalog/view/theme/*/template/common/{footer,footer2}.twig">
+		<operation>
+			<search><![CDATA[</body>]]></search>
+			<add position="before"><![CDATA[
+{% if callbackpro.status_animate_btn_4 %}
+<div onclick="get_modal_callbacking();" id="animate_btn_4" class="animate_btn_4">
+	<div class="ab4-circlephone"></div>
+	<div class="ab4-circle-fill"></div>
+	<div class="ab4-img-circle"><div class="ab4-img-circleblock"></div></div>
+</div>
+{% endif %}
+{% if callbackpro.status_animate_btn_3 %}
+<div onclick="get_modal_callbacking();" id="animate_btn_3" class="animate_btn_3">
+    <div class="ab3-track"></div>
+    <div class="ab3-back-circle"></div>
+    <div class="ab3-circle">
+        <div class="ab3-handset"></div>
+    </div>
+</div>
+{% endif %}
+{% if callbackpro.status_animate_btn_2 %}
+<div onclick="get_modal_callbacking();" id="tcb-call">
+	<div class="tcb-phone">
+		<div class="tcb-phone-img"></div>
+	</div>
+	<div class="tcb-layout1"></div>
+	<div class="tcb-layout2"></div>
+	<div class="tcb-layout3"></div>
+</div>
+{% endif %}
+{% if callbackpro.status_animate_btn_1 %}
+<div onclick="get_modal_callbacking();" id="tcb_call_1">
+	<div class="tcb_phone_1">
+		<div class="tcb_phone_img_1"></div>
+	</div>
+	<div class="tcb_layout_1"></div>
+	<div class="tcb_layout_2"></div>
+</div>
+{% endif %}
+{% if callbackpro.config_right_callback_position_fixed %}
+<div onclick="get_modal_callbacking();" id="callback"  class="callback-view"><div><img src="image/data/callback.png"/></div></div>
+{% endif %}
+<script>	
+function get_modal_callbacking() {		
+		$.magnificPopup.open({
+            tLoading: loading_masked_img,
+            items: {
+              src: 'index.php?route=extension/module/callback',
+              type: 'ajax'
+            },
+          });
+	}
+</script>
+			]]></add>
+		</operation>
+	</file>
+	
+	<file path="catalog/controller/common/footer.php">
+		<operation>
+			<search><![CDATA[$this->load->language('common/footer');]]></search>
+			<add position="after"><![CDATA[
+			$data['lang_id'] = $this->config->get('config_language_id');
+			$data['callbackpro'] = $this->config->get('callbackpro');	
+			]]></add>
+		</operation>
+	</file>
+	<file path="admin/view/template/common/header.twig">
+		<operation>
+			<search><![CDATA[<ul class="nav navbar-nav navbar-right">]]></search>
+			<add position="after"><![CDATA[
+				<li class="dropdown">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+					<span class="label label-danger pull-left">{% if countcallback %}{{ countcallback }}{% else %}0{% endif %}</span>
+					<i class="fa fa-phone-square fa-lg"></i></a>
+					<ul class="dropdown-menu dropdown-menu-right">
+						<li class="dropdown-header">{{ title_callback }}</li>
+						<li><a class="dropdown-toggle" href="{% if callback_new %}{{ callback_new }}{% endif %}">
+						<span class="label label-danger  pull-right">{% if countcallback %}{{ countcallback }}{% else %}0{% endif %}</span>
+							{{ text_callback_new }}
+						</a>
+						</li>
+						<li>
+						<a class="dropdown-toggle" href="{% if callback_final %}{{ callback_final }}{% endif %}">
+						<span class="label label-success pull-right">{% if countcallback_final %}{{ countcallback_final }}{% else %}0{% endif %}</span>
+						{{ text_callback_final }}
+						</a>	
+						</li>
+						<li>
+						<a class="dropdown-toggle" href="{% if callback %}{{ callback }}{% endif %}">
+						<span class="label label-default pull-right">{% if countcallback_all %}{{ countcallback_all }}{% else %}0{% endif %}</span>
+							{{ text_callback_all }}
+						</a>
+						</li>
+					</ul>
+				</li>
+			]]></add>
+		</operation>
+	</file>	
+	  <file path="admin/controller/common/column_left.php">
+     <operation error="skip">
+      <search><![CDATA[if ($this->user->hasPermission('access', 'catalog/category')) {]]></search>
+      <add position="before"><![CDATA[
+		if ($this->user->hasPermission('access', 'sale/callback')) {
+			$newstore_left_menu[] = array(
+				'name'	   => $this->language->get('text_callback'),
+				'href'     => $this->url->link('sale/callback', 'user_token=' . $this->session->data['user_token'], true),
+				'children' => array()		
+			);
+		}
+      ]]></add>
+    </operation>
+  </file>
+        
+        
+	<file path="admin/language/en-gb/common/column_left.php">
+		<operation>
+			<search><![CDATA[// Text]]></search>
+			<add position="after"><![CDATA[
+	$_['text_callback']            = 'Callback';
+			]]></add>
+		</operation>
+	</file>
+	<file path="admin/language/ru-ru/common/column_left.php">
+		<operation>
+			<search><![CDATA[// Text]]></search>
+			<add position="after"><![CDATA[
+	$_['text_callback']            = 'Обратный звонок';
+			]]></add>
+		</operation>
+	</file>
+	<file path="admin/language/en-gb/common/header.php">
+		<operation>
+			<search><![CDATA[// Text]]></search>
+			<add position="after"><![CDATA[
+	$_['title_callback']            = 'Callback';
+	$_['text_callback_new']         = 'New Callback';
+	$_['text_callback_final']      = 'Treated';
+	$_['text_callback_all']         = 'Total';
+			]]></add>
+		</operation>
+	</file>
+	<file path="admin/language/ru-ru/common/header.php">
+		<operation>
+			<search><![CDATA[// Text]]></search>
+			<add position="after"><![CDATA[
+	$_['title_callback']            = 'Обратный звонок';
+	$_['text_callback_new']         = 'Новые';
+	$_['text_callback_final']       = 'Обработанные';
+	$_['text_callback_all']         = 'Всего';
+			]]></add>
+		</operation>
+	</file>
+	<file path="admin/controller/common/column_left.php">
+		<operation>
+			<search><![CDATA[$this->load->language('common/column_left');]]></search>
+			<add position="after"><![CDATA[
+			$data['callback'] = $this->url->link('sale/callback', 'user_token=' . $this->session->data['user_token'], true);
+			$data['text_callback'] = $this->language->get('text_callback');
+			]]></add>
+		</operation>
+	</file>
+	<file path="admin/controller/common/header.php">
+		<operation>
+			<search><![CDATA[$data['logout'] = $this->url->link('common/logout', 'user_token=' . $this->session->data['user_token'], true);]]></search>
+			<add position="after"><![CDATA[
+			$this->load->model('sale/callback');
+			$data['countcallback'] = $this->model_sale_callback->countTotal();
+			$data['countcallback_all'] = $this->model_sale_callback->countTotalAll();
+			$data['countcallback_final'] = $this->model_sale_callback->countTotalFinal();
+			$data['callback'] = $this->url->link('sale/callback', 'user_token=' . $this->session->data['user_token'], true);
+			$data['callback_new'] = $this->url->link('sale/callback', 'user_token=' . $this->session->data['user_token'] . '&filter_status=0', true);
+			$data['callback_final'] = $this->url->link('sale/callback', 'user_token=' . $this->session->data['user_token'] . '&filter_status=1', true);
+			$data['text_callback'] = $this->language->get('text_callback');
+			]]></add>
+		</operation>
+	</file>
+</modification>

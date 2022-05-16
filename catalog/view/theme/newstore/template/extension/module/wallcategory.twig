@@ -1,0 +1,66 @@
+<div class="categorywall-container categorywall-{{ module }}">	
+{% if (heading_title[lang_id]['title_name'] is not empty) %} 
+<div class="title-module"><span>{{ heading_title[lang_id]['title_name'] }}</span></div>
+{% endif %} 
+	<div class="wall-category-box">
+		{% for category in categories %} 
+			<div class="box-item col-xs-12 col-sm-6 col-md-3 col-lg-3">
+				<div class="item-category {% if (category['subcategories']) %} parent_category {% endif %}">
+					<div class="wall-cat-image show-sub-cat-{{ module }}">
+					{% if (category['subcategories']) %} 
+					<img src="{{ category['image'] }}" alt="{{ category['name'] }}">
+					{% else %} 
+					<a href="{{ category['href'] }}"><img src="{{ category['image'] }}" alt="{{ category['name'] }}"></a>
+					{% endif %} 
+					</div>
+					<div class="wall-cat-name"><div class="display-table"><div class="display-table-cell"><a href="{{ category['href'] }}" >{{ category['name'] }}</a></div></div></div>
+						{% if (category['subcategories']) %} 
+						<div class="item-sub-category">
+							{% for subcategory in category['subcategories'] %} 
+								<div class="subcategory-name"><a href="{{ subcategory['href'] }}">{{ subcategory['name'] }}</a></div>
+							{% endfor %} 
+						</div>		
+						{% endif %} 
+				</div>		  
+			</div>
+      {% endfor %} 
+	   {% for manufacturer in manufacturers %} 
+			<div class="box-item col-xs-12 col-sm-6 col-md-3 col-lg-3">
+				<div class="item-category">
+					<a href="{{ manufacturer['href'] }}" >
+						<div class="wall-cat-image"><img src="{{ manufacturer['thumb'] }}" alt="{{ manufacturer['name'] }}"></div>
+						<div class="wall-cat-name"><div class="display-table"><div class="display-table-cell">{{ manufacturer['name'] }}</div></div></div>
+					</a>
+				</div>
+			</div>
+      {% endfor %} 
+    </div>
+</div>	
+<script>
+$(document).ready(function() {
+	if (viewport().width >= 992) {
+		$('.item-sub-category').scrollpanel({
+			prefix: 'nswc-'
+		});	
+	} else {
+		$(document).on('click', '.show-sub-cat-{{ module }}', function () {
+			$(this).parent().find('.item-sub-category').toggleClass('active-sub-menu');
+		});
+	}	
+	$(window).resize(function() {	
+			if (viewport().width >= 992) {
+				$('.item-sub-category').scrollpanel({
+					prefix: 'nswc-'
+				});		
+			} else {
+				$(document).on('click', '.show-sub-cat-{{ module }}', function () {
+					$(this).parent().find('.item-sub-category').toggleClass('active-sub-menu');
+				});
+			}
+		}); 
+	if ($(".categorywall-{{ module }}").parents("#column-left, #column-right").length) {
+		$('.categorywall-{{ module }} .box-item').removeClass("col-sm-6 col-md-4 col-lg-3");
+		$('.categorywall-{{ module }} .box-item').addClass("col-sm-12 col-md-12 col-lg-12");
+	}
+});
+</script>

@@ -1,0 +1,7 @@
+#header .nav > li > a > .label {
+  left: 6px;
+  padding: 1px 4px;
+  position: absolute;
+  text-shadow: none;
+  top: 8px;
+}

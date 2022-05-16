@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="utf-8"?>
+<modification>
+  <name>NS->QUICK-ORDER</name>
+  <code>NS->QUICK-ORDER</code>
+  <version>2.6.1</version>
+  <author>Alex.Konushin(29aleksey)</author>
+	<link>https://opencartforum.com/files/file/2296-%D1%83%D0%BF%D1%80%D0%B0%D0%B2%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5-%D1%82%D0%BE%D1%80%D0%B3%D0%BE%D0%B2%D0%BB%D0%B5%D0%B9-3-%D0%B1%D1%8B%D1%81%D1%82%D1%80%D1%8B%D0%B9-%D0%B7%D0%B0%D0%BA%D0%B0%D0%B7/</link>
+	<file path="catalog/view/theme/newstore/template/common/header.twig">
+		<operation>
+			<search><![CDATA[</head>]]></search>
+			<add position="before"><![CDATA[
+<script>
+function fastorder_open(prod_id) {  
+          $.magnificPopup.open({
+            tLoading: '<span><i style="font-size:50px;" class="fa fa-spinner fa-pulse"></i></span>',
+            items: {
+              src: 'index.php?route=extension/module/newfastorder&prod_id='+prod_id,
+              type: 'ajax'
+            }
+          });
+        }
+function fastorder_open_cart() {  
+          $.magnificPopup.open({
+            tLoading: '<span><i style="font-size:50px;" class="fa fa-spinner fa-pulse"></i></span>',
+            items: {
+              src: 'index.php?route=extension/module/newfastordercart',
+              type: 'ajax'
+            }
+			
+          });
+        }		
+</script>
+			]]></add>
+		</operation>
+	</file>
+		
+	<file path="catalog/model/catalog/product.php">
+    <operation>
+      <search><![CDATA['weight'                  => $product_option_value['weight'],]]></search>
+      <add position="before">
+        <![CDATA[
+          'points'        => $product_option_value['points'],
+          'points_prefix' => $product_option_value['points_prefix'],
+        ]]>
+     </add>
+    </operation>
+  </file>
+  
+  <file path="catalog/controller/product/product.php">
+    <operation>
+      <search><![CDATA[$data['options'] = array();]]></search>
+      <add position="before">
+        <![CDATA[
+          $data['price_value'] = $product_info['price'];
+          $data['special_value'] = $product_info['special'];
+          $data['tax_value'] = (float)$product_info['special'] ? $product_info['special'] : $product_info['price'];
+          
+		  $var_currency = array();
+		  $var_currency['value'] = $this->currency->getValue($this->session->data['currency']);
+				$var_currency['symbol_left'] = $this->currency->getSymbolLeft($this->session->data['currency']);
+				$var_currency['symbol_right'] = $this->currency->getSymbolRight($this->session->data['currency']);
+				 $var_currency['currency_code'] = $this->session->data['currency'];
+				$var_currency['decimals'] = $this->currency->getDecimalPlace($this->session->data['currency']);
+				$var_currency['decimal_point'] = $this->language->get('decimal_point');
+				$var_currency['thousand_point'] = $this->language->get('thousand_point');
+				$data['currency'] = $var_currency;
+          
+          $data['dicounts_unf'] = $discounts;
+
+          $data['tax_class_id'] = $product_info['tax_class_id'];
+          $data['tax_rates'] = $this->tax->getRates(0, $product_info['tax_class_id']);
+        ]]>
+     </add>
+    </operation>
+	
+    <operation>
+      <search><![CDATA[$product_option_value_data[] = array(]]></search>
+      <add position="after">
+        <![CDATA[
+          'price_value'                   => $option_value['price'],
+          'points_value'                  => intval($option_value['points_prefix'].$option_value['points']),
+        ]]>
+      </add>
+    </operation>
+	
+  </file>
+  <file path="catalog/controller/product/category.php">
+		<operation>
+			<search><![CDATA[$this->load->language('product/category');]]></search>
+			<add position="before"><![CDATA[
+			$this->language->load('product/product');
+			$data['lang_id'] = $this->config->get('config_language_id');
+			$data['config_text_open_form_send_order'] = $this->config->get('config_text_open_form_send_order');	
+			$data['color_button_open_form_send_order'] = $this->config->get('config_color_button_open_form_send_order');			
+			$data['icon_open_form_send_order'] = $this->config->get('config_icon_open_form_send_order');						
+			$data['config_on_off_qo_cpage'] = $this->config->get('config_on_off_qo_cpage');						
+			]]></add>
+		</operation>
+	</file>	
+	<file path="catalog/controller/product/product.php">
+		<operation>
+		<search ><![CDATA[$data['text_select'] = $this->language->get('text_select');]]></search>
+		<add position="before"><![CDATA[
+			$data['lang_id'] = $this->config->get('config_language_id');
+			$data['config_text_open_form_send_order'] = $this->config->get('config_text_open_form_send_order');	
+			$data['color_button_open_form_send_order'] = $this->config->get('config_color_button_open_form_send_order');			
+			$data['icon_open_form_send_order'] = $this->config->get('config_icon_open_form_send_order');										
+			$data['config_on_off_qo_product_page'] = $this->config->get('config_on_off_qo_product_page');					
+		]]></add>
+	</operation>
+	</file>	
+	<file path="catalog/language/ru-ru/product/product.php">
+		<operation>
+			<search><![CDATA[$_['text_model']]]></search>
+			<add position="after"><![CDATA[
+			$_['comment_buyer']         = 'Ваш Коментарий';
+			$_['email_buyer']         	= 'Ваш Email';
+			$_['namew']         		= 'Ваше Имя';
+			$_['phonew']         = 'Ваш Телефон:';
+			$_['button_send']         = 'Оформить заказ';
+			$_['text_quick_order_enter_name_phone']         = 'Пожалуйста, укажите ваше имя и телефон, чтобы мы могли связаться с вами';
+			$_['text_you_order']         = 'Ваш заказ !!!';
+			]]></add>
+		</operation>
+	</file>
+	<file path="catalog/language/en-gb/product/product.php">
+		<operation>
+			<search><![CDATA[$_['text_model']]]></search>
+			<add position="after"><![CDATA[
+			$_['comment_buyer']         = 'You comment';
+			$_['email_buyer']         	= 'You Email';
+			$_['namew']         		= 'You Name';
+			$_['phonew']         		= 'You Phone:';
+			$_['button_send']         	= 'Checkout';
+			$_['text_quick_order_enter_name_phone']         = 'Please include your name and phone number so we can contact you';
+			$_['text_you_order']         = 'You Order';
+			]]></add>
+		</operation>	
+	</file>
+	
+	<!--ADMIN ADD -->
+	<file path="admin/view/template/common/header.twig">
+		
+		<operation>
+			<search><![CDATA[<ul class="nav navbar-nav navbar-right">]]></search>
+			<add position="after"><![CDATA[
+        <li class="dropdown"><a data-placement="bottom" data-toggle="tooltip" title="{{ title_fastorder is defined ? title_fastorder : '' }}" class="dropdown-toggle" href="{{ newfastorder is defined ? newfastorder : '' }}"><span class="label label-danger pull-left">{{ countfastorder is defined ? countfastorder : '0' }}</span> <i class="fa fa-shopping-cart fa-lg"></i></a>
+			]]></add>
+		</operation>
+	</file>
+	<file path="admin/controller/common/column_left.php">
+     <operation error="skip">
+      <search><![CDATA[if ($this->user->hasPermission('access', 'catalog/category')) {]]></search>
+      <add position="before"><![CDATA[
+		if ($this->user->hasPermission('access', 'sale/newfastorder')) {
+			$newstore_left_menu[] = array(
+				'name'	   => $this->language->get('text_fastorder'),
+				'href'     => $this->url->link('sale/newfastorder', 'user_token=' . $this->session->data['user_token'], true),
+				'children' => array()		
+			);
+		}
+      ]]></add>
+    </operation>
+  </file>
+	<file path="admin/language/en-gb/common/column_left.php">
+		<operation>
+			<search><![CDATA[// Text]]></search>
+			<add position="after"><![CDATA[
+	$_['text_fastorder']            = 'FASTORDER';
+			]]></add>
+		</operation>
+	</file>
+	<file path="admin/language/ru-ru/common/column_left.php">
+		<operation>
+			<search><![CDATA[// Text]]></search>
+			<add position="after"><![CDATA[
+	$_['text_fastorder']            = 'Быстрый заказ';
+			]]></add>
+		</operation>
+	</file>
+	<file path="admin/language/en-gb/common/header.php">
+		<operation>
+			<search><![CDATA[// Text]]></search>
+			<add position="after"><![CDATA[
+	$_['title_fastorder']            = 'FASTORDER';
+			]]></add>
+		</operation>
+	</file>
+	<file path="admin/language/ru-ru/common/header.php">
+		<operation>
+			<search><![CDATA[// Text]]></search>
+			<add position="after"><![CDATA[
+	$_['title_fastorder']            = 'Быстрый заказ';
+			]]></add>
+		</operation>
+	</file>
+
+	<file path="admin/controller/common/header.php">
+		<operation>
+			<search><![CDATA[$data['logged'] = true;]]></search>
+			<add position="after"><![CDATA[
+				$this->load->model('sale/newfastorder');
+				$data['countfastorder'] = $this->model_sale_newfastorder->countTotalNewFastorder();
+				$data['newfastorder'] = $this->url->link('sale/newfastorder', 'user_token=' . $this->session->data['user_token'], 'SSL');
+				$data['title_fastorder'] = $this->language->get('title_fastorder');
+			]]></add>
+		</operation>
+	</file>
+	<file path="admin/controller/sale/order.php">
+		<operation>
+			<search><![CDATA[$content = $this->load->controller('payment/' . $order_info['payment_code'] . '/order');]]></search>
+			<add position="replace"><![CDATA[		
+			if($order_info['payment_code']){
+				$content = $this->load->controller('payment/' . $order_info['payment_code'] . '/order');
+			} else {
+				$content = false;
+			}
+			]]></add>
+		</operation>
+	</file>
+</modification>
