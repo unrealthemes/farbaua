@@ -230,12 +230,18 @@ class ControllerExtensionFeedGoogleMerchantXml3 extends Controller {
 				$xml .= '<g:availability>' . ($product['quantity'] > 0 ? 'in stock' : 'out of stock') . '</g:availability>' . $this->eol;
 			}
 			
-			if ($product['special'] && $product['special'] < $product['price']) {
-				$xml .= '<g:price>' . number_format($this->currency->convert($this->tax->calculate($product['price'] * $multiplier, $product['tax_class_id']), $shop_currency, $items_currency), $decimal, '.', '') . ' ' . $items_currency . '</g:price>' . $this->eol;
-				$xml .= '<g:sale_price>' . number_format($this->currency->convert($this->tax->calculate($product['special'] * $multiplier, $product['tax_class_id']), $shop_currency, $items_currency), $decimal, '.', '') . ' ' . $items_currency . '</g:sale_price>' . $this->eol;
-			}	else {
-				$xml .= '<g:price>' . number_format($this->currency->convert($this->tax->calculate($product['price'] * $multiplier, $product['tax_class_id']), $shop_currency, $items_currency), $decimal, '.', '') . ' ' . $items_currency . '</g:price>' . $this->eol;
-			}
+			// if ($product['special'] && $product['special'] < $product['price']) {
+			// 	$xml .= '<g:price>' . number_format($this->currency->convert($this->tax->calculate($product['price'] * $multiplier, $product['tax_class_id']), $shop_currency, $items_currency), $decimal, '.', '') . ' ' . $items_currency . '</g:price>' . $this->eol;
+			// 	$xml .= '<g:sale_price>' . number_format($this->currency->convert($this->tax->calculate($product['special'] * $multiplier, $product['tax_class_id']), $shop_currency, $items_currency), $decimal, '.', '') . ' ' . $items_currency . '</g:sale_price>' . $this->eol;
+			// }	else {
+			// 	$xml .= '<g:price>' . number_format($this->currency->convert($this->tax->calculate($product['price'] * $multiplier, $product['tax_class_id']), $shop_currency, $items_currency), $decimal, '.', '') . ' ' . $items_currency . '</g:price>' . $this->eol;
+			// }
+			
+			//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+			$price = $this->currency->format( $this->tax->calculate( $product['price'], $product['tax_class_id'], $this->config->get('config_tax') ), $shop_currency );
+			$price_num = substr( $price, 0, -7 );
+			$xml .= '<g:price>' . $price_num . ' ' . $shop_currency . '</g:price>';
+			//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 			
 			if (!empty($google_merchant_xml_3_category_google_category[$product['category_id']])) {
 				$xml .= '<g:google_product_category>' . $google_merchant_xml_3_category_google_category[$product['category_id']] . '</g:google_product_category>' . $this->eol;
